@@ -256,6 +256,18 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
         <button class="addbtn" onclick="addHabit()">+</button>
       </div>
       <div class="sec">감사 일기</div>
+      <!-- Franklin Planner 진입 카드 -->
+      <a href="franklin.html" style="display:block;text-decoration:none;margin-bottom:11px;">
+        <div style="background:linear-gradient(135deg,#12121a,#1c1c30);border:1px solid rgba(255,192,32,0.3);border-radius:15px;padding:15px 16px;display:flex;align-items:center;gap:13px;">
+          <div style="font-size:28px;">📖</div>
+          <div style="flex:1;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#ffc020;line-height:1;">FRANKLIN PLANNER</div>
+            <div style="font-size:11px;color:#606080;margin-top:3px;font-family:'DM Mono',monospace;">미션 · 역할 · 위클리 · 데일리 · 목표</div>
+          </div>
+          <div style="font-size:20px;color:#ffc020;">›</div>
+        </div>
+      </a>
+
       <div class="grat-box">
         <div class="grat-hdr">
           <span style="font-size:20px">🙏</span>
@@ -360,6 +372,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     <button class="nb"    onclick="sw('info',this)"><span class="ni">📝</span>정보</button>
     <button class="nb"    onclick="sw('graph',this)"><span class="ni">📊</span>그래프</button>
     <button class="nb"    onclick="sw('stats',this)"><span class="ni">🏆</span>통계</button>
+    <button class="nb"    onclick="location.href='franklin.html'"><span class="ni">📖</span>플래너</button>
   </nav>
 </div>
 <div class="toast" id="toast">✅ 저장됨</div>
