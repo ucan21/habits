@@ -353,13 +353,18 @@ showQuote();
     const grat=((d.grat||{})[tk]||[]);
     if(habits.length){
       function gw(id){return(id==='h3'||id==='h6'||id==='h9')?20:40/7;}
-      let sc=0;
-      habits.forEach(h=>{
-        const w=gw(h.id);
-        if(h.id==='h10') sc+=w*Math.min(grat.filter(x=>x&&x.trim()).length/5,1);
-        else if(rec[h.id]) sc+=w;
-      });
-      document.getElementById('score-badge').textContent=Math.round(sc)+'점';
+      const anyChk=habits.some(h=>rec[h.id]);
+      if(!anyChk){document.getElementById('score-badge').textContent='0점';}
+      else{
+        const allChk=habits.every(h=>rec[h.id]);
+        if(allChk){document.getElementById('score-badge').textContent='100점';}
+        else{
+          let sc=0;
+          habits.forEach(h=>{if(rec[h.id])sc+=gw(h.id);});
+          const r=Math.round(sc*10)/10;
+          document.getElementById('score-badge').textContent=(r<1?0:Math.round(r))+'점';
+        }
+      }
     }
   }catch(e){}
 })();
