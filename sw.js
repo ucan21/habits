@@ -1,4 +1,4 @@
-const C='henry-diary-v9';
+const C='henry-diary-v10';
 const F=[
   './',
   './index.html',

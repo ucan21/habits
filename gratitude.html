@@ -53,7 +53,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .grat-items{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
 .grat-row{display:flex;align-items:flex-start;gap:9px;}
 .gnum{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);opacity:.35;line-height:1;padding-top:9px;min-width:18px;}
-.ginp{flex:1;background:var(--s2);border:1px solid rgba(255,192,32,.15);border-radius:11px;padding:11px 13px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;resize:none;min-height:72px;transition:height .15s;line-height:1.65;overflow:hidden;word-break:break-all;}
+.ginp{flex:1;background:var(--s2);border:1px solid rgba(255,192,32,.15);border-radius:11px;padding:11px 13px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;resize:none;min-height:80px;line-height:1.7;overflow-y:hidden;word-break:break-all;box-sizing:border-box;}
 .ginp:focus{border-color:rgba(255,192,32,.5);background:var(--s3);}
 .ginp::placeholder{color:var(--text3);font-size:12px;}
 .ginp.fil{border-color:rgba(255,192,32,.3);}
@@ -216,28 +216,25 @@ function render(){
     const row=document.createElement('div');row.className='grat-row';
     const ta=document.createElement('textarea');
     ta.className='ginp'+(g[i]?' fil':'');
-    ta.placeholder=`감사한 일 ${i+1}번째...`;ta.value=g[i]||'';
-    // 저장된 내용 있으면 높이 즉시 반영
+    ta.placeholder=`감사한 일 ${i+1}번째...`;
+    ta.value=g[i]||'';
     ta.addEventListener('input',function(){
-      this.style.height='auto';
-      this.style.height=Math.max(this.scrollHeight,72)+'px';
+      /* 높이 자동 확장 — 항상 auto 리셋 후 scrollHeight 적용 */
+      this.style.height='0px';
+      this.style.height=Math.max(this.scrollHeight+2,80)+'px';
       const cnt=[...document.querySelectorAll('.ginp')].filter(x=>x.value.trim()).length;
       document.getElementById('gcnt').textContent=`${cnt} / 5`;
       document.getElementById('today-filled').textContent=cnt;
       if(this.value.trim())this.classList.add('fil');else this.classList.remove('fil');
     });
-    ta.addEventListener('focus',function(){
-      this.style.height='auto';
-      this.style.height=Math.max(this.scrollHeight,72)+'px';
-    });
-    // 초기 렌더 시 저장된 텍스트 높이 바로 반영
-    if(g[i]){
-      requestAnimationFrame(()=>{
-        ta.style.height='auto';
-        ta.style.height=Math.max(ta.scrollHeight,72)+'px';
-      });
+    row.innerHTML=`<div class="gnum">${i+1}</div>`;
+    row.appendChild(ta);
+    cont.appendChild(row);
+    /* DOM에 붙은 직후 높이 계산 — 저장된 내용이 있을 때 */
+    if(g[i]&&g[i].trim()){
+      ta.style.height='0px';
+      ta.style.height=Math.max(ta.scrollHeight+2,80)+'px';
     }
-    row.innerHTML=`<div class="gnum">${i+1}</div>`;row.appendChild(ta);cont.appendChild(row);
   }
   const filled=g.filter(x=>x&&x.trim()).length;
   document.getElementById('gcnt').textContent=`${filled} / 5`;
