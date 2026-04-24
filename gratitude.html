@@ -28,7 +28,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 .scroll::-webkit-scrollbar{width:2px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--s3);}
-.body{padding:14px 14px 30px;}
+.body{padding:14px 14px 90px;}
 .sec{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:500;}
 .sec::after{content:'';flex:1;height:1px;background:var(--border);}
 /* DATE NAV */
@@ -72,6 +72,29 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .toast{position:fixed;bottom:calc(var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:var(--text);color:var(--bg);padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 #coinCanvas{position:fixed;inset:0;pointer-events:none;z-index:500;width:100%;height:100%;}
+
+/* ── BOTTOM HOME NAV ── */
+.bnav{
+  flex-shrink:0;
+  background:rgba(10,10,15,0.97);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,0.16);
+  display:flex;
+  padding-bottom:var(--safe-b);
+}
+.nb{
+  flex:1;background:none;border:none;color:#606080;
+  padding:9px 2px 7px;
+  cursor:pointer;font-size:9.5px;
+  font-family:'Noto Sans KR',sans-serif;font-weight:500;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  transition:color .18s;touch-action:manipulation;
+}
+.nb .ni{font-size:21px;transition:transform .18s;}
+.nb:active .ni{transform:scale(1.2);}
+.nb.nb-home{color:#4a8fff;}
+.nb.nb-home .ni{filter:drop-shadow(0 0 5px #4a8fff);}
+
 </style>
 </head>
 <body>
@@ -115,7 +138,28 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       <div class="sec">감사 일기 아카이브</div>
       <div id="archive"></div>
     </div>
-  </div>
+    <!-- BOTTOM NAV -->
+  <nav class="bnav">
+    <button class="nb nb-home" onclick="window.location.href='index.html'">
+      <span class="ni">🏠</span>홈
+    </button>
+    <button class="nb" onclick="window.location.href='habits.html'">
+      <span class="ni">✅</span>습관
+    </button>
+    <button class="nb" onclick="window.location.href='brain.html'">
+      <span class="ni">🧠</span>Brain
+    </button>
+    <button class="nb" onclick="window.location.href='franklin.html'">
+      <span class="ni">📖</span>플래너
+    </button>
+    <button class="nb" onclick="window.location.href='gratitude.html'">
+      <span class="ni">🙏</span>감사
+    </button>
+    <button class="nb" onclick="window.location.href='gcal.html'">
+      <span class="ni">📅</span>캘린더
+    </button>
+  </nav>
+</div>
 </div>
 <div class="toast" id="toast"></div>
 
