@@ -157,7 +157,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
           <button class="add-btn" onclick="addTask()">+</button>
         </div>
         <div class="add-note">
-          💡 추가 후 <a href="https://tasks.google.com" target="_blank">Google Tasks</a>에서도 확인 가능
+          💡 추가 시 Google Tasks 연동 팝업이 뜹니다
         </div>
       </div>
 
@@ -359,24 +359,80 @@ function addTask(){
     doneAt:''
   });
   inp.value='';sv();renderList();
-  toast('✅ Task 추가됨');
+  // Google Tasks에도 추가 안내 팝업
+  showGoogleSync(v);
+}
 
-  // Google Tasks 딥링크로 같은 내용 추가 유도 (선택)
-  // URL scheme: googletasks://addtask?title=...
-  const encodedTitle=encodeURIComponent(v);
-  // 모바일 앱이 설치된 경우 딥링크 시도
-  const deepLink=`googletasks://addtask?title=${encodedTitle}`;
-  const webLink=`https://tasks.google.com/tasks/api/v1/lists/@default/tasks`;
-
-  // 딥링크 시도 (앱 설치된 경우만 작동)
+function showGoogleSync(taskText){
+  // 기존 팝업 제거
+  const old=document.getElementById('gsync-popup');
+  if(old)old.remove();
+  
+  const encodedTitle=encodeURIComponent(taskText);
+  // Google Tasks 웹 URL — tasks.google.com에서 직접 추가 가능
+  const webUrl=`https://tasks.google.com`;
+  // 모바일 앱 딥링크 (앱 설치 시 작동)
+  const appUrl=`googletasks://addtask?title=${encodedTitle}`;
+  
+  const popup=document.createElement('div');
+  popup.id='gsync-popup';
+  popup.style.cssText=`
+    position:fixed;bottom:calc(var(--safe-b) + 72px);left:14px;right:14px;
+    background:#1a2a3e;border:1.5px solid rgba(106,176,245,.5);
+    border-radius:16px;padding:14px 15px;z-index:400;
+    box-shadow:0 8px 32px rgba(0,0,0,.5);
+    animation:slideUp .25s ease;
+  `;
+  popup.innerHTML=`
+    <style>@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}</style>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div style="font-size:13px;font-weight:700;color:#6ab0f5;">☑️ Google Tasks에도 추가할까요?</div>
+      <button onclick="document.getElementById('gsync-popup').remove()" style="background:none;border:none;color:#606080;font-size:18px;cursor:pointer;padding:0 4px;">×</button>
+    </div>
+    <div style="font-size:12px;color:#b0b0c8;margin-bottom:12px;word-break:break-all;">"${taskText.replace(/"/g,'&quot;')}"</div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="openGoogleTasksApp('${encodedTitle}')" style="flex:1;background:#6ab0f5;border:none;color:#0a0a0f;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;">
+        📱 앱에서 추가
+      </button>
+      <button onclick="openGoogleTasksWeb('${encodedTitle}')" style="flex:1;background:rgba(106,176,245,.15);border:1px solid rgba(106,176,245,.35);color:#6ab0f5;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;">
+        🌐 웹에서 추가
+      </button>
+    </div>
+    <div style="font-size:10px;color:#606080;margin-top:8px;text-align:center;">앱 설치 필요 · Google 계정으로 로그인</div>
+  `;
+  document.body.appendChild(popup);
+  // 5초 후 자동 닫기
   setTimeout(()=>{
-    // iframe을 이용한 silent 딥링크 시도
-    const iframe=document.createElement('iframe');
-    iframe.style.display='none';
-    iframe.src=deepLink;
-    document.body.appendChild(iframe);
-    setTimeout(()=>{document.body.removeChild(iframe);},2000);
-  },300);
+    const p=document.getElementById('gsync-popup');
+    if(p)p.style.opacity='0';
+    setTimeout(()=>{const p=document.getElementById('gsync-popup');if(p)p.remove();},400);
+  },6000);
+  toast('✅ Task 추가됨');
+}
+
+function openGoogleTasksApp(encodedTitle){
+  document.getElementById('gsync-popup')?.remove();
+  // 앱 딥링크 — Google Tasks 앱 설치된 경우 작동
+  const appUrl=`googletasks://addtask?title=${encodedTitle}`;
+  // window.location으로 딥링크 시도
+  window.location.href=appUrl;
+  // 앱 없으면 스토어로 이동 (fallback)
+  setTimeout(()=>{
+    // 페이지가 변하지 않았다면 앱이 없는 것 → 스토어로
+    window.open('https://apps.apple.com/app/google-tasks-get-things-done/id1353634006','_blank');
+  },1500);
+}
+
+function openGoogleTasksWeb(encodedTitle){
+  document.getElementById('gsync-popup')?.remove();
+  // Google Tasks 웹에서 직접 추가
+  window.open(`https://tasks.google.com`,'_blank');
+  // 클립보드에 복사 (웹에서 붙여넣기 용이하게)
+  try{
+    navigator.clipboard.writeText(decodeURIComponent(encodedTitle)).then(()=>{
+      toast('📋 텍스트 클립보드에 복사됨 — 붙여넣기 하세요');
+    });
+  }catch(e){toast('🌐 Google Tasks 웹이 열립니다');}
 }
 
 function clearDone(){

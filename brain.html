@@ -67,6 +67,13 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .item-text{flex:1;font-size:14px;font-weight:500;color:var(--text);line-height:1.55;word-break:break-all;}
 .item-del{background:none;border:none;color:var(--text3);font-size:17px;cursor:pointer;opacity:.25;touch-action:manipulation;flex-shrink:0;padding:0 2px;}
 .item-del:active{opacity:1;color:var(--rose);}
+.item-edit-btn{background:none;border:none;color:var(--text3);font-size:15px;cursor:pointer;opacity:.25;touch-action:manipulation;flex-shrink:0;padding:0 3px;}
+.item-edit-btn:active{opacity:1;color:var(--green);}
+.item-card.editing{border-color:rgba(48,192,96,.5);background:var(--s2);}
+.item-edit-ta{width:100%;background:transparent;border:none;color:var(--text);font-size:14px;font-weight:500;font-family:'Noto Sans KR',sans-serif;outline:none;resize:none;min-height:40px;line-height:1.55;word-break:break-all;}
+.item-edit-actions{display:flex;gap:7px;margin-top:8px;}
+.item-edit-save{background:var(--green);border:none;color:#0a0a0f;padding:7px 16px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;}
+.item-edit-cancel{background:var(--s3);border:1px solid var(--border);color:var(--text3);padding:7px 14px;border-radius:9px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;}
 .item-footer{display:flex;align-items:center;justify-content:space-between;}
 .item-date{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;}
 .item-pin{background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;opacity:.3;touch-action:manipulation;}
@@ -245,6 +252,7 @@ function renderList(){
       <div class="item-hdr">
         <span class="item-tag" style="background:${tag.bg};color:${tag.color};border:1px solid ${tag.bd};">${tag.label}</span>
         <div class="item-text">${esc(item.text)}</div>
+        <button class="item-edit-btn" onclick="startEditItem(${item.id})" title="수정">✏️</button>
         <button class="item-del" onclick="delItem(${item.id})">×</button>
       </div>
       <div class="item-footer">
@@ -261,6 +269,53 @@ function addItem(){
   const inp=document.getElementById('new-inp');const v=inp.value.trim();if(!v)return;
   BD.items.push({id:Date.now(),text:v,tagId:selTag,date:todayStr(),pinned:false});
   inp.value='';sv();render();toast('✅ 항목 추가됨');
+}
+
+function startEditItem(id){
+  const item=BD.items.find(i=>i.id===id);if(!item)return;
+  // 해당 카드 찾기
+  const cards=[...document.querySelectorAll('.item-card')];
+  const card=cards.find(c=>{
+    const delBtn=c.querySelector('.item-del');
+    return delBtn && delBtn.getAttribute('onclick')===`delItem(${id})`;
+  });
+  if(!card)return;
+  card.classList.add('editing');
+  // 텍스트 영역을 textarea로 교체
+  const textDiv=card.querySelector('.item-text');
+  const editBtn=card.querySelector('.item-edit-btn');
+  const footer=card.querySelector('.item-footer');
+  const ta=document.createElement('textarea');
+  ta.className='item-edit-ta';
+  ta.value=item.text;
+  ta.rows=3;
+  textDiv.replaceWith(ta);
+  ta.focus();
+  // 수정 버튼 숨기기
+  if(editBtn)editBtn.style.display='none';
+  // 저장/취소 버튼 추가
+  const actions=document.createElement('div');
+  actions.className='item-edit-actions';
+  actions.innerHTML=`
+    <button class="item-edit-save" onclick="finishEditItem(${id})">✅ 저장</button>
+    <button class="item-edit-cancel" onclick="render()">취소</button>`;
+  footer.before(actions);
+  // Enter(Ctrl+Enter) 단축키
+  ta.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){finishEditItem(id);}
+    if(e.key==='Escape'){render();}
+  });
+}
+
+function finishEditItem(id){
+  const item=BD.items.find(i=>i.id===id);if(!item)return;
+  const ta=document.querySelector('.item-edit-ta');
+  if(ta){
+    const v=ta.value.trim();
+    if(v){item.text=v;item.edited=true;sv();}
+  }
+  render();
+  toast('✅ 수정됨');
 }
 
 function delItem(id){
