@@ -244,5 +244,72 @@ function delHabit(id,e){e.stopPropagation();if(!confirm('이 습관을 삭제할
 function addHabit(){const inp=document.getElementById('hadd');const v=inp.value.trim();if(!v)return;D.habits.push({id:'h'+Date.now(),label:v});inp.value='';sv();render();toast('✅ 습관 추가됨');}
 render();
 </script>
+<script>
+/* ══ SWIPE NAVIGATION ══ */
+(function(){
+  const path=location.pathname.split('/').pop()||'index.html';
+  const PAGES=['index.html','habits.html','gratitude.html','brain.html','gcal.html'];
+  const NAMES=['🏠 홈','✅ 습관','🙏 감사','🧠 Brain','📅 캘린더'];
+  const curIdx=PAGES.indexOf(path);
+  let sx=0,sy=0,st=0;
+  const MIN_DIST=55,MAX_VERT=90,MAX_TIME=500;
+
+  /* 스와이프 힌트 */
+  const hint=document.createElement('div');
+  hint.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.72);color:#fff;padding:11px 22px;border-radius:26px;font-family:\'Noto Sans KR\',sans-serif;font-size:14px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .18s;z-index:9999;white-space:nowrap;';
+  document.body.appendChild(hint);
+  let ht;
+  function showHint(msg){hint.textContent=msg;hint.style.opacity='1';clearTimeout(ht);ht=setTimeout(()=>hint.style.opacity='0',700);}
+
+  /* 페이지 이동 */
+  function go(dir){
+    if(curIdx<0)return;
+    const ni=curIdx-dir; /* 왼쪽=+1인덱스, 오른쪽=-1인덱스 */
+    if(ni<0||ni>=PAGES.length)return;
+    const shell=document.querySelector('.shell');
+    if(shell){
+      shell.style.transition='transform .2s ease,opacity .2s ease';
+      shell.style.transform='translateX('+(dir>0?'-':'')+'80px)';
+      shell.style.opacity='0';
+    }
+    setTimeout(()=>{window.location.href=PAGES[ni];},180);
+  }
+
+  document.addEventListener('touchstart',e=>{
+    const sa=document.querySelector('.scroll,.scroll-area');
+    if(sa&&sa.scrollTop>4&&sa.contains(e.target))return;
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();
+  },{passive:true});
+
+  document.addEventListener('touchend',e=>{
+    if(!sx)return;
+    const dx=e.changedTouches[0].clientX-sx;
+    const dy=Math.abs(e.changedTouches[0].clientY-sy);
+    const dt=Date.now()-st;sx=0;
+    if(dt>MAX_TIME||Math.abs(dx)<MIN_DIST||dy>MAX_VERT)return;
+    if(dx<0){
+      /* 왼쪽 → 다음 */
+      const ni=curIdx+1;
+      if(ni>=PAGES.length){showHint('📅 마지막 페이지');return;}
+      showHint(NAMES[ni]+' →');setTimeout(()=>go(-1),160);
+    } else {
+      /* 오른쪽 → 이전 */
+      const ni=curIdx-1;
+      if(ni<0){showHint('← 첫 페이지');return;}
+      showHint('← '+NAMES[ni]);setTimeout(()=>go(1),160);
+    }
+  },{passive:true});
+
+  /* 진입 애니메이션 */
+  const shell=document.querySelector('.shell');
+  if(shell){
+    shell.style.opacity='0';shell.style.transform='translateY(5px)';shell.style.transition='none';
+    requestAnimationFrame(()=>{
+      shell.style.transition='transform .2s ease,opacity .2s ease';
+      shell.style.transform='translateY(0)';shell.style.opacity='1';
+    });
+  }
+})();
+</script>
 </body>
 </html>
