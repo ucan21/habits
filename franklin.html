@@ -165,6 +165,12 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
 .empty-v{text-align:center;padding:20px 0;color:var(--text3);font-size:13px;}
 .empty-v .ei{font-size:28px;margin-bottom:6px;}
+/* 미션·가치 카드 */
+.mission-card,.values-card{background:linear-gradient(135deg,#12121a,#1a1a2e);border:1px solid rgba(255,192,32,.3);border-radius:14px;padding:15px;margin-bottom:12px;position:relative;}
+.mission-text-show{font-size:15px;font-weight:500;color:var(--text);line-height:1.75;word-break:keep-all;font-family:'Nanum Myeongjo','Georgia',serif;white-space:pre-wrap;}
+.val-display{font-size:15px;font-weight:500;color:var(--gold);line-height:1.75;word-break:keep-all;white-space:pre-wrap;}
+.mission-toggle-btn{margin-top:10px;background:rgba(255,192,32,.1);border:1px solid rgba(255,192,32,.25);color:var(--gold);padding:6px 14px;border-radius:9px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;touch-action:manipulation;}
+.mission-toggle-btn:active{background:rgba(255,192,32,.22);}
 
 /* TOAST */
 .toast{position:fixed;bottom:calc(var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:var(--text);color:var(--bg);padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
@@ -206,9 +212,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       <div style="width:36px;"></div>
     </div>
     <div class="tabs">
-      <button class="tab on" onclick="ptab('mission',this)">🌟 미션</button>
-      <button class="tab" onclick="ptab('weekly',this)">🧭 위클리</button>
-      <button class="tab" onclick="ptab('daily',this)">📋 데일리</button>
+      <button class="tab on" onclick="ptab('daily',this)">📋 To-Do</button>
       <button class="tab" onclick="ptab('goals',this)">🎯 목표</button>
     </div>
   </div>
@@ -216,61 +220,12 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
   <div class="scroll" id="fp-scroll">
     <div class="body">
 
-      <!-- ══ 미션 ══ -->
-      <div class="pview on" id="pview-mission">
-        <div class="sec">🌟 미션 스테이트먼트</div>
-        <div class="mission-display" id="mission-display" style="display:none;">
-          <div class="mission-text" id="mission-text-disp"></div>
-        </div>
-        <div class="card">
-          <div class="row">
-            <div class="lbl">나의 미션 선언문</div>
-            <textarea class="inp ta" id="mission-inp" placeholder="내가 존재하는 이유, 삶의 목적...&#10;예) 나는 지속적인 성장과 감사함으로 가족과 사회에 가치를 더하며 충만한 삶을 살아간다."></textarea>
-          </div>
-          <button class="savebtn gold-btn" onclick="saveMission()">💾 미션 저장</button>
-        </div>
 
-        <div class="sec">💎 핵심 가치</div>
-        <div class="item-list" id="val-list"></div>
-        <div class="card">
-          <div class="row"><div class="lbl">가치 키워드</div><input class="inp" id="val-title-inp" placeholder="예) 성장, 건강, 감사, 책임감..."></div>
-          <div class="row"><div class="lbl">실천 선언</div><textarea class="inp ta" style="min-height:56px;" id="val-desc-inp" placeholder="이 가치를 어떻게 실천할 것인가?"></textarea></div>
-          <button class="savebtn" style="background:rgba(255,192,32,.12);border:1px solid rgba(255,192,32,.3);color:var(--gold);" onclick="addValue()">+ 핵심 가치 추가</button>
-        </div>
 
-        <div class="sec">👤 나의 역할</div>
-        <div class="item-list" id="role-list"></div>
-        <div class="card">
-          <div class="row"><div class="lbl">역할 이름</div><input class="inp" id="role-name-inp" placeholder="예) 투자자, 아버지, 독서가, 건강인..."></div>
-          <div class="row"><div class="lbl">이 역할에서의 목표</div><textarea class="inp ta" style="min-height:56px;" id="role-goal-inp" placeholder="이 역할에서 어떤 사람이 되고 싶은가?"></textarea></div>
-          <button class="savebtn violet-btn" onclick="addRole()">+ 역할 추가</button>
-        </div>
-      </div>
 
-      <!-- ══ 위클리 ══ -->
-      <div class="pview" id="pview-weekly">
-        <div class="week-nav">
-          <button class="warr" onclick="chWeek(-1)">‹</button>
-          <div class="wlabel" id="week-label">—</div>
-          <button class="warr" onclick="chWeek(1)">›</button>
-        </div>
 
-        <div class="sec">🧭 위클리 컴퍼스</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.6;">이번 주 각 역할에서 반드시 할 한 가지를 정하세요.</div>
-        <div id="compass-grid"></div>
-        <button class="savebtn violet-btn" style="margin-bottom:14px;" onclick="saveCompass()">💾 위클리 컴퍼스 저장</button>
-
-        <div class="sec">📊 주간 리뷰</div>
-        <div class="card">
-          <div class="row"><div class="lbl">이번 주 가장 잘 한 것</div><textarea class="inp ta" style="min-height:56px;" id="w-best" placeholder="나를 칭찬하고 싶은 점..."></textarea></div>
-          <div class="row"><div class="lbl">개선할 점</div><textarea class="inp ta" style="min-height:56px;" id="w-improve" placeholder="다음 주에 더 잘 하고 싶은 것..."></textarea></div>
-          <div class="row"><div class="lbl">다음 주 핵심 의도</div><textarea class="inp ta" style="min-height:56px;" id="w-intent" placeholder="다음 주에 집중할 한 가지..."></textarea></div>
-          <button class="savebtn blue-btn" onclick="saveWeeklyReview()">💾 주간 리뷰 저장</button>
-        </div>
-      </div>
-
-      <!-- ══ 데일리 ══ -->
-      <div class="pview" id="pview-daily">
+      <!-- ══ ToDo ══ -->
+      <div class="pview on" id="pview-daily">
         <div class="date-nav">
           <button class="darr" onclick="chDay(-1)">‹</button>
           <div class="dctr" onclick="goDayToday()">
@@ -281,9 +236,26 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
           <button class="darr" id="fp-next" onclick="chDay(1)">›</button>
         </div>
 
-        <div class="sec">🎯 오늘의 의도</div>
-        <div class="card">
-          <textarea class="inp ta" style="min-height:56px;" id="daily-intent" placeholder="오늘 하루 가장 중요한 한 가지 의도..."></textarea>
+        <!-- 미션선언문 표시 -->
+        <div class="sec">🌟 미션 선언문</div>
+        <div class="mission-card" id="mission-card">
+          <div class="mission-text-show" id="mission-show">—</div>
+          <textarea class="inp ta mission-edit" id="mission-inp" placeholder="나의 미션 선언문을 입력하세요...&#10;예) 나는 지속적인 성장과 감사함으로 충만한 삶을 살아간다." style="min-height:70px;display:none;"></textarea>
+          <div class="mission-edit-btns" id="mission-edit-btns" style="display:none;margin-top:8px;">
+            <button class="savebtn gold-btn" style="padding:10px;" onclick="saveMission()">💾 저장</button>
+          </div>
+          <button class="mission-toggle-btn" id="mission-toggle" onclick="toggleMissionEdit()">✏️ 편집</button>
+        </div>
+
+        <!-- 핵심가치 표시 -->
+        <div class="sec">💎 핵심 가치</div>
+        <div class="values-card" id="values-card">
+          <div class="val-display" id="val-display">—</div>
+          <textarea class="inp ta" id="val-inp" placeholder="나의 핵심 가치를 입력하세요...&#10;예) 성장 · 건강 · 감사 · 책임감 · 가족" style="min-height:60px;display:none;"></textarea>
+          <div id="val-edit-btns" style="display:none;margin-top:8px;">
+            <button class="savebtn" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);color:var(--gold);padding:10px;" onclick="saveValues()">💾 저장</button>
+          </div>
+          <button class="mission-toggle-btn" id="val-toggle" onclick="toggleValEdit()">✏️ 편집</button>
         </div>
 
         <div class="sec">📋 우선순위 업무 (ABC)</div>
@@ -377,7 +349,7 @@ let toastT=null;
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1700);}
 
 /* TABS */
-let curTab='mission';
+let curTab='daily';
 function ptab(name,btn){
   document.querySelectorAll('.pview').forEach(v=>v.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
@@ -385,61 +357,73 @@ function ptab(name,btn){
   btn.classList.add('on');
   curTab=name;
   document.getElementById('fp-scroll').scrollTop=0;
-  if(name==='mission')renderMission();
-  else if(name==='weekly'){curWeek=weekKey(todayStr());renderWeekly();}
-  else if(name==='daily')renderDaily();
+  if(name==='daily')renderDaily();
   else if(name==='goals')renderGoals();
 }
 
 /* MISSION */
-function renderMission(){
+/* ── 미션 선언문 & 핵심가치 (ToDo 화면 상단) ── */
+function renderMissionBlock(){
   const m=FP.mission||'';
-  const disp=document.getElementById('mission-display');
-  if(m){disp.style.display='block';document.getElementById('mission-text-disp').textContent=m;}
-  else disp.style.display='none';
-  document.getElementById('mission-inp').value=m;
-  const vl=document.getElementById('val-list');vl.innerHTML='';
-  (FP.values||[]).forEach((v,i)=>{const el=document.createElement('div');el.className='vitem';el.innerHTML=`<div class="vnum">${i+1}</div><div class="vcontent"><div class="vtitle">${esc(v.title)}</div><div class="vdesc">${esc(v.desc)}</div></div><button class="vdel" onclick="delVal(${i})">×</button>`;vl.appendChild(el);});
-  if(!(FP.values||[]).length)vl.innerHTML='<div class="empty-v"><div class="ei">💎</div>핵심 가치를 추가해보세요</div>';
-  const rl=document.getElementById('role-list');rl.innerHTML='';
-  (FP.roles||[]).forEach((r,i)=>{const el=document.createElement('div');el.className='ritem';el.innerHTML=`<div class="rname">${esc(r.name)}<button class="vdel" onclick="delRole(${i})">×</button></div><div class="rgoal">${esc(r.goal)}</div>`;rl.appendChild(el);});
-  if(!(FP.roles||[]).length)rl.innerHTML='<div class="empty-v"><div class="ei">👤</div>나의 역할을 추가해보세요</div>';
+  const ms=document.getElementById('mission-show');
+  const mi=document.getElementById('mission-inp');
+  if(ms) ms.textContent=m||'(미션 선언문을 입력해주세요)';
+  if(mi) mi.value=m;
+  const vs=document.getElementById('val-display');
+  const vi=document.getElementById('val-inp');
+  const valText=(FP.values||[]).map(v=>v.title||v).filter(Boolean).join(' · ');
+  if(vs) vs.textContent=valText||'(핵심 가치를 입력해주세요)';
+  if(vi) vi.value=FP.valText||valText;
 }
-function saveMission(){const v=document.getElementById('mission-inp').value.trim();FP.mission=v;sv();renderMission();toast('🌟 미션 저장됨');}
-function addValue(){const t=document.getElementById('val-title-inp').value.trim();const d=document.getElementById('val-desc-inp').value.trim();if(!t)return;if(!FP.values)FP.values=[];FP.values.push({title:t,desc:d});document.getElementById('val-title-inp').value='';document.getElementById('val-desc-inp').value='';sv();renderMission();toast('💎 핵심 가치 추가됨');}
-function delVal(i){FP.values.splice(i,1);sv();renderMission();}
-function addRole(){const n=document.getElementById('role-name-inp').value.trim();const g=document.getElementById('role-goal-inp').value.trim();if(!n)return;if(!FP.roles)FP.roles=[];FP.roles.push({name:n,goal:g});document.getElementById('role-name-inp').value='';document.getElementById('role-goal-inp').value='';sv();renderMission();toast('👤 역할 추가됨');}
-function delRole(i){FP.roles.splice(i,1);sv();renderMission();}
+function toggleMissionEdit(){
+  const inp=document.getElementById('mission-inp');
+  const btns=document.getElementById('mission-edit-btns');
+  const btn=document.getElementById('mission-toggle');
+  const show=document.getElementById('mission-show');
+  const editing=inp.style.display==='none'||!inp.style.display;
+  inp.style.display=editing?'block':'none';
+  btns.style.display=editing?'block':'none';
+  show.style.display=editing?'none':'block';
+  btn.textContent=editing?'✕ 닫기':'✏️ 편집';
+  if(editing){inp.value=FP.mission||'';inp.focus();}
+}
+function saveMission(){
+  const v=document.getElementById('mission-inp').value.trim();
+  FP.mission=v;sv();
+  toggleMissionEdit();
+  renderMissionBlock();
+  toast('🌟 미션 저장됨');
+}
+function toggleValEdit(){
+  const inp=document.getElementById('val-inp');
+  const btns=document.getElementById('val-edit-btns');
+  const btn=document.getElementById('val-toggle');
+  const show=document.getElementById('val-display');
+  const editing=inp.style.display==='none'||!inp.style.display;
+  inp.style.display=editing?'block':'none';
+  btns.style.display=editing?'block':'none';
+  show.style.display=editing?'none':'block';
+  btn.textContent=editing?'✕ 닫기':'✏️ 편집';
+  if(editing){
+    // 기존 값 불러오기
+    const valText=(FP.values||[]).map(v=>v.title||v).filter(Boolean).join('
+');
+    inp.value=FP.valRaw||valText;
+    inp.focus();
+  }
+}
+function saveValues(){
+  const raw=document.getElementById('val-inp').value.trim();
+  FP.valRaw=raw;
+  // 줄바꿈 또는 · 로 구분해서 values 배열에 저장
+  const items=raw.split(/
+|·|,/).map(s=>s.trim()).filter(Boolean);
+  FP.values=items.map(s=>({title:s,desc:''}));
+  sv();toggleValEdit();renderMissionBlock();
+  toast('💎 핵심 가치 저장됨');
+}
 
-/* WEEKLY */
-let curWeek=weekKey(todayStr());
-function chWeek(d){curWeek=addDays(curWeek,d*7);renderWeekly();}
-function renderWeekly(){
-  document.getElementById('week-label').textContent=weekLabel(curWeek);
-  const wdata=FP.weekly[curWeek]||{compass:{},review:{}};
-  const grid=document.getElementById('compass-grid');grid.innerHTML='';
-  const roles=FP.roles||[];
-  if(!roles.length){grid.innerHTML='<div class="empty-v"><div class="ei">👤</div>먼저 미션 탭에서 역할을 추가하세요</div>';return;}
-  roles.forEach((r,i)=>{
-    const val=(wdata.compass&&wdata.compass[i])||'';
-    const el=document.createElement('div');el.className='compass-item';
-    el.innerHTML=`<div class="compass-role">${esc(r.name)}</div><textarea class="compass-ta" data-ridx="${i}" placeholder="이번 주 이 역할에서 할 한 가지...">${esc(val)}</textarea>`;
-    grid.appendChild(el);
-  });
-  document.getElementById('w-best').value=(wdata.review&&wdata.review.best)||'';
-  document.getElementById('w-improve').value=(wdata.review&&wdata.review.improve)||'';
-  document.getElementById('w-intent').value=(wdata.review&&wdata.review.intent)||'';
-}
-function saveCompass(){
-  if(!FP.weekly[curWeek])FP.weekly[curWeek]={compass:{},review:{}};
-  const compass={};document.querySelectorAll('.compass-ta').forEach(ta=>{compass[ta.dataset.ridx]=ta.value.trim();});
-  FP.weekly[curWeek].compass=compass;sv();toast('🧭 위클리 컴퍼스 저장됨');
-}
-function saveWeeklyReview(){
-  if(!FP.weekly[curWeek])FP.weekly[curWeek]={compass:{},review:{}};
-  FP.weekly[curWeek].review={best:document.getElementById('w-best').value.trim(),improve:document.getElementById('w-improve').value.trim(),intent:document.getElementById('w-intent').value.trim()};
-  sv();toast('📊 주간 리뷰 저장됨');
-}
+/* 위클리 삭제됨 */
 
 /* DAILY */
 let curDay=todayStr();
@@ -447,6 +431,7 @@ function chDay(d){const nxt=addDays(curDay,d);if(nxt>addDays(todayStr(),1))retur
 function goDayToday(){curDay=todayStr();renderDaily();}
 function ensureDay(){if(!FP.daily[curDay])FP.daily[curDay]={intent:'',tasks:{A:[],B:[],C:[]},journal:''};}
 function renderDaily(){
+  renderMissionBlock();
   const f=fmtDisp(curDay),tod=todayStr(),tom=addDays(tod,1),yes=addDays(tod,-1);
   document.getElementById('fp-dstr').textContent=f.str;document.getElementById('fp-ddow').textContent=f.dow;
   document.getElementById('fp-today-tag').textContent=curDay===tod?'오늘':curDay===tom?'내일':curDay===yes?'어제':'';
@@ -508,7 +493,7 @@ function togGoal(cat,i){FP.goals[cat][i].done=!FP.goals[cat][i].done;sv();render
 function delGoal(cat,i){FP.goals[cat].splice(i,1);sv();renderGoals();}
 
 /* INIT */
-renderMission();
+renderDaily();
 </script>
 </body>
 </html>
