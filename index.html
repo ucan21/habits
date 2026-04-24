@@ -92,6 +92,7 @@ body{
 }
 .q-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-family:'DM Mono',monospace;font-weight:700;margin-bottom:6px;opacity:.85;}
 .q-text{font-size:14px;font-weight:400;color:#ffffff;line-height:1.65;word-break:keep-all;font-family:'Nanum Myeongjo','Batang','Georgia',serif;letter-spacing:.3px;}
+.q-en{font-size:12px;font-weight:400;color:rgba(255,255,255,0.5);line-height:1.6;margin-top:7px;font-family:'Georgia','Times New Roman',serif;font-style:italic;word-break:break-word;}
 .q-author{font-size:10px;color:rgba(255,255,255,0.55);margin-top:5px;font-family:'DM Mono',monospace;text-align:right;}
 
 /* ── CARD BUTTONS (메인 콘텐츠 카드) ── */
@@ -180,8 +181,9 @@ body{
 
       <!-- 명언 -->
       <div class="quote-card">
-        <div class="q-label">✦ 오늘의 명언</div>
+        <div class="q-label" id="q-label">✦ 오늘의 명언</div>
         <div class="q-text" id="q-text">—</div>
+        <div class="q-en" id="q-en">—</div>
         <div class="q-author" id="q-author">—</div>
       </div>
 
@@ -272,41 +274,73 @@ function go(url){ window.location.href = url; }
 
 /* 명언 */
 const QQ=[
-  {t:"작은 습관이 놀라운 결과를 만든다. 매일 1%의 개선이 1년이면 37배 성장이다.",a:"제임스 클리어"},
-  {t:"우리는 우리가 반복적으로 하는 것의 산물이다. 탁월함은 행동이 아니라 습관이다.",a:"아리스토텔레스"},
-  {t:"당신이 가진 것에 감사하라. 더 많이 가지게 될 것이다.",a:"오프라 윈프리"},
-  {t:"성공은 매일의 작은 노력들이 쌓인 결과다.",a:"로버트 콜리어"},
-  {t:"변화를 원한다면 당신 자신이 그 변화가 되어야 한다.",a:"마하트마 간디"},
-  {t:"오늘 할 수 있는 일을 내일로 미루지 마라.",a:"벤자민 프랭클린"},
-  {t:"포기하지 않는 한 실패는 없다. 포기하는 그 순간이 진정한 실패다.",a:"에이브러햄 링컨"},
-  {t:"건강이 최고의 부이다. 만족이 최고의 재물이다.",a:"석가모니"},
-  {t:"당신이 할 수 있다고 믿든, 할 수 없다고 믿든, 당신이 옳다.",a:"헨리 포드"},
-  {t:"투자에서 가장 중요한 것은 얼마나 오래 시장에 있느냐이다.",a:"워런 버핏"},
-  {t:"배움을 멈추는 순간 성장도 멈춘다.",a:"알버트 아인슈타인"},
-  {t:"최고의 투자는 자기 자신에 대한 투자다.",a:"워런 버핏"},
-  {t:"나무를 심기 가장 좋은 때는 20년 전이었다. 두 번째로 좋은 때는 바로 지금이다.",a:"중국 속담"},
-  {t:"삶의 질은 잠의 질에서 시작된다.",a:"아리아나 허핑턴"},
-  {t:"복리의 힘은 인류 최고의 발명이다.",a:"알버트 아인슈타인"},
-  {t:"성공한 사람들은 어렵고 불편한 것을 습관으로 만든다.",a:"브라이언 트레이시"},
-  {t:"글을 쓴다는 것은 생각을 정제하는 최고의 방법이다.",a:"유발 하라리"},
-  {t:"두려움은 꿈의 가장 큰 적이다. 용감하게 나아가라.",a:"넬슨 만델라"},
-  {t:"오늘의 고통이 내일의 힘이 된다. 포기하지 마라.",a:"무하마드 알리"},
-  {t:"당신이 집중하는 곳에 에너지가 흐른다.",a:"토니 로빈스"},
-  {t:"행복은 외부에서 오는 것이 아니라 내면에서 만들어지는 것이다.",a:"빅토르 프랭클"},
-  {t:"완벽함이 아닌 진보를 추구하라.",a:"존 우든"},
-  {t:"부자가 되는 가장 빠른 방법은 지출보다 더 많이 배우는 것이다.",a:"로버트 기요사키"},
-  {t:"매일 아침 일어나 감사함으로 하루를 시작하라.",a:"토니 로빈스"},
-  {t:"규율이 없는 자유는 진정한 자유가 아니다.",a:"임마누엘 칸트"},
-  {t:"최고의 성과는 최고의 준비에서 나온다.",a:"벤자민 프랭클린"},
-  {t:"몸과 마음의 건강이 모든 성공의 토대다.",a:"달라이 라마"},
-  {t:"독서는 잠든 사이에도 당신을 성장시킨다.",a:"찰리 멍거"},
+  {t:"작은 습관이 놀라운 결과를 만든다. 매일 1%의 개선이 1년이면 37배 성장이다.",e:"Small habits create remarkable results. A 1% improvement every day compounds to 37x growth in a year.",a:"James Clear"},
+  {t:"우리는 우리가 반복적으로 하는 것의 산물이다. 탁월함은 행동이 아니라 습관이다.",e:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",a:"Aristotle"},
+  {t:"당신이 가진 것에 감사하라. 더 많이 가지게 될 것이다.",e:"Be thankful for what you have; you'll end up having more.",a:"Oprah Winfrey"},
+  {t:"성공은 매일의 작은 노력들이 쌓인 결과다.",e:"Success is the sum of small efforts repeated day in and day out.",a:"Robert Collier"},
+  {t:"변화를 원한다면 당신 자신이 그 변화가 되어야 한다.",e:"Be the change you wish to see in the world.",a:"Mahatma Gandhi"},
+  {t:"오늘 할 수 있는 일을 내일로 미루지 마라.",e:"Never put off till tomorrow what you can do today.",a:"Benjamin Franklin"},
+  {t:"포기하지 않는 한 실패는 없다. 포기하는 그 순간이 진정한 실패다.",e:"It does not matter how slowly you go as long as you do not stop.",a:"Abraham Lincoln"},
+  {t:"건강이 최고의 부이다. 만족이 최고의 재물이다.",e:"Health is the greatest wealth. Contentment is the greatest treasure.",a:"Buddha"},
+  {t:"당신이 할 수 있다고 믿든, 할 수 없다고 믿든, 당신이 옳다.",e:"Whether you think you can or you think you can't, you're right.",a:"Henry Ford"},
+  {t:"투자에서 가장 중요한 것은 얼마나 오래 시장에 있느냐이다.",e:"The stock market is a device for transferring money from the impatient to the patient.",a:"Warren Buffett"},
+  {t:"배움을 멈추는 순간 성장도 멈춘다.",e:"Once you stop learning, you start dying.",a:"Albert Einstein"},
+  {t:"최고의 투자는 자기 자신에 대한 투자다.",e:"The best investment you can make is in yourself.",a:"Warren Buffett"},
+  {t:"나무를 심기 가장 좋은 때는 20년 전이었다. 두 번째로 좋은 때는 바로 지금이다.",e:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese Proverb"},
+  {t:"삶의 질은 잠의 질에서 시작된다.",e:"Sleep is the best meditation.",a:"Dalai Lama"},
+  {t:"복리의 힘은 인류 최고의 발명이다.",e:"Compound interest is the eighth wonder of the world.",a:"Albert Einstein"},
+  {t:"성공한 사람들은 어렵고 불편한 것을 습관으로 만든다.",e:"Successful people do what unsuccessful people are not willing to do.",a:"Brian Tracy"},
+  {t:"글을 쓴다는 것은 생각을 정제하는 최고의 방법이다.",e:"Writing is the painting of the voice.",a:"Voltaire"},
+  {t:"두려움은 꿈의 가장 큰 적이다. 용감하게 나아가라.",e:"Courage is not the absence of fear, but the triumph over it.",a:"Nelson Mandela"},
+  {t:"오늘의 고통이 내일의 힘이 된다. 포기하지 마라.",e:"The pain you feel today will be the strength you feel tomorrow.",a:"Muhammad Ali"},
+  {t:"당신이 집중하는 곳에 에너지가 흐른다.",e:"Where focus goes, energy flows.",a:"Tony Robbins"},
+  {t:"행복은 외부에서 오는 것이 아니라 내면에서 만들어지는 것이다.",e:"Happiness is not something ready-made. It comes from your own actions.",a:"Dalai Lama"},
+  {t:"완벽함이 아닌 진보를 추구하라.",e:"Strive for progress, not perfection.",a:"John Wooden"},
+  {t:"부자가 되는 가장 빠른 방법은 지출보다 더 많이 배우는 것이다.",e:"The more that you read, the more things you will know.",a:"Robert Kiyosaki"},
+  {t:"매일 아침 일어나 감사함으로 하루를 시작하라.",e:"Start each day with a grateful heart.",a:"Tony Robbins"},
+  {t:"규율이 없는 자유는 진정한 자유가 아니다.",e:"Freedom without discipline is chaos.",a:"Immanuel Kant"},
+  {t:"최고의 성과는 최고의 준비에서 나온다.",e:"By failing to prepare, you are preparing to fail.",a:"Benjamin Franklin"},
+  {t:"몸과 마음의 건강이 모든 성공의 토대다.",e:"Take care of your body. It's the only place you have to live.",a:"Jim Rohn"},
+  {t:"독서는 잠든 사이에도 당신을 성장시킨다.",e:"Not all readers are leaders, but all leaders are readers.",a:"Harry S. Truman"},
+  {t:"고요한 물이 깊이 흐른다. 깊이 생각하고 신중하게 행동하라.",e:"Still waters run deep.",a:"Shakespeare"},
+  {t:"인생은 자전거를 타는 것과 같다. 균형을 잡으려면 계속 움직여야 한다.",e:"Life is like riding a bicycle. To keep your balance, you must keep moving.",a:"Albert Einstein"},
+  {t:"실수를 두려워하지 마라. 아무것도 하지 않는 것이 가장 큰 실수다.",e:"The only real mistake is the one from which we learn nothing.",a:"Henry Ford"},
+  {t:"당신의 시간은 한정되어 있다. 다른 사람의 삶을 사느라 낭비하지 마라.",e:"Your time is limited, so don't waste it living someone else's life.",a:"Steve Jobs"},
+  {t:"지금 이 순간이 당신이 가진 전부다. 지금을 충실히 살아라.",e:"The present moment is the only moment available to us, and it is the door to all moments.",a:"Thich Nhat Hanh"},
+  {t:"감사하는 마음은 마법이다. 감사함이 많을수록 좋은 것이 더 많이 온다.",e:"Gratitude turns what we have into enough.",a:"Melody Beattie"},
+  {t:"남을 탓하는 시간에 자신을 돌아보라. 성장은 거기서 시작된다.",e:"When you blame others, you give up your power to change.",a:"Robert Anthony"},
+  {t:"가장 어두운 밤도 끝나고 태양은 반드시 뜬다.",e:"Even the darkest night will end and the sun will rise.",a:"Victor Hugo"},
+  {t:"꿈을 꾸는 것을 멈추지 마라. 꿈이 없는 삶은 방향이 없는 항해와 같다.",e:"All our dreams can come true, if we have the courage to pursue them.",a:"Walt Disney"},
+  {t:"지식에 투자하면 최고의 이자를 얻는다.",e:"An investment in knowledge pays the best interest.",a:"Benjamin Franklin"},
+  {t:"오늘 심은 씨앗이 내일의 나무가 된다.",e:"The secret of getting ahead is getting started.",a:"Mark Twain"},
+  {t:"강한 사람이 살아남는 것이 아니라, 변화에 적응하는 사람이 살아남는다.",e:"It is not the strongest of the species that survive, but the most adaptable.",a:"Charles Darwin"},
+  {t:"당신이 어떤 생각을 하느냐가 당신이 어떤 사람이 되느냐를 결정한다.",e:"As a man thinketh in his heart, so is he.",a:"James Allen"},
+  {t:"매일 조금씩 더 나아지면 결국 훨씬 나아져 있다.",e:"A little progress each day adds up to big results.",a:"Satya Nani"},
+  {t:"성공한 사람은 실패에서 배우고 다시 일어선다.",e:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"Winston Churchill"},
+  {t:"자신을 믿어라. 당신은 생각보다 훨씬 강하다.",e:"Believe in yourself and all that you are.",a:"Christian D. Larson"},
+  {t:"행동하는 오늘이 내일을 만든다.",e:"The key is not to prioritize what's on your schedule, but to schedule your priorities.",a:"Stephen Covey"},
+  {t:"깊이 생각하는 사람은 결코 포기하지 않는다.",e:"A man who dares to waste one hour of time has not discovered the value of life.",a:"Charles Darwin"},
+  {t:"삶은 기다리는 자의 것이 아니라 움직이는 자의 것이다.",e:"Life belongs to the living, and he who lives must be prepared for changes.",a:"Johann Goethe"},
+  {t:"좋은 습관을 만드는 데는 시간이 걸리지만, 그 결과는 평생을 바꾼다.",e:"First, forget inspiration. Habit is more dependable.",a:"Octavia Butler"},
 ];
-(function(){
+
+/* ══ 1시간마다 명언 업데이트 ══ */
+function showQuote(){
   const n=new Date();
-  const idx=(n.getFullYear()*500+n.getMonth()*31+n.getDate())%QQ.length;
-  document.getElementById('q-text').textContent=QQ[idx].t;
-  document.getElementById('q-author').textContent='— '+QQ[idx].a;
-})();
+  // 날짜 × 24 + 시간 → 1시간마다 다른 명언
+  const hourSlot=n.getFullYear()*8760+n.getMonth()*730+n.getDate()*24+n.getHours();
+  const idx=hourSlot%QQ.length;
+  const q=QQ[idx];
+  document.getElementById('q-text').textContent=q.t;
+  document.getElementById('q-en').textContent=q.e;
+  document.getElementById('q-author').textContent='— '+q.a;
+  // 다음 정시까지 남은 시간 계산
+  const msLeft=((60-n.getMinutes())*60-(n.getSeconds()))*1000;
+  document.getElementById('q-label').textContent=
+    '✦ 오늘의 명언  ·  '+n.getHours()+'시';
+  setTimeout(()=>{showQuote();},msLeft+500); // 정시+0.5초에 갱신
+}
+showQuote();
 
 /* 오늘 습관 점수 뱃지 */
 (function(){
