@@ -33,8 +33,8 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 /* TABS — scrollable */
 .tabs{display:flex;gap:0;overflow-x:auto;padding:0 2px;-webkit-overflow-scrolling:touch;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{flex-shrink:0;background:none;border:none;color:var(--text3);padding:10px 14px 9px;cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:500;border-bottom:2px solid transparent;transition:all .2s;touch-action:manipulation;white-space:nowrap;}
-.tab.on{color:var(--gold);border-bottom-color:var(--gold);}
+.tab{flex-shrink:0;background:none;border:none;color:rgba(255,255,255,0.55);padding:11px 18px 10px;cursor:pointer;font-size:15px;font-family:'Noto Sans KR',sans-serif;font-weight:700;border-bottom:2px solid transparent;transition:all .2s;touch-action:manipulation;white-space:nowrap;}
+.tab.on{color:#ffffff;border-bottom-color:#ffffff;text-shadow:0 0 12px rgba(255,255,255,0.4);}
 
 /* SCROLL */
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
@@ -48,12 +48,12 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 @keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
 
 /* COMMON */
-.sec{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px;display:flex;align-items:center;gap:8px;font-weight:500;}
+.sec{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:700;opacity:.9;}
 .sec::after{content:'';flex:1;height:1px;background:var(--border);}
 .card{background:var(--s1);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:12px;}
 .row{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
 .lbl{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.5px;}
-.inp{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:11px 13px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;}
+.inp{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:11px 13px;color:#ffffff;font-size:15px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;font-weight:500;}
 .inp:focus{border-color:var(--gold);}
 .inp::placeholder{color:var(--text3);font-size:12px;}
 .ta{resize:none;min-height:72px;line-height:1.6;}
@@ -98,9 +98,9 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .darr:active{transform:scale(.92);}
 .darr.dim{opacity:.3;pointer-events:none;}
 .dctr{flex:1;text-align:center;background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:7px 4px;cursor:pointer;}
-.dstr{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;}
-.ddow{font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;}
-.today-tag{font-size:9px;color:var(--blue);font-weight:700;}
+.dstr{font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:#ffffff;}
+.ddow{font-size:13px;color:rgba(255,255,255,0.8);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;font-weight:600;}
+.today-tag{font-size:11px;color:#ffffff;font-weight:700;background:var(--blue);padding:1px 8px;border-radius:10px;margin-top:3px;display:inline-block;}
 
 /* ABC tasks */
 .abc-sec{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px;}
@@ -110,8 +110,8 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .abc-B .abc-badge{background:rgba(255,136,48,.2);color:#ff8830;border:1px solid rgba(255,136,48,.35);}
 .abc-C .abc-badge{background:rgba(74,143,255,.2);color:#4a8fff;border:1px solid rgba(74,143,255,.35);}
 .abc-info{flex:1;}
-.abc-title{font-size:13px;font-weight:700;color:var(--text2);}
-.abc-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.abc-title{font-size:14px;font-weight:700;color:#ffffff;}
+.abc-sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px;}
 .task-list{display:flex;flex-direction:column;gap:5px;margin-bottom:8px;}
 .task-item{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:10px 11px;display:flex;align-items:center;gap:9px;}
 .task-item.editing{background:var(--s3);border-color:rgba(74,143,255,.4);}
@@ -167,8 +167,8 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .empty-v .ei{font-size:28px;margin-bottom:6px;}
 /* 미션·가치 카드 */
 .mission-card,.values-card{background:linear-gradient(135deg,#12121a,#1a1a2e);border:1px solid rgba(255,192,32,.3);border-radius:14px;padding:15px;margin-bottom:12px;position:relative;}
-.mission-text-show{font-size:15px;font-weight:500;color:var(--text);line-height:1.75;word-break:keep-all;font-family:'Nanum Myeongjo','Georgia',serif;white-space:pre-wrap;}
-.val-display{font-size:15px;font-weight:500;color:var(--gold);line-height:1.75;word-break:keep-all;white-space:pre-wrap;}
+.mission-text-show{font-size:17px;font-weight:700;color:#ffffff;line-height:1.8;word-break:keep-all;font-family:'Nanum Myeongjo','Georgia',serif;white-space:pre-wrap;text-shadow:0 0 20px rgba(255,255,255,0.15);}
+.val-display{font-size:17px;font-weight:700;color:#ffffff;line-height:1.8;word-break:keep-all;white-space:pre-wrap;}
 .mission-toggle-btn{margin-top:10px;background:rgba(255,192,32,.1);border:1px solid rgba(255,192,32,.25);color:var(--gold);padding:6px 14px;border-radius:9px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;touch-action:manipulation;}
 .mission-toggle-btn:active{background:rgba(255,192,32,.22);}
 
@@ -277,7 +277,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
         <div class="sec">📔 일일 저널</div>
         <div class="card">
-          <textarea class="inp ta" style="min-height:120px;" id="daily-journal" placeholder="오늘 있었던 일, 깨달음, 느낀 점을 자유롭게 기록하세요..."></textarea>
+          <textarea class="inp ta" style="min-height:120px;" id="daily-journal" placeholder="오늘 있었던 일, 깨달음, 느낀 점을 자유롭게 기록하세요..." style="min-height:120px;font-size:16px;color:#ffffff;font-weight:500;line-height:1.75;"></textarea>
         </div>
         <button class="savebtn gold-btn" onclick="saveDaily()">💾 오늘 저장</button>
       </div>
@@ -310,20 +310,20 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     </div>
     <!-- BOTTOM NAV -->
   <nav class="bnav">
-    <button class="nb nb-home" onclick="window.location.href='index.html'">
+    <button class="nb" style="color:var(--blue);" onclick="window.location.href='index.html'">
       <span class="ni">🏠</span>홈
     </button>
     <button class="nb" onclick="window.location.href='habits.html'">
       <span class="ni">✅</span>습관
     </button>
+    <button class="nb" onclick="window.location.href='gratitude.html'">
+      <span class="ni">🙏</span>감사
+    </button>
     <button class="nb" onclick="window.location.href='brain.html'">
       <span class="ni">🧠</span>Brain
     </button>
-    <button class="nb" onclick="window.location.href='franklin.html'">
+    <button class="nb on" onclick="window.location.href='franklin.html'">
       <span class="ni">📖</span>플래너
-    </button>
-    <button class="nb" onclick="window.location.href='gratitude.html'">
-      <span class="ni">🙏</span>감사
     </button>
     <button class="nb" onclick="window.location.href='gcal.html'">
       <span class="ni">📅</span>캘린더
