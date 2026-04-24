@@ -195,12 +195,57 @@ function fmtDisp(s){const[y,m,d]=s.split('-').map(Number);const dt=new Date(y,m-
 let curD=todayStr();
 function chDate(d){const nxt=addDays(curD,d);if(nxt>addDays(todayStr(),1))return;curD=nxt;render();}
 function goToday(){curD=todayStr();render();}
-function score(dk){const rec=D.records[dk]||{};const g=D.grat[dk]||[];if(!D.habits.length)return 0;const pt=100/D.habits.length;let sc=0;D.habits.forEach(h=>{if(h.id==='h10')sc+=pt*Math.min(g.filter(x=>x&&x.trim()).length/5,1);else if(rec[h.id])sc+=pt;});return Math.round(sc);}
+function getWeight(id){
+  /* 고정 가중치 */
+  if(id==='h3'||id==='h6'||id==='h9') return 20;
+  /* 나머지 7개 — 40%를 균등 분배 */
+  return 40/7;
+}
+function score(dk){
+  const rec=D.records[dk]||{};
+  const g=D.grat[dk]||[];
+  if(!D.habits.length)return 0;
+  let sc=0;
+  D.habits.forEach(h=>{
+    const w=getWeight(h.id);
+    if(h.id==='h10') sc+=w*Math.min(g.filter(x=>x&&x.trim()).length/5,1);
+    else if(rec[h.id]) sc+=w;
+  });
+  return Math.round(sc);
+}
 const CT='#28c490',CB='#4a8fff',CO='#ff8830';
 function grade(s){if(s>=100)return{l:'PERFECT ✨',bg:'rgba(255,192,32,.15)',c:'#ffc020',bd:'rgba(255,192,32,.35)'};if(s>=89)return{l:'EXCELLENT',bg:'rgba(40,196,144,.12)',c:CT,bd:'rgba(40,196,144,.3)'};if(s>=70)return{l:'GREAT',bg:'rgba(74,143,255,.12)',c:CB,bd:'rgba(74,143,255,.3)'};if(s>=50)return{l:'GOOD',bg:'rgba(144,96,255,.12)',c:'#9060ff',bd:'rgba(144,96,255,.3)'};if(s>=1)return{l:'KEEP GOING',bg:'rgba(255,136,48,.12)',c:CO,bd:'rgba(255,136,48,.3)'};return{l:'시작해봐요',bg:'rgba(255,255,255,.06)',c:'#606080',bd:'rgba(255,255,255,.1)'};}
 function gmsg(s){if(!s)return'체크를 시작해보세요 💪';if(s<30)return'오늘도 한 걸음씩! 🌱';if(s<60)return'좋은 페이스예요 👍';if(s<90)return'거의 다 왔어요 🌟';if(s<100)return'완벽에 가까워요! 🔥';return'완벽한 하루! 🎉';}
 /* Coin sound */
 let AC=null;
+
+function playBell(){
+  try{
+    if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended')AC.resume();
+    const ac=AC;
+    const notes=[523.25,659.26,783.99,1046.50];
+    notes.forEach((freq,i)=>{
+      const delay=i*0.18;
+      const osc=ac.createOscillator(),gain=ac.createGain();
+      osc.connect(gain);gain.connect(ac.destination);
+      osc.type='sine';
+      osc.frequency.setValueAtTime(freq,ac.currentTime+delay);
+      gain.gain.setValueAtTime(0,ac.currentTime+delay);
+      gain.gain.linearRampToValueAtTime(0.38,ac.currentTime+delay+0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+delay+1.6);
+      osc.start(ac.currentTime+delay);osc.stop(ac.currentTime+delay+1.7);
+      // 배음
+      const osc2=ac.createOscillator(),gain2=ac.createGain();
+      osc2.connect(gain2);gain2.connect(ac.destination);
+      osc2.type='sine';osc2.frequency.value=freq*2;
+      gain2.gain.setValueAtTime(0,ac.currentTime+delay);
+      gain2.gain.linearRampToValueAtTime(0.1,ac.currentTime+delay+0.01);
+      gain2.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+delay+0.9);
+      osc2.start(ac.currentTime+delay);osc2.stop(ac.currentTime+delay+1.0);
+    });
+  }catch(e){}
+}
 function playCoin(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const ac=AC;for(let i=0;i<12;i++){const dl=i*0.048+Math.random()*0.038,fr=700+Math.random()*900;const osc=ac.createOscillator(),gn=ac.createGain(),fl=ac.createBiquadFilter();fl.type='bandpass';fl.frequency.value=fr*1.4;fl.Q.value=9;osc.connect(fl);fl.connect(gn);gn.connect(ac.destination);osc.type='sine';osc.frequency.setValueAtTime(fr,ac.currentTime+dl);osc.frequency.exponentialRampToValueAtTime(fr*.5,ac.currentTime+dl+.22);gn.gain.setValueAtTime(0,ac.currentTime+dl);gn.gain.linearRampToValueAtTime(.24,ac.currentTime+dl+.006);gn.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dl+.28);osc.start(ac.currentTime+dl);osc.stop(ac.currentTime+dl+.3);const sr=ac.sampleRate,buf=ac.createBuffer(1,Math.floor(sr*.04),sr),dd=buf.getChannelData(0);for(let j=0;j<dd.length;j++)dd[j]=(Math.random()*2-1)*Math.pow(1-j/dd.length,2.5);const src=ac.createBufferSource();src.buffer=buf;const ng=ac.createGain();ng.gain.value=.14;src.connect(ng);ng.connect(ac.destination);src.start(ac.currentTime+dl);}}catch(e){}}
 /* Coin burst */
 const cv=document.getElementById('coinCanvas'),cx=cv.getContext('2d');let coins=[];
@@ -221,14 +266,39 @@ function render(){
   ring.style.stroke=sc>=70?CT:sc>=40?CB:CO;
   document.getElementById('snum').textContent=sc;document.getElementById('smsg').textContent=gmsg(sc);
   const gb=document.getElementById('gbdg');gb.textContent=g.l;gb.style.cssText=`background:${g.bg};color:${g.c};border:1px solid ${g.bd};`;
-  const pt=D.habits.length?Math.round(100/D.habits.length):0;
+  /* pt는 각 습관마다 개별 가중치로 표시 */
   const hl=document.getElementById('hlist');hl.innerHTML='';
   const visH=D.habits.filter(h=>h.id!=='h10');
   visH.forEach((h,vi)=>{
     const ck=!!rec[h.id];const el=document.createElement('div');
     el.className='hi'+(ck?' ck':'');el.dataset.vi=vi;
-    el.innerHTML=`<div class="hdrag">⠿</div><div class="hchk">${ck?'✓':''}</div><div class="hlbl">${esc(h.label)}</div><div class="hpts">${pt}pt</div><button class="hdel" onclick="delHabit('${h.id}',event)">×</button>`;
-    el.addEventListener('click',e=>{if(e.target.classList.contains('hdel')||e.target.classList.contains('hdrag'))return;const wasCk=D.records[curD]&&D.records[curD][h.id];if(!D.records[curD])D.records[curD]={};D.records[curD][h.id]=!D.records[curD][h.id];sv();render();if(!wasCk){const r=el.getBoundingClientRect();burst(r.left+r.width*.5,r.top+r.height*.5,55);}});
+    const w=Math.round(getWeight(h.id)*10)/10;
+    el.innerHTML=`<div class="hdrag">⠿</div><div class="hchk">${ck?'✓':''}</div><div class="hlbl">${esc(h.label)}</div><div class="hpts">${w}%</div><button class="hdel" onclick="delHabit('${h.id}',event)">×</button>`;
+    el.addEventListener('click',e=>{
+      if(e.target.classList.contains('hdel')||e.target.classList.contains('hdrag'))return;
+      const wasCk=D.records[curD]&&D.records[curD][h.id];
+      const scoreBefore=score(curD);
+      if(!D.records[curD])D.records[curD]={};
+      D.records[curD][h.id]=!D.records[curD][h.id];
+      sv();
+      const scoreAfter=score(curD);
+      render();
+      if(!wasCk){
+        const r=el.getBoundingClientRect();
+        burst(r.left+r.width*.5,r.top+r.height*.5,55);
+        // 20점 구간 돌파 시 종소리
+        // 20, 40, 60, 80, 100 구간
+        const milestones=[20,40,60,80,100];
+        milestones.forEach(ms=>{
+          if(scoreBefore<ms && scoreAfter>=ms){
+            setTimeout(()=>playBell(),300);
+            // 토스트 메시지
+            const msgs={20:'🔔 20점 달성!',40:'🔔 40점 달성!',60:'🔔 60점 달성!',80:'🔔 80점 달성!',100:'🎉 100점 완벽 달성!'};
+            toast(msgs[ms]||`🔔 ${ms}점 달성!`);
+          }
+        });
+      }
+    });
     setupDrag(el,vi,visH);hl.appendChild(el);
   });
 }

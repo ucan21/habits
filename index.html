@@ -352,10 +352,12 @@ showQuote();
     const rec=(d.records||{})[tk]||{};
     const grat=((d.grat||{})[tk]||[]);
     if(habits.length){
-      const pt=100/habits.length;let sc=0;
+      function gw(id){return(id==='h3'||id==='h6'||id==='h9')?20:40/7;}
+      let sc=0;
       habits.forEach(h=>{
-        if(h.id==='h10') sc+=pt*Math.min(grat.filter(x=>x&&x.trim()).length/5,1);
-        else if(rec[h.id]) sc+=pt;
+        const w=gw(h.id);
+        if(h.id==='h10') sc+=w*Math.min(grat.filter(x=>x&&x.trim()).length/5,1);
+        else if(rec[h.id]) sc+=w;
       });
       document.getElementById('score-badge').textContent=Math.round(sc)+'점';
     }
