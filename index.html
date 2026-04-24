@@ -53,11 +53,8 @@ body{
   font-size:44px;
   letter-spacing:6px;
   line-height:1;
-  background:linear-gradient(135deg,#4a8fff 0%,#28c490 50%,#ffc020 100%);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  text-shadow:none;
+  color:#ffffff;
+  text-shadow:0 0 30px rgba(255,255,255,0.18);
 }
 .hdr-sub{
   font-size:10px;letter-spacing:3px;color:var(--text3);
@@ -92,9 +89,9 @@ body{
   color:rgba(74,143,255,0.06);position:absolute;top:-8px;left:6px;
   line-height:1;pointer-events:none;
 }
-.q-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);font-family:'DM Mono',monospace;font-weight:500;margin-bottom:7px;}
-.q-text{font-size:13px;font-weight:500;color:var(--text);line-height:1.7;word-break:keep-all;}
-.q-author{font-size:10px;color:var(--text3);margin-top:7px;font-family:'DM Mono',monospace;text-align:right;}
+.q-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-family:'DM Mono',monospace;font-weight:700;margin-bottom:9px;opacity:.85;}
+.q-text{font-size:16px;font-weight:500;color:#ffffff;line-height:1.75;word-break:keep-all;}
+.q-author{font-size:11px;color:rgba(255,255,255,0.55);margin-top:9px;font-family:'DM Mono',monospace;text-align:right;}
 
 /* ── CARD BUTTONS (메인 콘텐츠 카드) ── */
 .nav-btn{
@@ -171,7 +168,7 @@ body{
 
   <!-- HEADER -->
   <div class="hdr">
-    <div class="hdr-logo">HENRY DIARY</div>
+    <div class="hdr-logo">Henry's Diary</div>
     <div class="hdr-sub">매일의 기록이 삶을 만든다</div>
     <div class="hdr-date" id="hdr-date">—</div>
   </div>
