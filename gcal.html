@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Google Calendar — Henry</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0f;--s1:#12121a;--s2:#1a1a26;--s3:#222232;
+  --text:#f0f0f8;--text2:#b0b0c8;--text3:#606080;
+  --blue:#4a8fff;--teal:#28c490;--rose:#ff5060;--gold:#ffc020;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
+.shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
+.hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.back{background:var(--s2);border:1px solid var(--border2);color:var(--text2);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;}
+.back:active{transform:scale(.92);}
+.hdr-c{flex:1;text-align:center;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--blue);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.scroll::-webkit-scrollbar{width:2px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--s3);}
+.body{padding:14px 14px 30px;}
+.sec{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:500;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* EMBED CARD */
+.embed-card{background:var(--s1);border:1px solid rgba(74,143,255,.25);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+.embed-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.embed-hdr-icon{font-size:20px;}
+.embed-hdr-title{font-size:14px;font-weight:700;color:var(--blue);}
+.embed-hdr-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.cal-frame{width:100%;height:520px;border:none;display:block;background:white;}
+.frame-placeholder{padding:30px;text-align:center;color:var(--text3);}
+.frame-placeholder .pi{font-size:40px;margin-bottom:12px;}
+.frame-placeholder p{font-size:13px;line-height:1.7;}
+
+/* SETUP CARD */
+.setup-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;}
+.setup-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.inp-row{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.inp-lbl{font-size:12px;font-weight:700;color:var(--text2);}
+.inp{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:12px 13px;color:var(--text);font-size:14px;font-family:'DM Mono',monospace;outline:none;transition:border-color .2s;}
+.inp:focus{border-color:var(--blue);}
+.inp::placeholder{color:var(--text3);font-size:12px;}
+.load-btn{width:100%;background:var(--blue);border:none;color:#fff;padding:14px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;transition:all .2s;box-shadow:0 0 16px rgba(74,143,255,.28);}
+.load-btn:active{transform:scale(.98);}
+
+/* QUICK LINKS */
+.qlink-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+.qlink{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:16px 10px;text-decoration:none;touch-action:manipulation;transition:all .15s;}
+.qlink:active{transform:scale(.96);background:var(--s2);}
+.qlink-icon{font-size:26px;}
+.qlink-label{font-size:12px;font-weight:500;color:var(--text2);text-align:center;}
+
+/* INFO BOX */
+.info-box{background:rgba(74,143,255,.08);border:1px solid rgba(74,143,255,.2);border-radius:14px;padding:14px 16px;margin-bottom:14px;}
+.info-box-title{font-size:12px;font-weight:700;color:var(--blue);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.info-step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;font-size:13px;color:var(--text2);line-height:1.55;}
+.info-step:last-child{margin-bottom:0;}
+.step-n{background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:var(--text);color:var(--bg);padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c">
+      <div class="hdr-title">📅 Google Calendar</div>
+      <div class="hdr-sub">Google 캘린더 연동</div>
+    </div>
+    <div style="width:36px;"></div>
+  </div>
+  <div class="scroll">
+    <div class="body">
+
+      <!-- 캘린더 임베드 영역 -->
+      <div class="embed-card">
+        <div class="embed-hdr">
+          <span class="embed-hdr-icon">📅</span>
+          <div>
+            <div class="embed-hdr-title">내 Google 캘린더</div>
+            <div class="embed-hdr-sub">아래에서 캘린더 ID를 설정하세요</div>
+          </div>
+        </div>
+        <div id="cal-area">
+          <div class="frame-placeholder">
+            <div class="pi">📅</div>
+            <p>아래 설정에서<br>Google 캘린더 ID를 입력하면<br>캘린더가 여기 표시됩니다</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 설정 -->
+      <div class="setup-card">
+        <div class="setup-title">⚙️ 캘린더 설정</div>
+        <div class="inp-row">
+          <div class="inp-lbl">Google 캘린더 ID (이메일 주소)</div>
+          <input class="inp" id="cal-id" placeholder="예) henry@gmail.com" type="email">
+        </div>
+        <div class="inp-row">
+          <div class="inp-lbl">표시 형식</div>
+          <select class="inp" id="cal-mode">
+            <option value="week">주간 보기</option>
+            <option value="month">월간 보기</option>
+            <option value="agenda">일정 목록</option>
+            <option value="day">일간 보기</option>
+          </select>
+        </div>
+        <button class="load-btn" onclick="loadCal()">📅 캘린더 불러오기</button>
+      </div>
+
+      <!-- 빠른 링크 -->
+      <div class="sec">빠른 링크</div>
+      <div class="qlink-grid">
+        <a class="qlink" href="https://calendar.google.com" target="_blank">
+          <span class="qlink-icon">🌐</span>
+          <span class="qlink-label">Google Calendar 웹</span>
+        </a>
+        <a class="qlink" href="https://calendar.google.com/calendar/r/day" target="_blank">
+          <span class="qlink-icon">📆</span>
+          <span class="qlink-label">오늘 일정</span>
+        </a>
+        <a class="qlink" href="https://calendar.google.com/calendar/r/week" target="_blank">
+          <span class="qlink-icon">🗓️</span>
+          <span class="qlink-label">이번 주 일정</span>
+        </a>
+        <a class="qlink" href="https://calendar.google.com/calendar/r/eventedit" target="_blank">
+          <span class="qlink-icon">➕</span>
+          <span class="qlink-label">새 일정 추가</span>
+        </a>
+      </div>
+
+      <!-- 설정 안내 -->
+      <div class="sec">설정 방법</div>
+      <div class="info-box">
+        <div class="info-box-title">ℹ️ Google 캘린더 ID 확인 방법</div>
+        <div class="info-step"><span class="step-n">1</span>Google Calendar 웹사이트에 접속</div>
+        <div class="info-step"><span class="step-n">2</span>왼쪽 '내 캘린더' → 캘린더 이름 옆 ⋮ 클릭</div>
+        <div class="info-step"><span class="step-n">3</span>'설정 및 공유' 선택</div>
+        <div class="info-step"><span class="step-n">4</span>'캘린더 통합' 섹션에서 '캘린더 ID' 복사</div>
+        <div class="info-step"><span class="step-n">5</span>보통 Gmail 주소(henry@gmail.com) 형태</div>
+        <div class="info-step"><span class="step-n">6</span>캘린더를 '공개'로 설정해야 앱에 표시됨</div>
+      </div>
+
+      <div class="info-box" style="border-color:rgba(255,192,32,.2);background:rgba(255,192,32,.06);">
+        <div class="info-box-title" style="color:var(--gold);">⚠️ 캘린더가 안 보이면?</div>
+        <div class="info-step" style="color:var(--text2);"><span class="step-n" style="background:var(--gold);color:#0a0a0f;">!</span>Google Calendar 설정에서 '공개 캘린더로 설정'을 켜주세요. 비공개 캘린더는 보안상 외부 앱에 표시되지 않습니다.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CAL_KEY='henry_gcal_v1';
+let toastT=null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1700);}
+
+// Load saved settings
+function loadSaved(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(CAL_KEY)||'{}');
+    if(saved.id) document.getElementById('cal-id').value=saved.id;
+    if(saved.mode) document.getElementById('cal-mode').value=saved.mode;
+    if(saved.id) loadCal(true);
+  }catch(e){}
+}
+
+function loadCal(auto=false){
+  const calId=document.getElementById('cal-id').value.trim();
+  const mode=document.getElementById('cal-mode').value;
+  if(!calId){toast('📧 캘린더 ID(이메일)를 입력하세요');return;}
+
+  // Save settings
+  try{localStorage.setItem(CAL_KEY,JSON.stringify({id:calId,mode}));}catch(e){}
+
+  // Build embed URL
+  const encodedId=encodeURIComponent(calId);
+  const src=`https://calendar.google.com/calendar/embed?src=${encodedId}&ctz=Asia%2FSeoul&mode=${mode.toUpperCase()}&hl=ko&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0&color=%234a8fff`;
+
+  const area=document.getElementById('cal-area');
+  area.innerHTML=`<iframe class="cal-frame" src="${src}" frameborder="0" scrolling="no" allowfullscreen></iframe>`;
+
+  if(!auto) toast('📅 캘린더 불러오는 중...');
+}
+
+loadSaved();
+</script>
+</body>
+</html>

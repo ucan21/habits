@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Brain Dump — Henry</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0f;--s1:#12121a;--s2:#1a1a26;--s3:#222232;--s4:#2a2a3e;
+  --text:#f0f0f8;--text2:#b0b0c8;--text3:#606080;
+  --green:#30c060;--green-d:#0a2818;--rose:#ff5060;--blue:#4a8fff;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
+.shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
+/* HEADER */
+.hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.back{background:var(--s2);border:1px solid var(--border2);color:var(--text2);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;transition:all .15s;}
+.back:active{transform:scale(.92);}
+.hdr-c{flex:1;text-align:center;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--green);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.scroll::-webkit-scrollbar{width:2px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--s3);}
+.body{padding:14px 14px 30px;}
+/* SECTION */
+.sec{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:500;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+/* STATS BAR */
+.stats-bar{display:flex;gap:8px;margin-bottom:14px;}
+.stat-pill{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:10px 14px;flex:1;text-align:center;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green);line-height:1;}
+.stat-lbl{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;}
+/* ADD ROW */
+.add-area{background:var(--s1);border:1px solid rgba(48,192,96,.25);border-radius:15px;padding:14px;margin-bottom:14px;}
+.add-area-title{font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.add-row{display:flex;gap:7px;margin-bottom:8px;}
+.add-inp{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:12px 13px;color:var(--text);font-size:15px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;}
+.add-inp:focus{border-color:var(--green);}
+.add-inp::placeholder{color:var(--text3);}
+.add-btn{background:var(--green);border:none;color:#0a0a0f;padding:12px 16px;border-radius:11px;cursor:pointer;font-size:23px;font-weight:700;line-height:1;touch-action:manipulation;transition:all .14s;box-shadow:0 0 14px rgba(48,192,96,.25);}
+.add-btn:active{transform:scale(.91);}
+/* TAG SELECTOR */
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;}
+.tag-btn{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--text3);cursor:pointer;transition:all .15s;touch-action:manipulation;}
+.tag-btn.on{border-color:var(--green);color:var(--green);background:rgba(48,192,96,.12);}
+.tag-btn:active{transform:scale(.95);}
+/* FILTER BAR */
+.filter-bar{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;}
+.filter-bar::-webkit-scrollbar{display:none;}
+.fbtn{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--text3);cursor:pointer;white-space:nowrap;touch-action:manipulation;flex-shrink:0;transition:all .15s;}
+.fbtn.on{background:rgba(48,192,96,.15);border-color:rgba(48,192,96,.4);color:var(--green);}
+/* ITEMS */
+.items-list{display:flex;flex-direction:column;gap:8px;}
+.item-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:14px;transition:all .15s;}
+.item-card:active{transform:scale(.99);}
+.item-hdr{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;}
+.item-tag{font-size:10px;font-weight:700;border-radius:20px;padding:2px 9px;font-family:'DM Mono',monospace;flex-shrink:0;margin-top:2px;}
+.item-text{flex:1;font-size:14px;font-weight:500;color:var(--text);line-height:1.55;word-break:break-all;}
+.item-del{background:none;border:none;color:var(--text3);font-size:17px;cursor:pointer;opacity:.25;touch-action:manipulation;flex-shrink:0;padding:0 2px;}
+.item-del:active{opacity:1;color:var(--rose);}
+.item-footer{display:flex;align-items:center;justify-content:space-between;}
+.item-date{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;}
+.item-pin{background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;opacity:.3;touch-action:manipulation;}
+.item-pin.pinned{opacity:1;color:#ffc020;}
+.item-card.pinned-card{border-color:rgba(255,192,32,.3);background:linear-gradient(135deg,#12121a,#1a1800);}
+.empty-v{text-align:center;padding:40px 0;color:var(--text3);}
+.empty-v .ei{font-size:40px;margin-bottom:10px;}
+.empty-v p{font-size:14px;line-height:1.6;}
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:var(--text);color:var(--bg);padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c">
+      <div class="hdr-title">🧠 Brain Dump</div>
+      <div class="hdr-sub">머릿속을 비워내는 자유 기록</div>
+    </div>
+    <div style="width:36px;"></div>
+  </div>
+  <div class="scroll">
+    <div class="body">
+
+      <!-- 통계 -->
+      <div class="stats-bar">
+        <div class="stat-pill"><div class="stat-num" id="total-cnt">0</div><div class="stat-lbl">전체</div></div>
+        <div class="stat-pill"><div class="stat-num" id="today-cnt">0</div><div class="stat-lbl">오늘</div></div>
+        <div class="stat-pill"><div class="stat-num" id="pin-cnt">0</div><div class="stat-lbl">📌 고정</div></div>
+      </div>
+
+      <!-- 추가 영역 -->
+      <div class="add-area">
+        <div class="add-area-title">✏️ 새 항목 추가</div>
+        <div class="add-row">
+          <input class="add-inp" id="new-inp" placeholder="지금 머릿속에 있는 것을 적어보세요..." maxlength="200"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){addItem();this.blur();}">
+          <button class="add-btn" onclick="addItem()">+</button>
+        </div>
+        <div class="tag-row" id="tag-row"></div>
+      </div>
+
+      <!-- 필터 -->
+      <div class="filter-bar" id="filter-bar"></div>
+
+      <!-- 목록 -->
+      <div class="sec">기록 목록</div>
+      <div class="items-list" id="items-list"></div>
+
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'henry_brain_v1';
+const TAGS = [
+  {id:'idea', label:'💡 아이디어', color:'#4a8fff', bg:'rgba(74,143,255,.15)', bd:'rgba(74,143,255,.35)'},
+  {id:'worry', label:'😟 걱정', color:'#ff5060', bg:'rgba(255,80,96,.15)', bd:'rgba(255,80,96,.35)'},
+  {id:'memo', label:'📝 메모', color:'#28c490', bg:'rgba(40,196,144,.15)', bd:'rgba(40,196,144,.35)'},
+  {id:'invest', label:'💰 투자', color:'#ffc020', bg:'rgba(255,192,32,.15)', bd:'rgba(255,192,32,.35)'},
+  {id:'todo', label:'✅ 할일', color:'#9060ff', bg:'rgba(144,96,255,.15)', bd:'rgba(144,96,255,.35)'},
+  {id:'free', label:'🌀 기타', color:'#ff8830', bg:'rgba(255,136,48,.15)', bd:'rgba(255,136,48,.35)'},
+];
+
+function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{items:[]};}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(BD));}catch(e){}}
+let BD=ld();
+let selTag='idea';
+let filterTag='all';
+
+function p2(n){return String(n).padStart(2,'0');}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function todayStr(){const n=new Date();return n.getFullYear()+'-'+p2(n.getMonth()+1)+'-'+p2(n.getDate());}
+function fmtDate(s){const[y,m,d]=s.split('-').map(Number);return `${y}.${p2(m)}.${p2(d)}`;}
+
+let toastT=null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1700);}
+
+function getTag(id){return TAGS.find(t=>t.id===id)||TAGS[5];}
+
+function renderTagRow(){
+  const row=document.getElementById('tag-row');row.innerHTML='';
+  TAGS.forEach(t=>{
+    const btn=document.createElement('button');btn.className='tag-btn'+(selTag===t.id?' on':'');
+    btn.textContent=t.label;
+    btn.onclick=()=>{selTag=t.id;renderTagRow();};
+    row.appendChild(btn);
+  });
+}
+
+function renderFilterBar(){
+  const bar=document.getElementById('filter-bar');bar.innerHTML='';
+  const all=document.createElement('button');all.className='fbtn'+(filterTag==='all'?' on':'');
+  all.textContent='전체';all.onclick=()=>{filterTag='all';renderList();renderFilterBar();};
+  bar.appendChild(all);
+  const pin=document.createElement('button');pin.className='fbtn'+(filterTag==='pin'?' on':'');
+  pin.textContent='📌 고정';pin.onclick=()=>{filterTag='pin';renderList();renderFilterBar();};
+  bar.appendChild(pin);
+  TAGS.forEach(t=>{
+    const btn=document.createElement('button');btn.className='fbtn'+(filterTag===t.id?' on':'');
+    btn.textContent=t.label;btn.onclick=()=>{filterTag=t.id;renderList();renderFilterBar();};
+    bar.appendChild(btn);
+  });
+}
+
+function renderStats(){
+  const today=todayStr();
+  document.getElementById('total-cnt').textContent=BD.items.length;
+  document.getElementById('today-cnt').textContent=BD.items.filter(i=>i.date===today).length;
+  document.getElementById('pin-cnt').textContent=BD.items.filter(i=>i.pinned).length;
+}
+
+function renderList(){
+  const list=document.getElementById('items-list');list.innerHTML='';
+  let items=[...BD.items];
+  // pinned first
+  items.sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||(b.id-a.id));
+  if(filterTag==='pin') items=items.filter(i=>i.pinned);
+  else if(filterTag!=='all') items=items.filter(i=>i.tagId===filterTag);
+  if(!items.length){
+    list.innerHTML=`<div class="empty-v"><div class="ei">🧠</div><p>항목이 없습니다<br><small style="font-size:12px;color:var(--text3)">위에서 새 항목을 추가해보세요</small></p></div>`;
+    return;
+  }
+  items.forEach(item=>{
+    const tag=getTag(item.tagId);
+    const el=document.createElement('div');
+    el.className='item-card'+(item.pinned?' pinned-card':'');
+    el.innerHTML=`
+      <div class="item-hdr">
+        <span class="item-tag" style="background:${tag.bg};color:${tag.color};border:1px solid ${tag.bd};">${tag.label}</span>
+        <div class="item-text">${esc(item.text)}</div>
+        <button class="item-del" onclick="delItem(${item.id})">×</button>
+      </div>
+      <div class="item-footer">
+        <span class="item-date">${fmtDate(item.date)}</span>
+        <button class="item-pin ${item.pinned?'pinned':''}" onclick="pinItem(${item.id})" title="고정">${item.pinned?'📌':'📍'}</button>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+function render(){renderTagRow();renderFilterBar();renderStats();renderList();}
+
+function addItem(){
+  const inp=document.getElementById('new-inp');const v=inp.value.trim();if(!v)return;
+  BD.items.push({id:Date.now(),text:v,tagId:selTag,date:todayStr(),pinned:false});
+  inp.value='';sv();render();toast('✅ 항목 추가됨');
+}
+
+function delItem(id){
+  if(!confirm('이 항목을 삭제할까요?'))return;
+  BD.items=BD.items.filter(i=>i.id!==id);sv();render();toast('🗑️ 삭제됨');
+}
+
+function pinItem(id){
+  const item=BD.items.find(i=>i.id===id);if(!item)return;
+  item.pinned=!item.pinned;sv();render();
+  toast(item.pinned?'📌 고정됨':'📍 고정 해제됨');
+}
+
+render();
+</script>
+</body>
+</html>
