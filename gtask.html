@@ -11,9 +11,9 @@
 :root{
   --bg:#0a0a0f;--s1:#12121a;--s2:#1a1a26;--s3:#222232;--s4:#2a2a3e;
   --text:#f0f0f8;--text2:#b0b0c8;--text3:#606080;
-  --blue:#4a8fff;--gtblue:#6ab0f5;--teal:#28c490;--rose:#ff5060;--gold:#ffc020;
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.16);
-  --wborder:rgba(255,255,255,0.35);
+  --blue:#4a8fff;--teal:#28c490;--rose:#ff5060;--gold:#ffc020;
+  --gt:#4285F4;--gt-lt:rgba(66,133,244,0.15);--gt-bd:rgba(66,133,244,0.4);
+  --border:rgba(255,255,255,0.08);--wborder:rgba(255,255,255,0.75);
   --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -23,11 +23,15 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
 /* HEADER */
 .hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.back{background:var(--s2);border:1px solid var(--wborder);color:var(--text2);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;}
+.back{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;}
 .back:active{transform:scale(.92);}
 .hdr-c{flex:1;text-align:center;}
-.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--gtblue);line-height:1;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:#fff;line-height:1;}
 .hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.sync-btn{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;touch-action:manipulation;flex-shrink:0;}
+.sync-btn:active{transform:scale(.92);}
+.sync-btn.syncing{animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
 /* SCROLL */
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
@@ -36,86 +40,102 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .body{padding:14px 14px 90px;}
 
 /* SECTION */
-.sec{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:500;}
+.sec{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#fff;font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:700;opacity:.9;}
 .sec::after{content:'';flex:1;height:1px;background:var(--border);}
 
-/* STATS ROW */
+/* LOGIN CARD */
+.login-card{background:linear-gradient(135deg,#12121a,#0d1a36);border:1.5px solid var(--wborder);border-radius:18px;padding:28px 20px;margin-bottom:14px;text-align:center;}
+.login-icon{font-size:52px;margin-bottom:14px;}
+.login-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:8px;}
+.login-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:20px;}
+.google-btn{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  width:100%;padding:15px;
+  background:#fff;border:none;border-radius:13px;
+  cursor:pointer;touch-action:manipulation;transition:all .15s;
+  font-size:15px;font-weight:700;color:#3c4043;
+  font-family:'Noto Sans KR',sans-serif;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
+}
+.google-btn:active{transform:scale(.97);background:#f5f5f5;}
+.google-logo{width:22px;height:22px;flex-shrink:0;}
+
+/* STATS */
 .stats-row{display:flex;gap:8px;margin-bottom:14px;}
-.stat-pill{flex:1;background:var(--s1);border:1px solid var(--wborder);border-radius:13px;padding:12px 10px;text-align:center;}
-.stat-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gtblue);line-height:1;}
+.stat-pill{flex:1;background:var(--s1);border:1.5px solid var(--wborder);border-radius:13px;padding:12px 8px;text-align:center;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gt);line-height:1;}
 .stat-lbl{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:3px;}
 
-/* ADD TASK BOX */
-.add-box{background:linear-gradient(135deg,#12121a,#0d1530);border:1.5px solid var(--wborder);border-radius:16px;padding:15px;margin-bottom:14px;}
-.add-box-title{font-size:13px;font-weight:700;color:var(--gtblue);margin-bottom:11px;display:flex;align-items:center;gap:7px;}
-.add-row{display:flex;gap:7px;margin-bottom:8px;}
-.add-inp{flex:1;background:var(--s2);border:1px solid var(--wborder);border-radius:11px;padding:13px 14px;color:var(--text);font-size:15px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;}
-.add-inp:focus{border-color:var(--gtblue);}
+/* LIST SELECTOR */
+.list-selector{background:var(--s1);border:1.5px solid var(--wborder);border-radius:13px;padding:11px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.list-selector label{font-size:12px;color:#fff;font-weight:700;flex-shrink:0;}
+.list-select{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:#fff;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+
+/* ADD BOX */
+.add-box{background:linear-gradient(135deg,#12121a,#0d1a36);border:1.5px solid var(--wborder);border-radius:16px;padding:14px;margin-bottom:14px;}
+.add-box-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;}
+.add-row{display:flex;gap:7px;margin-bottom:6px;}
+.add-inp{flex:1;background:var(--s2);border:1px solid var(--wborder);border-radius:11px;padding:13px 14px;color:#fff;font-size:15px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;font-weight:500;}
+.add-inp:focus{border-color:var(--gt);}
 .add-inp::placeholder{color:var(--text3);}
-.add-btn{background:var(--gtblue);border:none;color:#0a0a0f;padding:13px 16px;border-radius:11px;cursor:pointer;font-size:22px;font-weight:700;line-height:1;touch-action:manipulation;transition:all .14s;box-shadow:0 0 14px rgba(106,176,245,.28);}
+.add-due{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:11px 12px;color:#fff;font-size:13px;font-family:'DM Mono',monospace;outline:none;}
+.add-btn{background:var(--gt);border:none;color:#fff;padding:13px 16px;border-radius:11px;cursor:pointer;font-size:22px;font-weight:700;line-height:1;touch-action:manipulation;transition:all .14s;box-shadow:0 0 14px rgba(66,133,244,.35);}
 .add-btn:active{transform:scale(.91);}
-.add-note{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px;margin-top:6px;}
-.add-note a{color:var(--gtblue);text-decoration:none;}
+
+/* FILTER */
+.filter-row{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.filter-row::-webkit-scrollbar{display:none;}
+.fbtn{background:var(--s1);border:1px solid var(--wborder);border-radius:20px;padding:7px 16px;font-size:12px;color:#fff;cursor:pointer;white-space:nowrap;touch-action:manipulation;flex-shrink:0;transition:all .15s;font-weight:500;}
+.fbtn.on{background:var(--gt);border-color:var(--gt);color:#fff;}
+.fbtn:active{transform:scale(.95);}
 
 /* TASK LIST */
-.task-list{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
-.t-item{background:var(--s1);border:1.5px solid var(--wborder);border-radius:13px;padding:13px 13px;display:flex;align-items:flex-start;gap:11px;transition:all .14s;}
-.t-item.done{opacity:.42;}
-.t-item.done .t-txt{text-decoration:line-through;color:var(--text3);}
-.t-item.editing{background:var(--s2);border-color:var(--gtblue);}
-.t-chk{width:26px;height:26px;border-radius:8px;border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .18s;font-size:13px;color:transparent;background:var(--s3);touch-action:manipulation;margin-top:1px;}
-.t-item.done .t-chk{background:var(--teal);border-color:var(--teal);color:#0a0a0f;box-shadow:0 0 10px rgba(40,196,144,.3);}
+.task-list{display:flex;flex-direction:column;gap:8px;}
+.ti{background:var(--s1);border:1.5px solid var(--wborder);border-radius:14px;padding:13px 14px;display:flex;align-items:flex-start;gap:11px;transition:all .15s;}
+.ti.done{opacity:.4;}
+.ti.done .t-title{text-decoration:line-through;color:var(--text3);}
+.ti.editing{background:var(--s2);border-color:var(--gt);}
+.ti.synced{border-color:rgba(66,133,244,.5);}
+.t-chk{width:26px;height:26px;border-radius:8px;border:2px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .18s;font-size:13px;color:transparent;background:var(--s3);touch-action:manipulation;margin-top:1px;}
+.ti.done .t-chk{background:var(--teal);border-color:var(--teal);color:#0a0a0f;box-shadow:0 0 10px rgba(40,196,144,.3);}
 .t-body{flex:1;min-width:0;}
-.t-txt{font-size:15px;font-weight:500;color:var(--text);line-height:1.35;}
-.t-meta{font-size:10px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:8px;}
-.t-sync-badge{background:rgba(106,176,245,.15);border:1px solid rgba(106,176,245,.3);border-radius:10px;padding:1px 7px;font-size:10px;color:var(--gtblue);font-weight:500;}
+.t-title{font-size:15px;font-weight:600;color:#fff;line-height:1.35;}
+.t-meta{font-size:11px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.t-synced-tag{background:rgba(66,133,244,.2);border:1px solid rgba(66,133,244,.4);border-radius:8px;padding:1px 7px;font-size:10px;color:#4a8fff;}
+.t-due-tag{background:rgba(255,136,48,.15);border:1px solid rgba(255,136,48,.3);border-radius:8px;padding:1px 7px;font-size:10px;color:#ff8830;}
 .t-actions{display:flex;gap:4px;flex-shrink:0;}
-.t-btn{background:none;border:none;color:var(--text3);font-size:15px;cursor:pointer;padding:3px 5px;border-radius:6px;opacity:.28;touch-action:manipulation;transition:all .18s;}
+.t-btn{background:none;border:none;color:var(--text3);font-size:15px;cursor:pointer;padding:3px 5px;border-radius:6px;opacity:.3;touch-action:manipulation;transition:all .18s;}
 .t-btn:active{opacity:1;transform:scale(.9);}
-.t-btn.edit:active{color:var(--blue);}
-.t-btn.del:active{color:var(--rose);}
-.t-edit-inp{width:100%;background:transparent;border:none;color:var(--text);font-size:15px;font-weight:500;font-family:'Noto Sans KR',sans-serif;outline:none;line-height:1.35;}
-.t-save-btn{background:var(--gtblue);border:none;color:#0a0a0f;padding:4px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;margin-top:6px;}
+.t-edit-inp{width:100%;background:transparent;border:none;color:#fff;font-size:15px;font-weight:600;font-family:'Noto Sans KR',sans-serif;outline:none;line-height:1.35;}
+.t-save-btn{background:var(--gt);border:none;color:#fff;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;margin-top:6px;font-family:'Noto Sans KR',sans-serif;}
+.empty{text-align:center;padding:32px 0;color:var(--text3);}
+.empty .ei{font-size:38px;margin-bottom:10px;}
+.empty p{font-size:14px;line-height:1.65;}
 
-/* LIST CONTROLS */
-.list-controls{display:flex;gap:7px;margin-bottom:12px;}
-.ctrl-btn{flex:1;background:var(--s1);border:1px solid var(--wborder);border-radius:10px;color:var(--text3);padding:9px 6px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;touch-action:manipulation;transition:all .2s;}
-.ctrl-btn:active{background:var(--s2);}
-.ctrl-btn.active{color:var(--gtblue);border-color:var(--gtblue);}
+/* CLEAR BTN */
+.clr-btn{width:100%;margin-top:10px;background:var(--s1);border:1.5px solid var(--wborder);border-radius:12px;color:var(--text3);padding:12px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;transition:all .2s;}
+.clr-btn:active{background:var(--s2);}
 
-/* GTASK OPEN BTN */
-.gtask-open{display:flex;align-items:center;gap:12px;width:100%;padding:15px 16px;margin-bottom:10px;background:linear-gradient(135deg,#12121a,#0d1530);border:1.5px solid var(--wborder);border-radius:15px;text-decoration:none;touch-action:manipulation;transition:all .15s;cursor:pointer;}
-.gtask-open:active{transform:scale(.97);}
-.gtask-open-icon{font-size:26px;flex-shrink:0;}
-.gtask-open-body{flex:1;}
-.gtask-open-title{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1.5px;color:var(--gtblue);line-height:1;margin-bottom:3px;}
-.gtask-open-sub{font-size:11px;color:var(--text3);}
-.gtask-open-arr{font-size:20px;color:var(--gtblue);}
-
-/* INFO */
-.info-box{background:rgba(106,176,245,.07);border:1px solid rgba(106,176,245,.18);border-radius:14px;padding:13px 15px;margin-bottom:12px;}
-.info-title{font-size:12px;font-weight:700;color:var(--gtblue);margin-bottom:7px;}
-.info-row{display:flex;gap:9px;margin-bottom:6px;align-items:flex-start;font-size:13px;color:var(--text2);line-height:1.55;}
-.info-row:last-child{margin:0;}
-.sn{background:var(--gtblue);color:#0a0a0f;border-radius:50%;width:19px;height:19px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;}
-
-/* EMPTY */
-.empty{text-align:center;padding:28px 0;color:var(--text3);}
-.empty .ei{font-size:36px;margin-bottom:8px;}
-.empty p{font-size:13px;line-height:1.6;}
+/* ACCOUNT INFO */
+.account-bar{background:var(--s1);border:1.5px solid var(--wborder);border-radius:13px;padding:11px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.account-avatar{width:32px;height:32px;border-radius:50%;background:var(--gt);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.account-info{flex:1;}
+.account-name{font-size:13px;font-weight:700;color:#fff;}
+.account-email{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+.logout-btn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;padding:5px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;}
+.logout-btn:active{color:var(--rose);}
 
 /* TOAST */
-.toast{position:fixed;bottom:calc(var(--safe-b)+66px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:var(--text);color:var(--bg);padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
+.toast{position:fixed;bottom:calc(var(--safe-b)+66px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:#fff;color:#0a0a0f;padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
 /* BOTTOM NAV */
-.bnav{flex-shrink:0;background:rgba(10,10,15,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border2);display:flex;padding-bottom:var(--safe-b);}
+.bnav{flex-shrink:0;background:rgba(10,10,15,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.16);display:flex;padding-bottom:var(--safe-b);}
 .nb{flex:1;background:none;border:none;color:var(--text3);padding:9px 2px 7px;cursor:pointer;font-size:9.5px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .18s;touch-action:manipulation;}
 .nb .ni{font-size:21px;transition:transform .18s;}
 .nb:active .ni{transform:scale(1.2);}
-.nb.on{color:var(--gtblue);}
-.nb.on .ni{filter:drop-shadow(0 0 5px var(--gtblue));}
-.nb-home-btn{color:var(--blue)!important;}
+.nb.on{color:var(--gt);}
+.nb.on .ni{filter:drop-shadow(0 0 5px var(--gt));}
 </style>
 </head>
 <body>
@@ -124,97 +144,99 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     <a class="back" href="index.html">←</a>
     <div class="hdr-c">
       <div class="hdr-title">☑️ Google Tasks</div>
-      <div class="hdr-sub">할 일 관리 · Google 연동</div>
+      <div class="hdr-sub">Google 할 일 연동</div>
     </div>
-    <div style="width:36px;"></div>
+    <button class="sync-btn" id="sync-btn" onclick="syncWithGoogle()" title="동기화">🔄</button>
   </div>
 
   <div class="scroll">
     <div class="body">
 
-      <!-- 통계 -->
-      <div class="stats-row">
-        <div class="stat-pill">
-          <div class="stat-num" id="cnt-total">0</div>
-          <div class="stat-lbl">전체</div>
+      <!-- 로그인 전 화면 -->
+      <div id="view-login">
+        <div class="login-card">
+          <div class="login-icon">☑️</div>
+          <div class="login-title">Google Tasks 연동</div>
+          <div class="login-desc">
+            Google 계정으로 로그인하면<br>
+            실제 Google Tasks와 연동됩니다.<br><br>
+            추가·완료·수정한 내용이<br>
+            Google Tasks 앱과 실시간으로 동기화됩니다.
+          </div>
+          <button class="google-btn" onclick="googleLogin()">
+            <svg class="google-logo" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Google 계정으로 로그인
+          </button>
         </div>
-        <div class="stat-pill">
-          <div class="stat-num" id="cnt-active">0</div>
-          <div class="stat-lbl">진행 중</div>
-        </div>
-        <div class="stat-pill">
-          <div class="stat-num" id="cnt-done">0</div>
-          <div class="stat-lbl">완료</div>
+        <div style="background:var(--s1);border:1.5px solid var(--wborder);border-radius:14px;padding:14px;margin-bottom:14px;">
+          <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:8px;">ℹ️ 연동 안내</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.65;">
+            • Google Tasks API를 직접 호출합니다<br>
+            • 로그인 후 Tasks 목록 조회·추가·완료·삭제 가능<br>
+            • 데이터는 Google 서버에 저장됩니다<br>
+            • 로그아웃 시 로컬 캐시만 삭제됩니다
+          </div>
         </div>
       </div>
 
-      <!-- 할 일 추가 -->
-      <div class="add-box">
-        <div class="add-box-title">☑️ 새 Task 추가</div>
-        <div class="add-row">
-          <input class="add-inp" id="task-inp" placeholder="할 일을 입력하세요..." maxlength="100"
-            onkeydown="if(event.key==='Enter'){addTask();this.blur();}">
-          <button class="add-btn" onclick="addTask()">+</button>
+      <!-- 로그인 후 화면 -->
+      <div id="view-main" style="display:none;">
+
+        <!-- 계정 정보 -->
+        <div class="account-bar" id="account-bar">
+          <div class="account-avatar" id="acct-avatar">H</div>
+          <div class="account-info">
+            <div class="account-name" id="acct-name">—</div>
+            <div class="account-email" id="acct-email">—</div>
+          </div>
+          <button class="logout-btn" onclick="logout()">로그아웃</button>
         </div>
-        <div class="add-note">
-          💡 추가 시 Google Tasks 연동 팝업이 뜹니다
+
+        <!-- 통계 -->
+        <div class="stats-row">
+          <div class="stat-pill"><div class="stat-num" id="cnt-total">0</div><div class="stat-lbl">전체</div></div>
+          <div class="stat-pill"><div class="stat-num" id="cnt-active">0</div><div class="stat-lbl">진행 중</div></div>
+          <div class="stat-pill"><div class="stat-num" id="cnt-done">0</div><div class="stat-lbl">완료</div></div>
         </div>
-      </div>
 
-      <!-- 필터 -->
-      <div class="list-controls">
-        <button class="ctrl-btn active" id="filter-all" onclick="setFilter('all')">전체</button>
-        <button class="ctrl-btn" id="filter-active" onclick="setFilter('active')">진행 중</button>
-        <button class="ctrl-btn" id="filter-done" onclick="setFilter('done')">완료</button>
-        <button class="ctrl-btn" onclick="clearDone()" style="color:var(--rose);border-color:rgba(255,80,96,.3);">완료 삭제</button>
-      </div>
-
-      <!-- Task 목록 -->
-      <div class="task-list" id="task-list"></div>
-
-      <!-- Google Tasks 앱 열기 -->
-      <div class="sec">Google Tasks 앱에서 확인</div>
-
-      <a class="gtask-open" href="https://tasks.google.com" target="_blank">
-        <span class="gtask-open-icon">🌐</span>
-        <div class="gtask-open-body">
-          <div class="gtask-open-title">GOOGLE TASKS 웹</div>
-          <div class="gtask-open-sub">tasks.google.com — Google 계정으로 직접 관리</div>
+        <!-- 목록 선택 -->
+        <div class="list-selector">
+          <label>📋 목록</label>
+          <select class="list-select" id="list-select" onchange="onListChange()">
+            <option value="">로딩 중...</option>
+          </select>
         </div>
-        <span class="gtask-open-arr">›</span>
-      </a>
 
-      <a class="gtask-open" href="https://mail.google.com/tasks/canvas" target="_blank">
-        <span class="gtask-open-icon">📧</span>
-        <div class="gtask-open-body">
-          <div class="gtask-open-title">GMAIL 내 TASKS</div>
-          <div class="gtask-open-sub">Gmail 사이드바에서 Tasks 확인</div>
+        <!-- Task 추가 -->
+        <div class="add-box">
+          <div class="add-box-title">☑️ 새 Task 추가 → Google Tasks에 저장</div>
+          <div class="add-row">
+            <input class="add-inp" id="task-inp" placeholder="할 일을 입력하세요..." maxlength="100"
+              onkeydown="if(event.key==='Enter'){addTask();this.blur();}">
+            <button class="add-btn" onclick="addTask()">+</button>
+          </div>
+          <div class="add-row" style="margin-bottom:0;">
+            <input class="add-due" id="task-due" type="date" placeholder="마감일 (선택)">
+          </div>
         </div>
-        <span class="gtask-open-arr">›</span>
-      </a>
 
-      <a class="gtask-open" href="https://calendar.google.com" target="_blank">
-        <span class="gtask-open-icon">📅</span>
-        <div class="gtask-open-body">
-          <div class="gtask-open-title">GOOGLE CALENDAR</div>
-          <div class="gtask-open-sub">캘린더에서 Tasks 마감일 확인</div>
+        <!-- 필터 -->
+        <div class="filter-row">
+          <button class="fbtn on" id="f-all" onclick="setFilter('all')">전체</button>
+          <button class="fbtn" id="f-active" onclick="setFilter('active')">진행 중</button>
+          <button class="fbtn" id="f-done" onclick="setFilter('done')">완료</button>
         </div>
-        <span class="gtask-open-arr">›</span>
-      </a>
 
-      <!-- 연동 안내 -->
-      <div class="sec" style="margin-top:6px;">연동 방법</div>
-      <div class="info-box">
-        <div class="info-title">📱 Google Tasks 앱과 연동하는 방법</div>
-        <div class="info-row"><span class="sn">1</span>여기서 Task를 추가하면 이 앱에 저장됩니다</div>
-        <div class="info-row"><span class="sn">2</span>같은 Task를 Google Tasks에도 등록하려면 위 "Google Tasks 웹" 버튼 탭</div>
-        <div class="info-row"><span class="sn">3</span>Google Tasks 앱 설치 후 iPhone 홈 화면에 위젯 추가하면 한눈에 확인 가능</div>
-        <div class="info-row"><span class="sn">4</span>Google Calendar와 자동 연동 — 마감일 설정 시 캘린더에 표시</div>
-      </div>
+        <!-- Task 목록 -->
+        <div class="sec">Google Tasks 목록</div>
+        <div class="task-list" id="task-list"></div>
+        <button class="clr-btn" onclick="clearDone()">🗑️ 완료된 Task 삭제</button>
 
-      <div class="info-box" style="border-color:rgba(255,192,32,.2);background:rgba(255,192,32,.05);">
-        <div class="info-title" style="color:var(--gold);">⚠️ 직접 API 연동 불가 이유</div>
-        <div class="info-row" style="color:var(--text2);"><span class="sn" style="background:var(--gold);color:#0a0a0f;">!</span>Google Tasks API는 OAuth 2.0 로그인이 필요하며, 이는 별도 서버와 도메인 인증이 있어야 합니다. GitHub Pages 앱에서는 보안상 직접 연동이 불가합니다. 위 링크로 Google Tasks를 직접 열어 사용하세요.</div>
       </div>
 
     </div>
@@ -222,228 +244,335 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
   <!-- BOTTOM NAV -->
   <nav class="bnav">
-    <button class="nb nb-home-btn" onclick="window.location.href='index.html'"><span class="ni">🏠</span>홈</button>
+    <button class="nb" onclick="window.location.href='index.html'"><span class="ni">🏠</span>홈</button>
     <button class="nb" onclick="window.location.href='habits.html'"><span class="ni">✅</span>습관</button>
-    <button class="nb" onclick="window.location.href='brain.html'"><span class="ni">🧠</span>Brain</button>
-    <button class="nb" onclick="window.location.href='franklin.html'"><span class="ni">📖</span>플래너</button>
     <button class="nb" onclick="window.location.href='gratitude.html'"><span class="ni">🙏</span>감사</button>
-    <button class="nb" onclick="window.location.href='gcal.html'"><span class="ni">📅</span>캘린더</button>
+    <button class="nb" onclick="window.location.href='brain.html'"><span class="ni">🧠</span>Brain</button>
     <button class="nb on" onclick="window.location.href='gtask.html'"><span class="ni">☑️</span>Tasks</button>
+    <button class="nb" onclick="window.location.href='gcal.html'"><span class="ni">📅</span>캘린더</button>
   </nav>
 </div>
 <div class="toast" id="toast"></div>
 
-<script>
-const KEY='henry_gtask_v2';
-function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{tasks:[]};}
-function sv(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
-let D=ld();
-let curFilter='all';
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async></script>
 
-function p2(n){return String(n).padStart(2,'0');}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function todayStr(){const n=new Date();return`${n.getFullYear()}-${p2(n.getMonth()+1)}-${p2(n.getDate())}`;}
-function nowStr(){
-  const n=new Date();
-  return`${n.getFullYear()}.${p2(n.getMonth()+1)}.${p2(n.getDate())} ${p2(n.getHours())}:${p2(n.getMinutes())}`;
-}
+<script>
+/* ══ CONFIG ══
+   Google Cloud Console에서 OAuth 2.0 클라이언트 ID 발급 필요
+   https://console.cloud.google.com/
+   승인된 JavaScript 출처: https://[아이디].github.io
+*/
+const CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // ← 여기에 클라이언트 ID 입력
+const SCOPES = 'https://www.googleapis.com/auth/tasks';
+const API_BASE = 'https://tasks.googleapis.com/tasks/v1';
+
+const KEY = 'henry_gtask_v3';
+let tokenClient = null;
+let accessToken = null;
+let tasks = [];
+let taskLists = [];
+let curListId = '@default';
+let curFilter = 'all';
+
+function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{token:null,user:null,tasks:[],listId:'@default'};}
+function sv(d){try{localStorage.setItem(KEY,JSON.stringify(d));}catch(e){}}
 
 let toastT=null;
-function toast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;
-  t.classList.add('show');clearTimeout(toastT);
-  toastT=setTimeout(()=>t.classList.remove('show'),1800);
+function toast(msg,dur=1800){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),dur);}
+function p2(n){return String(n).padStart(2,'0');}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function nowStr(){const n=new Date();return`${n.getFullYear()}.${p2(n.getMonth()+1)}.${p2(n.getDate())} ${p2(n.getHours())}:${p2(n.getMinutes())}`;}
+
+/* ══ INIT ══ */
+window.onload = function(){
+  const saved = ld();
+  if(saved.token && saved.user){
+    accessToken = saved.token;
+    curListId = saved.listId || '@default';
+    showMain(saved.user);
+    fetchLists().then(()=>fetchTasks());
+  }
+
+  // Google Identity Services 초기화
+  if(typeof google !== 'undefined') initGIS();
+  else document.querySelector('script[src*="gsi"]').addEventListener('load', initGIS);
+};
+
+function initGIS(){
+  if(CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID'){
+    // 클라이언트 ID 미설정 — 데모 모드
+    return;
+  }
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (resp) => {
+      if(resp.error) { toast('❌ 로그인 실패: '+resp.error); return; }
+      accessToken = resp.access_token;
+      fetchUserInfo().then(user=>{
+        sv({token:accessToken, user, tasks:[], listId:curListId});
+        showMain(user);
+        fetchLists().then(()=>fetchTasks());
+      });
+    }
+  });
 }
 
+/* ══ LOGIN / LOGOUT ══ */
+function googleLogin(){
+  if(CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID'){
+    // 클라이언트 ID 미설정 → 안내
+    showSetupGuide();
+    return;
+  }
+  if(tokenClient) tokenClient.requestAccessToken({prompt:'consent'});
+  else toast('❌ Google 로그인 초기화 중... 잠시 후 다시 시도하세요');
+}
+
+function logout(){
+  if(accessToken && typeof google !== 'undefined'){
+    google.accounts.oauth2.revoke(accessToken, ()=>{});
+  }
+  accessToken = null;
+  localStorage.removeItem(KEY);
+  document.getElementById('view-login').style.display='block';
+  document.getElementById('view-main').style.display='none';
+  toast('👋 로그아웃됨');
+}
+
+function showMain(user){
+  document.getElementById('view-login').style.display='none';
+  document.getElementById('view-main').style.display='block';
+  if(user){
+    const initial=(user.name||user.email||'U')[0].toUpperCase();
+    document.getElementById('acct-avatar').textContent=initial;
+    document.getElementById('acct-name').textContent=user.name||'—';
+    document.getElementById('acct-email').textContent=user.email||'—';
+  }
+}
+
+/* ══ API CALLS ══ */
+async function apiCall(url, method='GET', body=null){
+  const opts = {
+    method,
+    headers: {'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'}
+  };
+  if(body) opts.body = JSON.stringify(body);
+  const res = await fetch(API_BASE+url, opts);
+  if(res.status===401){ toast('🔑 세션 만료 — 다시 로그인하세요'); logout(); throw new Error('401'); }
+  if(!res.ok) throw new Error('API error '+res.status);
+  if(res.status===204) return null;
+  return res.json();
+}
+
+async function fetchUserInfo(){
+  const res = await fetch('https://www.googleapis.com/oauth2/v2/userinfo',{
+    headers:{'Authorization':'Bearer '+accessToken}
+  });
+  return res.json();
+}
+
+async function fetchLists(){
+  try{
+    const data = await apiCall('/users/@me/lists');
+    taskLists = data.items || [];
+    const sel = document.getElementById('list-select');
+    sel.innerHTML = taskLists.map(l=>`<option value="${l.id}"${l.id===curListId?' selected':''}>${esc(l.title)}</option>`).join('');
+    if(taskLists.length && curListId==='@default') curListId=taskLists[0].id;
+  }catch(e){ console.warn('fetchLists:',e); }
+}
+
+async function fetchTasks(){
+  if(!accessToken) return;
+  const syncBtn=document.getElementById('sync-btn');
+  syncBtn.classList.add('syncing');
+  try{
+    const data = await apiCall(`/lists/${curListId}/tasks?showCompleted=true&maxResults=100`);
+    tasks = (data.items||[]).sort((a,b)=>{
+      if(a.status==='completed' && b.status!=='completed') return 1;
+      if(a.status!=='completed' && b.status==='completed') return -1;
+      return (a.position||'').localeCompare(b.position||'');
+    });
+    renderList();
+    toast('🔄 동기화 완료');
+  }catch(e){ if(e.message!=='401') toast('❌ 불러오기 실패'); }
+  finally{ syncBtn.classList.remove('syncing'); }
+}
+
+async function addTask(){
+  const inp=document.getElementById('task-inp');
+  const due=document.getElementById('task-due');
+  const v=inp.value.trim();if(!v)return;
+
+  if(!accessToken){ toast('❌ 먼저 로그인하세요'); return; }
+
+  const body={title:v,status:'needsAction'};
+  if(due.value) body.due=new Date(due.value).toISOString();
+
+  try{
+    const newTask = await apiCall(`/lists/${curListId}/tasks`,'POST',body);
+    tasks.unshift(newTask);
+    inp.value='';due.value='';
+    renderList();
+    toast('✅ Google Tasks에 추가됨');
+  }catch(e){ toast('❌ 추가 실패'); }
+}
+
+async function toggleTask(id){
+  const task=tasks.find(t=>t.id===id);if(!task)return;
+  const newStatus=task.status==='completed'?'needsAction':'completed';
+  const body={...task, status:newStatus};
+  if(newStatus==='completed') body.completed=new Date().toISOString();
+  else { delete body.completed; }
+  try{
+    const updated=await apiCall(`/lists/${curListId}/tasks/${id}`,'PUT',body);
+    const idx=tasks.findIndex(t=>t.id===id);
+    if(idx>=0) tasks[idx]=updated;
+    renderList();
+    if(newStatus==='completed') toast('✅ 완료!');
+    else toast('↩️ 다시 진행 중');
+  }catch(e){ toast('❌ 업데이트 실패'); }
+}
+
+async function deleteTask(id){
+  if(!confirm('이 Task를 삭제할까요?'))return;
+  try{
+    await apiCall(`/lists/${curListId}/tasks/${id}`,'DELETE');
+    tasks=tasks.filter(t=>t.id!==id);
+    renderList();toast('🗑️ 삭제됨');
+  }catch(e){ toast('❌ 삭제 실패'); }
+}
+
+async function updateTaskTitle(id, newTitle){
+  const task=tasks.find(t=>t.id===id);if(!task||!newTitle.trim())return;
+  const body={...task, title:newTitle.trim()};
+  try{
+    const updated=await apiCall(`/lists/${curListId}/tasks/${id}`,'PUT',body);
+    const idx=tasks.findIndex(t=>t.id===id);
+    if(idx>=0) tasks[idx]=updated;
+    renderList();toast('✅ 수정됨');
+  }catch(e){ toast('❌ 수정 실패'); }
+}
+
+async function clearDone(){
+  const doneTasks=tasks.filter(t=>t.status==='completed');
+  if(!doneTasks.length){ toast('완료된 Task가 없습니다'); return; }
+  if(!confirm(`완료된 Task ${doneTasks.length}개를 삭제할까요?`))return;
+  try{
+    await apiCall(`/lists/${curListId}/tasks/clear`,'POST');
+    tasks=tasks.filter(t=>t.status!=='completed');
+    renderList();toast(`🗑️ ${doneTasks.length}개 삭제됨`);
+  }catch(e){ toast('❌ 삭제 실패'); }
+}
+
+/* ══ RENDER ══ */
 function setFilter(f){
   curFilter=f;
   ['all','active','done'].forEach(x=>{
-    document.getElementById('filter-'+x).classList.toggle('active',x===f);
+    document.getElementById('f-'+x).classList.toggle('on',x===f);
   });
   renderList();
 }
 
-function renderStats(){
-  const total=D.tasks.length;
-  const done=D.tasks.filter(t=>t.done).length;
+function onListChange(){
+  curListId=document.getElementById('list-select').value;
+  const saved=ld();saved.listId=curListId;sv(saved);
+  fetchTasks();
+}
+
+function syncWithGoogle(){ fetchTasks(); }
+
+function renderList(){
+  const total=tasks.length;
+  const done=tasks.filter(t=>t.status==='completed').length;
   document.getElementById('cnt-total').textContent=total;
   document.getElementById('cnt-active').textContent=total-done;
   document.getElementById('cnt-done').textContent=done;
-}
 
-function renderList(){
-  renderStats();
   const list=document.getElementById('task-list');
   list.innerHTML='';
-  let items=[...D.tasks];
-  // 정렬: 미완료 먼저, 최신순
-  items.sort((a,b)=>(a.done?1:0)-(b.done?1:0)||(b.id-a.id));
-  if(curFilter==='active') items=items.filter(t=>!t.done);
-  else if(curFilter==='done') items=items.filter(t=>t.done);
-  if(!items.length){
+
+  let filtered=[...tasks];
+  if(curFilter==='active') filtered=filtered.filter(t=>t.status!=='completed');
+  else if(curFilter==='done') filtered=filtered.filter(t=>t.status==='completed');
+
+  if(!filtered.length){
     list.innerHTML=`<div class="empty"><div class="ei">☑️</div><p>${curFilter==='done'?'완료된 Task가 없습니다':'할 일을 추가해보세요'}</p></div>`;
     return;
   }
-  items.forEach(task=>{
-    const origIdx=D.tasks.findIndex(t=>t.id===task.id);
-    list.appendChild(mkEl(task,origIdx));
+
+  filtered.forEach(task=>{
+    const isDone=task.status==='completed';
+    const el=document.createElement('div');
+    el.className='ti'+(isDone?' done':'');
+
+    let metaHtml='';
+    if(task.due){
+      const d=new Date(task.due);
+      const ds=`${d.getFullYear()}.${p2(d.getMonth()+1)}.${p2(d.getDate())}`;
+      metaHtml+=`<span class="t-due-tag">📅 ${ds}</span>`;
+    }
+    if(task.updated){
+      const u=new Date(task.updated);
+      metaHtml+=`<span>${p2(u.getMonth()+1)}/${p2(u.getDate())} 업데이트</span>`;
+    }
+
+    el.innerHTML=`
+      <div class="t-chk" onclick="toggleTask('${task.id}')">${isDone?'✓':''}</div>
+      <div class="t-body">
+        <div class="t-title">${esc(task.title||'(제목 없음)')}</div>
+        ${metaHtml?`<div class="t-meta">${metaHtml}</div>`:''}
+      </div>
+      <div class="t-actions">
+        <button class="t-btn" onclick="startEdit(this,'${task.id}')" title="수정">✏️</button>
+        <button class="t-btn" onclick="deleteTask('${task.id}')" title="삭제" style="color:var(--rose);">×</button>
+      </div>`;
+    list.appendChild(el);
   });
 }
 
-function mkEl(task,i){
-  const el=document.createElement('div');
-  el.className='t-item'+(task.done?' done':'');
-  el.innerHTML=`
-    <div class="t-chk" onclick="togTask(${i})">${task.done?'✓':''}</div>
-    <div class="t-body">
-      <div class="t-txt">${esc(task.text)}</div>
-      <div class="t-meta">
-        <span>${task.createdAt||''}</span>
-        ${task.done&&task.doneAt?`<span>완료: ${task.doneAt}</span>`:''}
-      </div>
-    </div>
-    <div class="t-actions">
-      <button class="t-btn edit" onclick="startEdit(this,${i})" title="수정">✏️</button>
-      <button class="t-btn del" onclick="delTask(${i})" title="삭제">×</button>
-    </div>`;
-  return el;
-}
-
-function startEdit(btn,i){
-  const item=btn.closest('.t-item');
-  const txtEl=item.querySelector('.t-txt');
-  const curText=D.tasks[i].text;
+function startEdit(btn, id){
+  const item=btn.closest('.ti');
+  const titleEl=item.querySelector('.t-title');
+  const curTitle=tasks.find(t=>t.id===id)?.title||'';
   item.classList.add('editing');
-  const body=item.querySelector('.t-body');
-  // replace txt with input
   const inp=document.createElement('input');
-  inp.className='t-edit-inp';inp.value=curText;inp.maxLength=100;
-  txtEl.replaceWith(inp);inp.focus();inp.select();
-  // add save button
+  inp.className='t-edit-inp';inp.value=curTitle;inp.maxLength=100;
+  titleEl.replaceWith(inp);inp.focus();inp.select();
   const saveBtn=document.createElement('button');
   saveBtn.className='t-save-btn';saveBtn.textContent='저장';
-  body.appendChild(saveBtn);
-  // change edit btn
-  btn.textContent='✅';btn.title='저장';
-  const finish=()=>{
-    const v=inp.value.trim();
-    if(v){D.tasks[i].text=v;sv();}
-    renderList();
-  };
-  btn.onclick=finish;
-  saveBtn.onclick=finish;
+  item.querySelector('.t-body').appendChild(saveBtn);
+  btn.textContent='✅';
+  const finish=()=>{ updateTaskTitle(id,inp.value); };
+  btn.onclick=finish;saveBtn.onclick=finish;
   inp.onkeydown=e=>{if(e.key==='Enter')finish();if(e.key==='Escape')renderList();};
 }
 
-function togTask(i){
-  if(!D.tasks[i])return;
-  D.tasks[i].done=!D.tasks[i].done;
-  D.tasks[i].doneAt=D.tasks[i].done?nowStr():'';
-  sv();renderList();
-  if(D.tasks[i].done) toast('✅ 완료!');
-}
-
-function delTask(i){
-  if(!confirm('이 Task를 삭제할까요?'))return;
-  D.tasks.splice(i,1);sv();renderList();toast('🗑️ 삭제됨');
-}
-
-function addTask(){
-  const inp=document.getElementById('task-inp');
-  const v=inp.value.trim();if(!v)return;
-  D.tasks.push({
-    id:Date.now(),
-    text:v,
-    done:false,
-    createdAt:nowStr(),
-    doneAt:''
-  });
-  inp.value='';sv();renderList();
-  // Google Tasks에도 추가 안내 팝업
-  showGoogleSync(v);
-}
-
-function showGoogleSync(taskText){
-  // 기존 팝업 제거
-  const old=document.getElementById('gsync-popup');
-  if(old)old.remove();
-  
-  const encodedTitle=encodeURIComponent(taskText);
-  // Google Tasks 웹 URL — tasks.google.com에서 직접 추가 가능
-  const webUrl=`https://tasks.google.com`;
-  // 모바일 앱 딥링크 (앱 설치 시 작동)
-  const appUrl=`googletasks://addtask?title=${encodedTitle}`;
-  
-  const popup=document.createElement('div');
-  popup.id='gsync-popup';
-  popup.style.cssText=`
-    position:fixed;bottom:calc(var(--safe-b) + 72px);left:14px;right:14px;
-    background:#1a2a3e;border:1.5px solid rgba(106,176,245,.5);
-    border-radius:16px;padding:14px 15px;z-index:400;
-    box-shadow:0 8px 32px rgba(0,0,0,.5);
-    animation:slideUp .25s ease;
-  `;
-  popup.innerHTML=`
-    <style>@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}</style>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-      <div style="font-size:13px;font-weight:700;color:#6ab0f5;">☑️ Google Tasks에도 추가할까요?</div>
-      <button onclick="document.getElementById('gsync-popup').remove()" style="background:none;border:none;color:#606080;font-size:18px;cursor:pointer;padding:0 4px;">×</button>
+/* ══ SETUP GUIDE (CLIENT ID 미설정 시) ══ */
+function showSetupGuide(){
+  document.querySelector('.login-card').innerHTML=`
+    <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:12px;">⚙️ 설정 필요</div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.75;text-align:left;">
+      Google Tasks API를 사용하려면<br>
+      <b style="color:#fff;">Google Cloud Console</b>에서<br>
+      OAuth 2.0 클라이언트 ID가 필요합니다.<br><br>
+      <b style="color:var(--gt);">① console.cloud.google.com 접속</b><br>
+      ② 새 프로젝트 생성<br>
+      ③ Tasks API 활성화<br>
+      ④ OAuth 동의 화면 설정<br>
+      ⑤ 사용자 인증 정보 → 웹 앱 클라이언트 ID 생성<br>
+      ⑥ 승인된 JS 출처: <code style="color:var(--teal);">https://[아이디].github.io</code><br>
+      ⑦ gtask.html의 CLIENT_ID에 입력<br><br>
+      <b style="color:#fff;">또는 아래 링크로 바로 이동:</b>
     </div>
-    <div style="font-size:12px;color:#b0b0c8;margin-bottom:12px;word-break:break-all;">"${taskText.replace(/"/g,'&quot;')}"</div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="openGoogleTasksApp('${encodedTitle}')" style="flex:1;background:#6ab0f5;border:none;color:#0a0a0f;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;">
-        📱 앱에서 추가
-      </button>
-      <button onclick="openGoogleTasksWeb('${encodedTitle}')" style="flex:1;background:rgba(106,176,245,.15);border:1px solid rgba(106,176,245,.35);color:#6ab0f5;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;">
-        🌐 웹에서 추가
-      </button>
-    </div>
-    <div style="font-size:10px;color:#606080;margin-top:8px;text-align:center;">앱 설치 필요 · Google 계정으로 로그인</div>
-  `;
-  document.body.appendChild(popup);
-  // 5초 후 자동 닫기
-  setTimeout(()=>{
-    const p=document.getElementById('gsync-popup');
-    if(p)p.style.opacity='0';
-    setTimeout(()=>{const p=document.getElementById('gsync-popup');if(p)p.remove();},400);
-  },6000);
-  toast('✅ Task 추가됨');
+    <a href="https://tasks.google.com" target="_blank" style="display:block;margin-top:14px;background:var(--gt);color:#fff;padding:13px;border-radius:12px;text-decoration:none;font-weight:700;font-size:14px;text-align:center;">
+      🌐 Google Tasks 웹 바로 열기
+    </a>
+    <a href="https://console.cloud.google.com" target="_blank" style="display:block;margin-top:8px;background:var(--s2);border:1px solid var(--wborder);color:#fff;padding:12px;border-radius:12px;text-decoration:none;font-weight:700;font-size:13px;text-align:center;">
+      ⚙️ Google Cloud Console
+    </a>`;
 }
-
-function openGoogleTasksApp(encodedTitle){
-  document.getElementById('gsync-popup')?.remove();
-  // 앱 딥링크 — Google Tasks 앱 설치된 경우 작동
-  const appUrl=`googletasks://addtask?title=${encodedTitle}`;
-  // window.location으로 딥링크 시도
-  window.location.href=appUrl;
-  // 앱 없으면 스토어로 이동 (fallback)
-  setTimeout(()=>{
-    // 페이지가 변하지 않았다면 앱이 없는 것 → 스토어로
-    window.open('https://apps.apple.com/app/google-tasks-get-things-done/id1353634006','_blank');
-  },1500);
-}
-
-function openGoogleTasksWeb(encodedTitle){
-  document.getElementById('gsync-popup')?.remove();
-  // Google Tasks 웹에서 직접 추가
-  window.open(`https://tasks.google.com`,'_blank');
-  // 클립보드에 복사 (웹에서 붙여넣기 용이하게)
-  try{
-    navigator.clipboard.writeText(decodeURIComponent(encodedTitle)).then(()=>{
-      toast('📋 텍스트 클립보드에 복사됨 — 붙여넣기 하세요');
-    });
-  }catch(e){toast('🌐 Google Tasks 웹이 열립니다');}
-}
-
-function clearDone(){
-  const cnt=D.tasks.filter(t=>t.done).length;
-  if(!cnt){toast('완료된 Task가 없습니다');return;}
-  if(!confirm(`완료된 Task ${cnt}개를 삭제할까요?`))return;
-  D.tasks=D.tasks.filter(t=>!t.done);
-  sv();renderList();toast(`🗑️ ${cnt}개 삭제됨`);
-}
-
-renderList();
 </script>
 </body>
 </html>

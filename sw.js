@@ -1,10 +1,10 @@
-const C='henry-diary-v12';
+const C='henry-diary-v13';
 const F=[
   './',
   './index.html',
   './habits.html',
   './brain.html',
-  './franklin.html',
+  './gtask.html',
   './gratitude.html',
   './gcal.html',
   './manifest.json'

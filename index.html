@@ -124,8 +124,8 @@ body{
 .btn-habit  .nav-title{color:var(--teal);}
 .btn-brain  {border-color:rgba(255,255,255,0.75);  background:linear-gradient(135deg,#12121a,#0d1e12);}
 .btn-brain  .nav-title{color:var(--green);}
-.btn-franklin{border-color:rgba(255,255,255,0.75);background:linear-gradient(135deg,#12121a,#1e1800);}
-.btn-franklin .nav-title{color:var(--gold);}
+.btn-gtask2{border-color:rgba(255,255,255,0.75);background:linear-gradient(135deg,#12121a,#0d1a36);}
+.btn-gtask2 .nav-title{color:#4a8fff;}
 .btn-gratitude{border-color:rgba(255,255,255,0.75);background:linear-gradient(135deg,#12121a,#1e1000);}
 .btn-gratitude .nav-title{color:var(--orange);}
 .btn-gcal   {border-color:rgba(255,255,255,0.75); background:linear-gradient(135deg,#12121a,#0a1428);}
@@ -158,7 +158,7 @@ body{
 /* color per button */
 .nb-habit   {--nc:var(--teal);}
 .nb-brain   {--nc:var(--green);}
-.nb-franklin{--nc:var(--gold);}
+.nb-gtask2{--nc:#4a8fff;}
 .nb-grat    {--nc:var(--orange);}
 .nb-gcal    {--nc:var(--blue);}
 .nb:active{color:var(--nc, var(--blue));}
@@ -214,11 +214,11 @@ body{
         <span class="nav-arr">›</span>
       </div>
 
-      <div class="nav-btn btn-franklin" onclick="go('franklin.html')">
-        <span class="nav-icon">📖</span>
+      <div class="nav-btn btn-gtask2" onclick="go('gtask.html')">
+        <span class="nav-icon">☑️</span>
         <div class="nav-body">
-          <div class="nav-title">FRANKLIN PLANNER</div>
-          <div class="nav-sub">미션 · 역할 · 위클리 · 데일리 · 목표</div>
+          <div class="nav-title">GOOGLE TASKS</div>
+          <div class="nav-sub">Google 할 일 목록 연동</div>
         </div>
         <span class="nav-arr">›</span>
       </div>
@@ -247,8 +247,8 @@ body{
     <button class="nb nb-brain" onclick="go('brain.html')">
       <span class="ni">🧠</span>Brain
     </button>
-    <button class="nb nb-franklin" onclick="go('franklin.html')">
-      <span class="ni">📖</span>플래너
+    <button class="nb nb-gtask2" onclick="go('gtask.html')">
+      <span class="ni">☑️</span>Tasks
     </button>
     <button class="nb nb-gcal" onclick="go('gcal.html')">
       <span class="ni">📅</span>캘린더
