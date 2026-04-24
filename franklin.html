@@ -114,6 +114,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .abc-sub{font-size:11px;color:var(--text3);margin-top:1px;}
 .task-list{display:flex;flex-direction:column;gap:5px;margin-bottom:8px;}
 .task-item{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:10px 11px;display:flex;align-items:center;gap:9px;}
+.task-item.editing{background:var(--s3);border-color:rgba(74,143,255,.4);}
+.t-edit-inp{flex:1;background:transparent;border:none;color:var(--text);font-size:13px;font-weight:500;font-family:'Noto Sans KR',sans-serif;outline:none;padding:0;}
+.t-edit-btn{background:none;border:none;color:var(--blue);font-size:13px;cursor:pointer;padding:2px 5px;touch-action:manipulation;flex-shrink:0;}
+.t-edit-btn:active{opacity:.6;}
 .task-item.done-t{opacity:.4;}
 .task-item.done-t .t-lbl{text-decoration:line-through;color:var(--text3);}
 .tchk{width:22px;height:22px;border-radius:6px;border:2px solid var(--s4);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .18s;font-size:11px;color:transparent;background:var(--s3);touch-action:manipulation;}
@@ -121,7 +125,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .abc-B .task-item.done-t .tchk{background:#ff8830;border-color:#ff8830;color:#0a0a0f;}
 .abc-C .task-item.done-t .tchk{background:#4a8fff;border-color:#4a8fff;color:#fff;}
 .t-lbl{flex:1;font-size:13px;font-weight:500;color:var(--text);}
-.t-del{background:none;border:none;color:var(--text3);font-size:15px;cursor:pointer;opacity:.2;touch-action:manipulation;}
+.t-del{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;opacity:.28;touch-action:manipulation;flex-shrink:0;}
 .t-del:active{opacity:1;color:var(--rose);}
 .abc-add{display:flex;gap:6px;}
 .abc-inp{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;}
@@ -451,10 +455,45 @@ function renderDaily(){
   document.getElementById('daily-intent').value=dd.intent||'';
   ['A','B','C'].forEach(t=>{
     const tl=document.getElementById('tasks-'+t);tl.innerHTML='';
-    (dd.tasks&&dd.tasks[t]||[]).forEach((task,i)=>{const el=document.createElement('div');el.className='task-item'+(task.done?' done-t':'');el.innerHTML=`<div class="tchk" onclick="togDTask('${t}',${i})">${task.done?'✓':''}</div><div class="t-lbl">${esc(task.text)}</div><button class="t-del" onclick="delDTask('${t}',${i})">×</button>`;tl.appendChild(el);});
+    (dd.tasks&&dd.tasks[t]||[]).forEach((task,i)=>{tl.appendChild(mkDTaskEl(t,i,task));});
     if(!(dd.tasks&&dd.tasks[t]||[]).length)tl.innerHTML='<div style="padding:6px 0;font-size:12px;color:var(--text3);text-align:center;">항목 없음</div>';
   });
   document.getElementById('daily-journal').value=dd.journal||'';
+}
+function mkDTaskEl(type,i,task){
+  const el=document.createElement('div');
+  el.className='task-item'+(task.done?' done-t':'');
+  el.dataset.type=type;el.dataset.idx=i;
+  el.innerHTML=`
+    <div class="tchk" onclick="togDTask('${type}',${i})">${task.done?'✓':''}</div>
+    <div class="t-lbl">${esc(task.text)}</div>
+    <button class="t-edit-btn" onclick="startEdit(this,'${type}',${i})" title="수정">✏️</button>
+    <button class="t-del" onclick="delDTask('${type}',${i})">×</button>`;
+  return el;
+}
+function startEdit(btn,type,i){
+  const item=btn.closest('.task-item');
+  const lbl=item.querySelector('.t-lbl');
+  const curText=lbl.textContent;
+  item.classList.add('editing');
+  // 인라인 input으로 교체
+  const inp=document.createElement('input');
+  inp.className='t-edit-inp';
+  inp.value=curText;
+  inp.maxLength=50;
+  lbl.replaceWith(inp);
+  inp.focus();
+  inp.select();
+  // 수정 버튼 → 완료 버튼으로
+  btn.textContent='✅';
+  btn.onclick=()=>finishEdit(inp,btn,type,i);
+  inp.onkeydown=e=>{if(e.key==='Enter'){finishEdit(inp,btn,type,i);}if(e.key==='Escape'){renderDaily();}};
+  inp.onblur=()=>setTimeout(()=>finishEdit(inp,btn,type,i),150);
+}
+function finishEdit(inp,btn,type,i){
+  const v=inp.value.trim();
+  if(v){ensureDay();FP.daily[curDay].tasks[type][i].text=v;sv();}
+  renderDaily();
 }
 function addDTask(type){const inp=document.getElementById('inp-'+type);const v=inp.value.trim();if(!v)return;ensureDay();if(!FP.daily[curDay].tasks[type])FP.daily[curDay].tasks[type]=[];FP.daily[curDay].tasks[type].push({text:v,done:false});inp.value='';sv();renderDaily();}
 function togDTask(type,i){ensureDay();const t=FP.daily[curDay].tasks[type][i];if(!t)return;t.done=!t.done;sv();renderDaily();}

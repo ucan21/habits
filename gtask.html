@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Google Tasks — Henry</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0f;--s1:#12121a;--s2:#1a1a26;--s3:#222232;--s4:#2a2a3e;
+  --text:#f0f0f8;--text2:#b0b0c8;--text3:#606080;
+  --blue:#4a8fff;--gtblue:#6ab0f5;--teal:#28c490;--rose:#ff5060;--gold:#ffc020;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.16);
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
+.shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
+
+/* HEADER */
+.hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.back{background:var(--s2);border:1px solid var(--border2);color:var(--text2);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;}
+.back:active{transform:scale(.92);}
+.hdr-c{flex:1;text-align:center;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--gtblue);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.scroll::-webkit-scrollbar{width:2px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--s3);}
+.body{padding:14px 14px 90px;}
+
+/* SECTION */
+.sec{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:500;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* EMBED CARD */
+.embed-card{background:var(--s1);border:1px solid rgba(106,176,245,.22);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+.embed-hdr{padding:12px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.embed-hdr-icon{font-size:20px;}
+.embed-hdr-info{flex:1;}
+.embed-hdr-title{font-size:14px;font-weight:700;color:var(--gtblue);}
+.embed-hdr-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.frame-ph{padding:32px 20px;text-align:center;color:var(--text3);}
+.frame-ph .pi{font-size:40px;margin-bottom:12px;}
+.frame-ph p{font-size:13px;line-height:1.7;}
+
+/* OPEN BUTTON */
+.open-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:16px;margin-bottom:14px;
+  background:linear-gradient(135deg,#1a2a4a,#0d1a36);
+  border:1px solid rgba(106,176,245,.35);border-radius:14px;
+  color:var(--gtblue);font-size:15px;font-weight:700;
+  font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+  text-decoration:none;touch-action:manipulation;transition:all .15s;
+}
+.open-btn:active{transform:scale(.97);}
+.open-btn .ob-icon{font-size:22px;}
+
+/* QUICK LINKS */
+.qlink-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+.qlink{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  background:var(--s1);border:1px solid var(--border);border-radius:14px;
+  padding:16px 10px;text-decoration:none;touch-action:manipulation;transition:all .15s;
+}
+.qlink:active{transform:scale(.96);background:var(--s2);}
+.qlink-icon{font-size:26px;}
+.qlink-label{font-size:12px;font-weight:500;color:var(--text2);text-align:center;}
+
+/* INFO BOX */
+.info-box{background:rgba(106,176,245,.07);border:1px solid rgba(106,176,245,.18);border-radius:14px;padding:14px 16px;margin-bottom:14px;}
+.info-title{font-size:12px;font-weight:700;color:var(--gtblue);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.info-step{display:flex;gap:10px;margin-bottom:7px;align-items:flex-start;font-size:13px;color:var(--text2);line-height:1.55;}
+.info-step:last-child{margin:0;}
+.sn{background:var(--gtblue);color:#0a0a0f;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* LOCAL TASKS (로컬 메모용) */
+.local-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:14px;}
+.local-hdr{font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.task-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.t-item{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:11px 12px;display:flex;align-items:center;gap:10px;transition:all .14s;}
+.t-item.done .t-txt{text-decoration:line-through;color:var(--text3);}
+.t-item.done{opacity:.45;}
+.t-chk{width:24px;height:24px;border-radius:7px;border:2px solid var(--s4);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .18s;font-size:12px;color:transparent;background:var(--s3);touch-action:manipulation;}
+.t-item.done .t-chk{background:var(--teal);border-color:var(--teal);color:#0a0a0f;}
+.t-txt{flex:1;font-size:14px;font-weight:500;color:var(--text);}
+.t-edit-btn{background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;opacity:.3;touch-action:manipulation;padding:2px 4px;}
+.t-edit-btn:active{opacity:1;color:var(--blue);}
+.t-item.editing{background:var(--s3);border-color:rgba(74,143,255,.4);}
+.t-edit-inp{flex:1;background:transparent;border:none;color:var(--text);font-size:14px;font-weight:500;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.t-del-btn{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;opacity:.2;touch-action:manipulation;padding:2px 4px;flex-shrink:0;}
+.t-del-btn:active{opacity:1;color:var(--rose);}
+.addrow{display:flex;gap:7px;}
+.addinp{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:11px 13px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;}
+.addinp:focus{border-color:var(--gtblue);}
+.addinp::placeholder{color:var(--text3);}
+.addbtn{background:var(--gtblue);border:none;color:#0a0a0f;padding:11px 15px;border-radius:11px;cursor:pointer;font-size:22px;font-weight:700;line-height:1;touch-action:manipulation;transition:all .14s;}
+.addbtn:active{transform:scale(.91);}
+.clr-btn{width:100%;margin-top:8px;background:var(--s2);border:1px solid var(--border);border-radius:11px;color:var(--text3);padding:11px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;transition:all .2s;}
+
+/* BOTTOM NAV */
+.bnav{flex-shrink:0;background:rgba(10,10,15,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border2);display:flex;padding-bottom:var(--safe-b);}
+.nb{flex:1;background:none;border:none;color:var(--text3);padding:9px 2px 7px;cursor:pointer;font-size:9.5px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .18s;touch-action:manipulation;}
+.nb .ni{font-size:21px;transition:transform .18s;}
+.nb:active .ni{transform:scale(1.2);}
+.nb.nb-home{color:var(--blue);}
+.nb.nb-home .ni{filter:drop-shadow(0 0 5px var(--blue));}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--safe-b)+66px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:var(--text);color:var(--bg);padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c">
+      <div class="hdr-title">☑️ Google Tasks</div>
+      <div class="hdr-sub">Google 할 일 목록 연동</div>
+    </div>
+    <div style="width:36px;"></div>
+  </div>
+
+  <div class="scroll">
+    <div class="body">
+
+      <!-- Google Tasks 바로 열기 -->
+      <a class="open-btn" href="https://tasks.google.com" target="_blank">
+        <span class="ob-icon">☑️</span>
+        Google Tasks 앱 바로 열기 →
+      </a>
+
+      <!-- 빠른 링크 -->
+      <div class="sec">빠른 링크</div>
+      <div class="qlink-grid">
+        <a class="qlink" href="https://tasks.google.com" target="_blank">
+          <span class="qlink-icon">🌐</span>
+          <span class="qlink-label">Google Tasks 웹</span>
+        </a>
+        <a class="qlink" href="https://mail.google.com/tasks/canvas" target="_blank">
+          <span class="qlink-icon">📋</span>
+          <span class="qlink-label">Gmail 내 Tasks</span>
+        </a>
+        <a class="qlink" href="https://calendar.google.com" target="_blank">
+          <span class="qlink-icon">📅</span>
+          <span class="qlink-label">Calendar에서 Tasks</span>
+        </a>
+        <a class="qlink" href="https://play.google.com/store/apps/details?id=com.google.android.apps.tasks" target="_blank">
+          <span class="qlink-icon">📱</span>
+          <span class="qlink-label">앱 다운로드</span>
+        </a>
+      </div>
+
+      <!-- 로컬 메모 (오프라인) -->
+      <div class="sec">📝 로컬 메모 Tasks</div>
+      <div class="local-card">
+        <div class="local-hdr">
+          <span>☑️</span>
+          오프라인 할 일 메모
+          <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);" id="task-cnt">0 / 0</span>
+        </div>
+        <div class="task-list" id="task-list"></div>
+        <div class="addrow">
+          <input class="addinp" id="task-inp" placeholder="할 일 추가..." maxlength="60"
+            onkeydown="if(event.key==='Enter'){addTask();this.blur();}">
+          <button class="addbtn" onclick="addTask()">+</button>
+        </div>
+        <button class="clr-btn" onclick="clearDone()">🗑️ 완료된 항목 삭제</button>
+      </div>
+
+      <!-- 안내 -->
+      <div class="sec">연동 안내</div>
+      <div class="info-box">
+        <div class="info-title">ℹ️ Google Tasks 연동 방법</div>
+        <div class="info-step"><span class="sn">1</span>위 "Google Tasks 앱 바로 열기" 탭</div>
+        <div class="info-step"><span class="sn">2</span>Google 계정으로 로그인</div>
+        <div class="info-step"><span class="sn">3</span>할 일 목록 생성 및 관리</div>
+        <div class="info-step"><span class="sn">4</span>Google Calendar와 자동 연동됨</div>
+        <div class="info-step"><span class="sn">5</span>모바일 앱 설치 시 위젯으로 홈 화면 배치 가능</div>
+      </div>
+
+      <div class="info-box" style="border-color:rgba(255,192,32,.2);background:rgba(255,192,32,.05);">
+        <div class="info-title" style="color:var(--gold);">💡 활용 팁</div>
+        <div class="info-step" style="color:var(--text2);"><span class="sn" style="background:var(--gold);color:#0a0a0f;">!</span>Google Tasks는 Gmail·Calendar·Docs와 완전 연동됩니다. 이메일에서 바로 Task로 등록하거나, Calendar에서 마감일 설정이 가능합니다.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bnav">
+    <button class="nb nb-home" onclick="window.location.href='index.html'"><span class="ni">🏠</span>홈</button>
+    <button class="nb" onclick="window.location.href='habits.html'"><span class="ni">✅</span>습관</button>
+    <button class="nb" onclick="window.location.href='brain.html'"><span class="ni">🧠</span>Brain</button>
+    <button class="nb" onclick="window.location.href='franklin.html'"><span class="ni">📖</span>플래너</button>
+    <button class="nb" onclick="window.location.href='gratitude.html'"><span class="ni">🙏</span>감사</button>
+    <button class="nb" onclick="window.location.href='gcal.html'"><span class="ni">📅</span>캘린더</button>
+    <button class="nb" style="color:#6ab0f5;" onclick="window.location.href='gtask.html'"><span class="ni">☑️</span>Tasks</button>
+  </nav>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='henry_gtask_v1';
+function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{tasks:[]};}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
+let D=ld();
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+let toastT=null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1700);}
+
+function render(){
+  const list=document.getElementById('task-list');
+  list.innerHTML='';
+  const done=D.tasks.filter(t=>t.done).length;
+  document.getElementById('task-cnt').textContent=`${done} / ${D.tasks.length} 완료`;
+  if(!D.tasks.length){
+    list.innerHTML='<div style="text-align:center;padding:16px 0;color:var(--text3);font-size:13px;">할 일을 추가해보세요</div>';
+    return;
+  }
+  D.tasks.forEach((task,i)=>{
+    list.appendChild(mkEl(task,i));
+  });
+}
+
+function mkEl(task,i){
+  const el=document.createElement('div');
+  el.className='t-item'+(task.done?' done':'');
+  el.innerHTML=`
+    <div class="t-chk" onclick="togTask(${i})">${task.done?'✓':''}</div>
+    <div class="t-txt">${esc(task.text)}</div>
+    <button class="t-edit-btn" onclick="startEdit(this,${i})" title="수정">✏️</button>
+    <button class="t-del-btn" onclick="delTask(${i})">×</button>`;
+  return el;
+}
+
+function startEdit(btn,i){
+  const item=btn.closest('.t-item');
+  const txt=item.querySelector('.t-txt');
+  item.classList.add('editing');
+  const inp=document.createElement('input');
+  inp.className='t-edit-inp';inp.value=D.tasks[i].text;inp.maxLength=60;
+  txt.replaceWith(inp);inp.focus();inp.select();
+  btn.textContent='✅';
+  const finish=()=>{const v=inp.value.trim();if(v){D.tasks[i].text=v;sv();}render();};
+  btn.onclick=finish;
+  inp.onkeydown=e=>{if(e.key==='Enter')finish();if(e.key==='Escape')render();};
+  inp.onblur=()=>setTimeout(finish,150);
+}
+
+function togTask(i){D.tasks[i].done=!D.tasks[i].done;sv();render();}
+function delTask(i){D.tasks.splice(i,1);sv();render();}
+function addTask(){
+  const inp=document.getElementById('task-inp');const v=inp.value.trim();if(!v)return;
+  D.tasks.push({text:v,done:false});inp.value='';sv();render();toast('✅ 추가됨');
+}
+function clearDone(){
+  if(!confirm('완료된 항목을 삭제할까요?'))return;
+  D.tasks=D.tasks.filter(t=>!t.done);sv();render();toast('🗑️ 삭제됨');
+}
+
+render();
+</script>
+</body>
+</html>

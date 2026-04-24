@@ -1,4 +1,4 @@
-const C='henry-diary-v3';
+const C='henry-diary-v4';
 const F=[
   './',
   './index.html',
@@ -7,6 +7,7 @@ const F=[
   './franklin.html',
   './gratitude.html',
   './gcal.html',
+  './gtask.html',
   './manifest.json'
 ];
 self.addEventListener('install',e=>{
