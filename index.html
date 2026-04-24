@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Henry Diary</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0a0a0f; --s1:#12121a; --s2:#1a1a26; --s3:#222232;
@@ -57,8 +57,9 @@ body{
   text-shadow:0 0 30px rgba(255,255,255,0.18);
 }
 .hdr-sub{
-  font-size:10px;letter-spacing:3px;color:var(--text3);
-  font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:5px;
+  font-size:11px;letter-spacing:3px;color:#ffffff;
+  font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:6px;
+  font-weight:700;opacity:1;
 }
 /* 날짜 표시 */
 .hdr-date{
@@ -90,7 +91,7 @@ body{
   line-height:1;pointer-events:none;
 }
 .q-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-family:'DM Mono',monospace;font-weight:700;margin-bottom:9px;opacity:.85;}
-.q-text{font-size:16px;font-weight:500;color:#ffffff;line-height:1.75;word-break:keep-all;}
+.q-text{font-size:16px;font-weight:400;color:#ffffff;line-height:1.85;word-break:keep-all;font-family:'Nanum Myeongjo','Batang','Georgia',serif;letter-spacing:.3px;}
 .q-author{font-size:11px;color:rgba(255,255,255,0.55);margin-top:9px;font-family:'DM Mono',monospace;text-align:right;}
 
 /* ── CARD BUTTONS (메인 콘텐츠 카드) ── */
@@ -119,17 +120,17 @@ body{
   font-family:'DM Mono',monospace;font-size:11px;color:var(--teal);font-weight:700;
 }
 
-.btn-habit  {border-color:rgba(255,255,255,0.35); background:linear-gradient(135deg,#12121a,#0d2018);}
+.btn-habit  {border-color:rgba(255,255,255,0.75); background:linear-gradient(135deg,#12121a,#0d2018);}
 .btn-habit  .nav-title{color:var(--teal);}
-.btn-brain  {border-color:rgba(255,255,255,0.35);  background:linear-gradient(135deg,#12121a,#0d1e12);}
+.btn-brain  {border-color:rgba(255,255,255,0.75);  background:linear-gradient(135deg,#12121a,#0d1e12);}
 .btn-brain  .nav-title{color:var(--green);}
-.btn-franklin{border-color:rgba(255,255,255,0.35);background:linear-gradient(135deg,#12121a,#1e1800);}
+.btn-franklin{border-color:rgba(255,255,255,0.75);background:linear-gradient(135deg,#12121a,#1e1800);}
 .btn-franklin .nav-title{color:var(--gold);}
-.btn-gratitude{border-color:rgba(255,255,255,0.35);background:linear-gradient(135deg,#12121a,#1e1000);}
+.btn-gratitude{border-color:rgba(255,255,255,0.75);background:linear-gradient(135deg,#12121a,#1e1000);}
 .btn-gratitude .nav-title{color:var(--orange);}
-.btn-gcal   {border-color:rgba(255,255,255,0.35); background:linear-gradient(135deg,#12121a,#0a1428);}
+.btn-gcal   {border-color:rgba(255,255,255,0.75); background:linear-gradient(135deg,#12121a,#0a1428);}
 .btn-gcal   .nav-title{color:var(--blue);}
-.btn-gtask  {border-color:rgba(255,255,255,0.35); background:linear-gradient(135deg,#12121a,#0d1530);}
+.btn-gtask  {border-color:rgba(255,255,255,0.75); background:linear-gradient(135deg,#12121a,#0d1530);}
 .btn-gtask  .nav-title{color:#6ab0f5;}
 
 /* ── BOTTOM NAV ── */
@@ -197,6 +198,15 @@ body{
         <span class="nav-arr">›</span>
       </div>
 
+      <div class="nav-btn btn-gratitude" onclick="go('gratitude.html')">
+        <span class="nav-icon">🙏</span>
+        <div class="nav-body">
+          <div class="nav-title">GRATITUDE JOURNAL</div>
+          <div class="nav-sub">오늘의 다섯 가지 감사 일기</div>
+        </div>
+        <span class="nav-arr">›</span>
+      </div>
+
       <div class="nav-btn btn-brain" onclick="go('brain.html')">
         <span class="nav-icon">🧠</span>
         <div class="nav-body">
@@ -211,15 +221,6 @@ body{
         <div class="nav-body">
           <div class="nav-title">FRANKLIN PLANNER</div>
           <div class="nav-sub">미션 · 역할 · 위클리 · 데일리 · 목표</div>
-        </div>
-        <span class="nav-arr">›</span>
-      </div>
-
-      <div class="nav-btn btn-gratitude" onclick="go('gratitude.html')">
-        <span class="nav-icon">🙏</span>
-        <div class="nav-body">
-          <div class="nav-title">GRATITUDE JOURNAL</div>
-          <div class="nav-sub">오늘의 다섯 가지 감사 일기</div>
         </div>
         <span class="nav-arr">›</span>
       </div>
