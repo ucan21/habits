@@ -131,6 +131,8 @@ body{
 .btn-gratitude .nav-title{color:var(--orange);}
 .btn-gcal   {border-color:rgba(255,255,255,0.75); background:linear-gradient(135deg,#12121a,#0a1428);}
 .btn-gcal   .nav-title{color:var(--blue);}
+.btn-backup2{border-color:rgba(255,255,255,0.75); background:linear-gradient(135deg,#12121a,#0a2818);}
+.btn-backup2 .nav-title{color:var(--teal);}
 
 /* ── BOTTOM NAV ── */
 .bnav{
@@ -234,6 +236,15 @@ body{
         <span class="nav-arr">›</span>
       </div>
 
+      <div class="nav-btn btn-backup2" onclick="go('backup.html')">
+        <span class="nav-icon">☁️</span>
+        <div class="nav-body">
+          <div class="nav-title">BACKUP & RESTORE</div>
+          <div class="nav-sub">Google Drive 백업 · 복원</div>
+        </div>
+        <span class="nav-arr">›</span>
+      </div>
+
 
     </div>
   </div>
@@ -254,6 +265,9 @@ body{
     </button>
     <button class="nb nb-gcal" onclick="go('gcal.html')">
       <span class="ni">📅</span>캘린더
+    </button>
+    <button class="nb" onclick="go('backup.html')">
+      <span class="ni">☁️</span>백업
     </button>
   </nav>
 

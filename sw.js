@@ -1,4 +1,4 @@
-const C='henry-diary-v23';
+const C='henry-diary-v24';
 const F=[
   './',
   './index.html',
@@ -7,6 +7,7 @@ const F=[
   './gtask.html',
   './gratitude.html',
   './gcal.html',
+  './backup.html',
   './manifest.json'
 ];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F)));self.skipWaiting();});
