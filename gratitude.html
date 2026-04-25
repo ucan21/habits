@@ -57,6 +57,14 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .ginp:focus{border-color:rgba(255,192,32,.5);background:var(--s3);}
 .ginp::placeholder{color:var(--text3);font-size:12px;}
 .ginp.fil{border-color:rgba(255,192,32,.3);}
+.grow-del{background:none;border:none;color:rgba(255,255,255,.22);font-size:20px;cursor:pointer;padding:2px 6px;touch-action:manipulation;flex-shrink:0;margin-top:6px;line-height:1;transition:all .15s;}
+.grow-del:active{color:var(--rose);transform:scale(.9);}
+.grat-add-btn{width:100%;margin:10px 0 0;background:rgba(255,192,32,.08);border:1.5px dashed rgba(255,192,32,.35);color:rgba(255,192,32,.75);padding:12px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;transition:all .18s;}
+.grat-add-btn:active{background:rgba(255,192,32,.18);}
+.grow-del{background:none;border:none;color:rgba(255,255,255,.25);font-size:18px;cursor:pointer;padding:4px 4px 0;touch-action:manipulation;flex-shrink:0;margin-top:8px;transition:all .18s;}
+.grow-del:active{color:var(--rose);transform:scale(.9);}
+.grat-add-btn{width:100%;margin-top:10px;background:rgba(255,192,32,.1);border:1.5px dashed rgba(255,192,32,.35);color:rgba(255,192,32,.8);padding:11px;border-radius:11px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;transition:all .18s;}
+.grat-add-btn:active{background:rgba(255,192,32,.2);}
 .save-btn{width:100%;background:var(--gold);border:none;color:#0a0a0f;padding:15px;border-radius:13px;cursor:pointer;font-size:16px;font-weight:900;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;transition:all .2s;box-shadow:0 0 20px rgba(255,192,32,.3);position:sticky;bottom:0;z-index:5;}
 .save-btn:active{transform:scale(.98);background:#e0a800;}
 /* ARCHIVE */
@@ -132,6 +140,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
           <div class="grat-cnt" id="gcnt">0 / 5</div>
         </div>
         <div class="grat-items" id="grat-items"></div>
+        <button class="grat-add-btn" onclick="addGratItem()">+ 감사 항목 추가</button>
         <button class="save-btn" onclick="saveGrat()">✨ 감사 일기 저장하기</button>
       </div>
 
@@ -195,6 +204,76 @@ function calcStreak(){
   return streak;
 }
 
+/* ─── 카운트 업데이트 ─── */
+function updateCnt(){
+  const inputs=[...document.querySelectorAll('.ginp')];
+  const filled=inputs.filter(x=>x.value.trim()).length;
+  const total=inputs.length;
+  document.getElementById('gcnt').textContent=`${filled} / ${total}`;
+  document.getElementById('today-filled').textContent=filled;
+}
+
+/* ─── 번호 재정렬 ─── */
+function reIndex(){
+  document.querySelectorAll('.grat-row').forEach((row,i)=>{
+    const n=row.querySelector('.gnum');
+    if(n) n.textContent=i+1;
+    const ta=row.querySelector('.ginp');
+    if(ta) ta.placeholder=`감사한 일 ${i+1}번째...`;
+  });
+  updateCnt();
+}
+
+/* ─── 행 생성 ─── */
+function makeRow(idx, val){
+  const row=document.createElement('div');
+  row.className='grat-row';
+
+  const num=document.createElement('div');
+  num.className='gnum';
+  num.textContent=idx+1;
+
+  const ta=document.createElement('textarea');
+  ta.className='ginp'+(val&&val.trim()?' fil':'');
+  ta.placeholder=`감사한 일 ${idx+1}번째...`;
+  ta.value=val||'';
+  ta.addEventListener('input',function(){
+    this.style.height='0px';
+    this.style.height=Math.max(this.scrollHeight+2,80)+'px';
+    updateCnt();
+    if(this.value.trim()) this.classList.add('fil');
+    else this.classList.remove('fil');
+  });
+
+  const del=document.createElement('button');
+  del.className='grow-del';
+  del.textContent='×';
+  del.title='삭제';
+  del.onclick=()=>{
+    const rows=document.querySelectorAll('.grat-row');
+    if(rows.length<=1){toast('최소 1개는 있어야 해요');return;}
+    row.remove();
+    reIndex();
+  };
+
+  row.appendChild(num);
+  row.appendChild(ta);
+  row.appendChild(del);
+  return row;
+}
+
+/* ─── 항목 추가 ─── */
+function addGratItem(){
+  const cont=document.getElementById('grat-items');
+  const i=cont.querySelectorAll('.grat-row').length;
+  const row=makeRow(i,'');
+  cont.appendChild(row);
+  reIndex();
+  row.querySelector('.ginp').focus();
+  row.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ─── 메인 렌더 ─── */
 function render(){
   const f=fmtDisp(curD),tod=todayStr(),tom=addDays(tod,1),yes=addDays(tod,-1);
   document.getElementById('dstr').textContent=f.str;
@@ -202,51 +281,44 @@ function render(){
   document.getElementById('today-tag').textContent=curD===tod?'오늘':curD===tom?'내일':curD===yes?'어제':'';
   document.getElementById('btn-next').classList.toggle('dim',curD>=tom);
 
-  // streak stats
   document.getElementById('streak-num').textContent=calcStreak();
   const allDates=Object.keys(D.grat||{}).filter(d=>(D.grat[d]||[]).some(x=>x&&x.trim()));
   document.getElementById('total-days').textContent=allDates.length;
-  const todayG=(D.grat||{})[curD]||[];
-  document.getElementById('today-filled').textContent=todayG.filter(x=>x&&x.trim()).length;
 
-  // grat inputs
-  const g=todayG.length>=5?todayG:[...todayG,...Array(5-todayG.length).fill('')];
-  const cont=document.getElementById('grat-items');cont.innerHTML='';
-  for(let i=0;i<5;i++){
-    const row=document.createElement('div');row.className='grat-row';
-    const ta=document.createElement('textarea');
-    ta.className='ginp'+(g[i]?' fil':'');
-    ta.placeholder=`감사한 일 ${i+1}번째...`;
-    ta.value=g[i]||'';
-    ta.addEventListener('input',function(){
-      /* 높이 자동 확장 — 항상 auto 리셋 후 scrollHeight 적용 */
-      this.style.height='0px';
-      this.style.height=Math.max(this.scrollHeight+2,80)+'px';
-      const cnt=[...document.querySelectorAll('.ginp')].filter(x=>x.value.trim()).length;
-      document.getElementById('gcnt').textContent=`${cnt} / 5`;
-      document.getElementById('today-filled').textContent=cnt;
-      if(this.value.trim())this.classList.add('fil');else this.classList.remove('fil');
-    });
-    row.innerHTML=`<div class="gnum">${i+1}</div>`;
-    row.appendChild(ta);
+  // 저장된 값 — 최소 5칸 보장
+  const saved=(D.grat||{})[curD]||[];
+  const g=saved.length>=5?[...saved]:[...saved,...Array(5-saved.length).fill('')];
+
+  const cont=document.getElementById('grat-items');
+  cont.innerHTML='';
+  g.forEach((val,i)=>{
+    const row=makeRow(i,val);
     cont.appendChild(row);
-    /* DOM에 붙은 직후 높이 계산 — 저장된 내용이 있을 때 */
-    if(g[i]&&g[i].trim()){
+    // DOM 삽입 후 높이 계산
+    if(val&&val.trim()){
+      const ta=row.querySelector('.ginp');
       ta.style.height='0px';
       ta.style.height=Math.max(ta.scrollHeight+2,80)+'px';
     }
-  }
-  const filled=g.filter(x=>x&&x.trim()).length;
-  document.getElementById('gcnt').textContent=`${filled} / 5`;
+  });
+  updateCnt();
 
-  // archive
+  // 아카이브
   const arc=document.getElementById('archive');arc.innerHTML='';
-  const dates=Object.keys(D.grat||{}).filter(d=>(D.grat[d]||[]).some(x=>x&&x.trim())&&d!==curD).sort((a,b)=>b.localeCompare(a));
-  if(!dates.length){arc.innerHTML='<div class="empty-v"><div class="ei">📔</div>아직 다른 날의 기록이 없어요</div>';return;}
+  const dates=Object.keys(D.grat||{})
+    .filter(d=>(D.grat[d]||[]).some(x=>x&&x.trim())&&d!==curD)
+    .sort((a,b)=>b.localeCompare(a));
+  if(!dates.length){
+    arc.innerHTML='<div class="empty-v"><div class="ei">📔</div>아직 다른 날의 기록이 없어요</div>';
+    return;
+  }
   dates.slice(0,20).forEach(d=>{
-    const f2=fmtDisp(d);const entries=(D.grat[d]||[]).filter(x=>x&&x.trim());
+    const f2=fmtDisp(d);
+    const entries=(D.grat[d]||[]).filter(x=>x&&x.trim());
     const card=document.createElement('div');card.className='arc-card';
-    card.innerHTML=`<div class="arc-date">📅 ${f2.str} (${f2.dow}) <span style="background:rgba(255,192,32,.15);color:var(--gold);border:1px solid rgba(255,192,32,.3);border-radius:12px;padding:1px 8px;font-size:10px;font-family:'DM Mono',monospace;">${entries.length}개 작성</span></div>
+    card.innerHTML=`<div class="arc-date">📅 ${f2.str} (${f2.dow})
+      <span style="background:rgba(255,192,32,.15);color:var(--gold);border:1px solid rgba(255,192,32,.3);border-radius:12px;padding:1px 8px;font-size:10px;font-family:'DM Mono',monospace;">${entries.length}개 작성</span>
+    </div>
     <div>${entries.map((e,i)=>`<div class="arc-item"><span class="arc-n">${i+1}</span><span class="arc-text">${esc(e)}</span></div>`).join('')}</div>`;
     arc.appendChild(card);
   });
@@ -254,9 +326,11 @@ function render(){
 
 function saveGrat(){
   const vals=[...document.querySelectorAll('.ginp')].map(x=>x.value.trim());
-  if(!D.grat)D.grat={};
-  D.grat[curD]=vals;sv();
-  render();toast('🙏 감사 일기 저장됨');
+  if(!D.grat) D.grat={};
+  D.grat[curD]=vals;
+  sv();
+  render();
+  toast('🙏 감사 일기 저장됨');
   burst(window.innerWidth/2,window.innerHeight*.45,55);
 }
 
