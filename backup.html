@@ -355,16 +355,10 @@ function initGIS(){
 }
 
 function getClientId(){
-  // 저장된 클라이언트 ID 또는 기본값
-  const saved = localStorage.getItem('henry_client_id');
-  return saved || 'YOUR_GOOGLE_CLIENT_ID';
+  return '666312420187-34kaf8l0r0kspe5b0s8ebhospparlbbd.apps.googleusercontent.com';
 }
 
 function googleLogin(){
-  if(getClientId() === 'YOUR_GOOGLE_CLIENT_ID'){
-    showClientIdSetup();
-    return;
-  }
   if(tokenClient) tokenClient.requestAccessToken({prompt:'consent'});
   else toast('⏳ 초기화 중... 잠시 후 다시 시도하세요');
 }
@@ -642,10 +636,8 @@ window.onload=function(){
   }
   const gsiScript=document.querySelector('script[src*="gsi"]');
   if(gsiScript){
-    if(getClientId()!=='YOUR_GOOGLE_CLIENT_ID'){
-      gsiScript.addEventListener('load',initGIS);
-      if(google&&google.accounts) initGIS();
-    }
+    gsiScript.addEventListener('load',initGIS);
+  if(typeof google!=='undefined'&&google.accounts) initGIS();
   }
 };
 </script>
