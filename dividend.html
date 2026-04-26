@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>분배금 달력</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b14;--s1:#0d1425;--s2:#111d35;--s3:#162040;--text:#e8f0fe;--text2:#a8b8d8;--text3:#506080;--blue:#4a8fff;--teal:#00d4aa;--gold:#ffd060;--rose:#ff5060;--green:#00c080;--violet:#9060ff;--orange:#ff8830;--border:rgba(255,255,255,0.07);--wborder:rgba(255,255,255,0.65);--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
+.shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
+.hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.back{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;}
+.back:active{transform:scale(.92);}
+.hdr-c{flex:1;text-align:center;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--gold);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.body{padding:14px 14px 90px;}
+.sec{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:9px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* 요약 */
+.div-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.ds-card{background:var(--s1);border:1.5px solid var(--border);border-radius:13px;padding:13px;}
+.ds-label{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:4px;text-transform:uppercase;}
+.ds-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);line-height:1;}
+.ds-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* 연간 바 차트 */
+.bar-chart-wrap{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;}
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:110px;padding-bottom:22px;position:relative;}
+.bar-chart::after{content:'';position:absolute;bottom:22px;left:0;right:0;height:1px;background:var(--s3);}
+.bw{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative;}
+.bar{width:100%;border-radius:4px 4px 0 0;min-height:3px;background:var(--gold);transition:height .5s cubic-bezier(.4,0,.2,1);}
+.blbl{position:absolute;bottom:0;font-size:8px;color:var(--text3);font-family:'DM Mono',monospace;}
+.bval{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--text2);font-family:'DM Mono',monospace;white-space:nowrap;}
+
+/* 분배금 입력 */
+.div-form{background:linear-gradient(135deg,var(--s1),var(--s2));border:1.5px solid rgba(255,208,96,.25);border-radius:15px;padding:14px;margin-bottom:14px;}
+.form-row{display:flex;gap:7px;margin-bottom:8px;}
+.form-row:last-child{margin:0;}
+.finp{flex:1;background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;}
+.finp:focus{border-color:var(--gold);}
+.finp::placeholder{color:var(--text3);font-size:12px;}
+.fadd-btn{background:var(--gold);border:none;color:#070b14;padding:11px 16px;border-radius:10px;cursor:pointer;font-size:22px;font-weight:700;line-height:1;touch-action:manipulation;}
+.fadd-btn:active{transform:scale(.91);}
+
+/* 분배금 목록 */
+.div-list{display:flex;flex-direction:column;gap:7px;}
+.div-item{background:var(--s1);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.div-item-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);flex-shrink:0;width:70px;}
+.div-item-name{flex:1;font-size:13px;font-weight:500;color:var(--text);}
+.div-item-acct{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;background:var(--s3);border-radius:6px;padding:2px 7px;flex-shrink:0;}
+.div-item-amt{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--gold);flex-shrink:0;}
+.div-item-del{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;opacity:.25;touch-action:manipulation;}
+.div-item-del:active{opacity:1;color:var(--rose);}
+
+/* 연간 합계 라벨 */
+.year-nav{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.yarr{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.yarr:active{transform:scale(.92);}
+.ylabel{flex:1;text-align:center;font-family:'DM Mono',monospace;font-size:16px;font-weight:700;color:var(--text);}
+
+.empty{text-align:center;padding:24px 0;color:var(--text3);font-size:13px;}
+.toast{position:fixed;bottom:calc(var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:#fff;color:#070b14;padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.bnav{flex-shrink:0;background:rgba(7,11,20,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.1);display:flex;padding-bottom:var(--safe-b);}
+.nb{flex:1;background:none;border:none;color:var(--text3);padding:9px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;}
+.nb .ni{font-size:20px;}
+.nb.on{color:var(--gold);}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c"><div class="hdr-title">💰 분배금 달력</div><div class="hdr-sub">월별 분배금 · 누적 그래프</div></div>
+    <div style="width:36px;"></div>
+  </div>
+  <div class="scroll">
+    <div class="body">
+
+      <!-- 요약 -->
+      <div class="div-summary">
+        <div class="ds-card"><div class="ds-label">이번 달</div><div class="ds-val" id="ds-month">0</div><div class="ds-sub">원</div></div>
+        <div class="ds-card"><div class="ds-label">올해 누적</div><div class="ds-val" id="ds-year">0</div><div class="ds-sub">원</div></div>
+        <div class="ds-card"><div class="ds-label">월 평균</div><div class="ds-val" id="ds-avg">0</div><div class="ds-sub">원</div></div>
+        <div class="ds-card"><div class="ds-label">총 수령 횟수</div><div class="ds-val" id="ds-count">0</div><div class="ds-sub">회</div></div>
+      </div>
+
+      <!-- 연간 바 차트 -->
+      <div class="year-nav">
+        <button class="yarr" onclick="chYear(-1)">‹</button>
+        <div class="ylabel" id="cur-year">—</div>
+        <button class="yarr" onclick="chYear(1)">›</button>
+      </div>
+      <div class="bar-chart-wrap">
+        <div class="bar-chart" id="bar-chart"></div>
+      </div>
+
+      <!-- 분배금 입력 -->
+      <div class="sec">분배금 기록</div>
+      <div class="div-form">
+        <div class="form-row">
+          <input class="finp" id="f-date" type="date">
+          <select class="finp" id="f-acct" style="flex:0.8;">
+            <option value="irp">IRP</option>
+            <option value="pension">연금저축</option>
+            <option value="general">일반</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <input class="finp" id="f-etfname" placeholder="ETF 이름 또는 종목" list="etf-list-dl">
+          <datalist id="etf-list-dl"></datalist>
+        </div>
+        <div class="form-row">
+          <input class="finp" id="f-amount" type="number" placeholder="분배금 (원)" min="0">
+          <button class="fadd-btn" onclick="addDiv()">+</button>
+        </div>
+      </div>
+
+      <!-- 분배금 목록 -->
+      <div class="sec">기록 목록</div>
+      <div class="div-list" id="div-list"></div>
+
+    </div>
+  </div>
+  <nav class="bnav">
+    <button class="nb" onclick="location.href='index.html'"><span class="ni">🏠</span>홈</button>
+    <button class="nb" onclick="location.href='portfolio.html'"><span class="ni">📊</span>포트폴리오</button>
+    <button class="nb on"><span class="ni">💰</span>분배금</button>
+    <button class="nb" onclick="location.href='journal.html'"><span class="ni">📝</span>매매일지</button>
+    <button class="nb" onclick="location.href='checklist.html'"><span class="ni">🛡️</span>원칙</button>
+  </nav>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='henry_invest_v1';
+function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{accounts:{irp:{name:'IRP',initial:0,etfs:[]},pension:{name:'연금저축',initial:0,etfs:[]},general:{name:'일반',initial:0,etfs:[]}},dividends:[],journal:[],checklist:{}};}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
+let D=ld();
+let curYear=new Date().getFullYear();
+function fmt(n){return Math.round(n).toLocaleString('ko-KR');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+let toastT;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+function p2(n){return String(n).padStart(2,'0');}
+
+function chYear(d){curYear+=d;render();}
+
+const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const ACCT_NAMES={irp:'IRP',pension:'연금저축',general:'일반'};
+
+function render(){
+  const now=new Date();
+  const thisMonth=`${now.getFullYear()}-${p2(now.getMonth()+1)}`;
+  const thisYear=`${now.getFullYear()}`;
+
+  // 요약
+  const divMonth=D.dividends.filter(d=>d.date&&d.date.startsWith(thisMonth)).reduce((s,d)=>s+(d.amount||0),0);
+  const divYear=D.dividends.filter(d=>d.date&&d.date.startsWith(thisYear)).reduce((s,d)=>s+(d.amount||0),0);
+  const monthsWithDiv=new Set(D.dividends.filter(d=>d.date&&d.date.startsWith(thisYear)).map(d=>d.date.slice(0,7))).size||1;
+  document.getElementById('ds-month').textContent=fmt(divMonth);
+  document.getElementById('ds-year').textContent=fmt(divYear);
+  document.getElementById('ds-avg').textContent=fmt(divYear/Math.max(monthsWithDiv,1));
+  document.getElementById('ds-count').textContent=D.dividends.length;
+
+  // 연간 바 차트
+  document.getElementById('cur-year').textContent=curYear+'년';
+  const yearStr=`${curYear}`;
+  const monthly=Array(12).fill(0);
+  D.dividends.filter(d=>d.date&&d.date.startsWith(yearStr)).forEach(d=>{
+    const m=parseInt(d.date.slice(5,7))-1;
+    if(m>=0&&m<12) monthly[m]+=(d.amount||0);
+  });
+  const maxVal=Math.max(...monthly,1);
+  const chart=document.getElementById('bar-chart');chart.innerHTML='';
+  monthly.forEach((v,i)=>{
+    const h=Math.max((v/maxVal)*90,v>0?4:0);
+    const bw=document.createElement('div');bw.className='bw';
+    bw.innerHTML=`${v>0?`<div class="bval">${Math.round(v/10000)}만</div>`:''}
+    <div class="bar" style="height:${h}px;opacity:${i===now.getMonth()&&curYear===now.getFullYear()?1:.7};"></div>
+    <div class="blbl">${i+1}월</div>`;
+    chart.appendChild(bw);
+  });
+
+  // ETF datalist
+  const dl=document.getElementById('etf-list-dl');dl.innerHTML='';
+  const etfNames=new Set();
+  Object.values(D.accounts).forEach(a=>a.etfs.forEach(e=>{if(e.name)etfNames.add(e.name);}));
+  etfNames.forEach(n=>{const o=document.createElement('option');o.value=n;dl.appendChild(o);});
+
+  // 목록 (최신순)
+  const list=document.getElementById('div-list');list.innerHTML='';
+  const sorted=[...D.dividends].sort((a,b)=>b.date.localeCompare(a.date));
+  if(!sorted.length){list.innerHTML='<div class="empty">📭 아직 분배금 기록이 없어요</div>';return;}
+  sorted.forEach((d,i)=>{
+    const origIdx=D.dividends.indexOf(d);
+    const el=document.createElement('div');el.className='div-item';
+    el.innerHTML=`<span class="div-item-date">${d.date}</span>
+      <span class="div-item-name">${esc(d.etfName||'—')}</span>
+      <span class="div-item-acct">${ACCT_NAMES[d.acct]||d.acct}</span>
+      <span class="div-item-amt">${fmt(d.amount)} 원</span>
+      <button class="div-item-del" onclick="delDiv(${origIdx})">×</button>`;
+    list.appendChild(el);
+  });
+}
+
+function addDiv(){
+  const date=document.getElementById('f-date').value;
+  const acct=document.getElementById('f-acct').value;
+  const etfName=document.getElementById('f-etfname').value.trim();
+  const amount=parseFloat(document.getElementById('f-amount').value)||0;
+  if(!date){toast('날짜를 선택하세요');return;}
+  if(!amount){toast('분배금을 입력하세요');return;}
+  D.dividends.push({id:Date.now(),date,acct,etfName,amount});
+  sv();
+  document.getElementById('f-amount').value='';
+  document.getElementById('f-etfname').value='';
+  render();toast('✅ 분배금 기록됨');
+}
+function delDiv(i){if(!confirm('삭제할까요?'))return;D.dividends.splice(i,1);sv();render();toast('🗑️ 삭제됨');}
+
+// 오늘 날짜 기본값
+document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
+render();
+</script>
+</body>
+</html>

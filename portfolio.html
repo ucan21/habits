@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>ETF 포트폴리오</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b14;--s1:#0d1425;--s2:#111d35;--s3:#162040;
+  --text:#e8f0fe;--text2:#a8b8d8;--text3:#506080;
+  --blue:#4a8fff;--teal:#00d4aa;--gold:#ffd060;--rose:#ff5060;
+  --green:#00c080;--violet:#9060ff;--orange:#ff8830;
+  --border:rgba(255,255,255,0.07);--wborder:rgba(255,255,255,0.65);
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
+.shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
+.hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.back{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;}
+.back:active{transform:scale(.92);}
+.hdr-c{flex:1;text-align:center;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--teal);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.scroll::-webkit-scrollbar{width:2px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--s3);}
+.body{padding:14px 14px 90px;}
+.sec{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:9px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* 계좌 탭 */
+.acct-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.atab{flex:1;background:var(--s1);border:1.5px solid var(--border);border-radius:11px;padding:9px 4px;text-align:center;cursor:pointer;touch-action:manipulation;transition:all .15s;}
+.atab.on{border-color:var(--teal);background:rgba(0,212,170,.08);}
+.atab-name{font-size:11px;font-weight:700;color:var(--text2);}
+.atab.on .atab-name{color:var(--teal);}
+.atab-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* 계좌 요약 */
+.acct-summary{background:linear-gradient(135deg,var(--s1),var(--s2));border:1.5px solid rgba(0,212,170,.25);border-radius:15px;padding:14px;margin-bottom:14px;}
+.as-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.as-row:last-child{margin:0;}
+.as-label{font-size:12px;color:var(--text3);}
+.as-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:var(--text);}
+.as-val.pos{color:var(--teal);}
+.as-val.neg{color:var(--rose);}
+/* 초기 투자금 설정 */
+.initial-row{display:flex;gap:8px;margin-bottom:14px;}
+.init-inp{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--text);font-size:14px;font-family:'DM Mono',monospace;outline:none;transition:border-color .2s;}
+.init-inp:focus{border-color:var(--teal);}
+.init-inp::placeholder{color:var(--text3);font-size:12px;}
+.init-btn{background:var(--teal);border:none;color:#070b14;padding:11px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:700;touch-action:manipulation;white-space:nowrap;}
+
+/* ETF 항목 */
+.etf-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.etf-card{background:var(--s1);border:1.5px solid var(--border);border-radius:14px;padding:13px;transition:all .14s;}
+.etf-card:active{transform:scale(.99);}
+.etf-card.editing{background:var(--s2);border-color:var(--teal);}
+.etf-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.etf-badge{background:rgba(0,212,170,.15);border:1px solid rgba(0,212,170,.3);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;color:var(--teal);font-family:'DM Mono',monospace;flex-shrink:0;}
+.etf-badge.tiger{background:rgba(255,80,96,.12);border-color:rgba(255,80,96,.3);color:#ff8080;}
+.etf-badge.kodex{background:rgba(74,143,255,.12);border-color:rgba(74,143,255,.3);color:var(--blue);}
+.etf-badge.ace{background:rgba(255,208,96,.12);border-color:rgba(255,208,96,.3);color:var(--gold);}
+.etf-badge.kbstar{background:rgba(144,96,255,.12);border-color:rgba(144,96,255,.3);color:var(--violet);}
+.etf-name{flex:1;font-size:14px;font-weight:700;color:var(--text);line-height:1.3;}
+.etf-actions{display:flex;gap:4px;flex-shrink:0;}
+.etf-btn{background:none;border:none;color:var(--text3);font-size:15px;cursor:pointer;padding:2px 4px;opacity:.3;touch-action:manipulation;}
+.etf-btn:active{opacity:1;}
+.etf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.etf-cell{background:var(--s2);border-radius:8px;padding:7px 9px;}
+.etf-cell-label{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:2px;text-transform:uppercase;}
+.etf-cell-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--text);}
+.etf-cell-val.pos{color:var(--teal);}
+.etf-cell-val.neg{color:var(--rose);}
+.etf-div-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.etf-div-label{font-size:11px;color:var(--text3);}
+.etf-div-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--gold);}
+
+/* ETF 추가 폼 */
+.add-form{background:linear-gradient(135deg,var(--s1),var(--s2));border:1.5px solid rgba(0,212,170,.25);border-radius:15px;padding:14px;margin-bottom:14px;}
+.add-form-title{font-size:13px;font-weight:700;color:var(--teal);margin-bottom:12px;}
+.form-row{display:flex;gap:7px;margin-bottom:8px;}
+.form-row:last-child{margin:0;}
+.finp{flex:1;background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;}
+.finp:focus{border-color:var(--teal);}
+.finp::placeholder{color:var(--text3);font-size:12px;}
+.fselect{background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--text);font-size:13px;outline:none;}
+.fadd-btn{background:var(--teal);border:none;color:#070b14;padding:11px 16px;border-radius:10px;cursor:pointer;font-size:22px;font-weight:700;line-height:1;touch-action:manipulation;}
+.fadd-btn:active{transform:scale(.91);}
+.empty{text-align:center;padding:28px 0;color:var(--text3);font-size:13px;}
+.empty .ei{font-size:32px;margin-bottom:8px;}
+
+/* 비중 바 */
+.weight-section{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:13px;margin-bottom:14px;}
+.weight-bar-wrap{margin-top:8px;}
+.weight-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.weight-bar-name{font-size:11px;color:var(--text2);width:80px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.weight-bar-bg{flex:1;height:8px;background:var(--s3);border-radius:4px;overflow:hidden;}
+.weight-bar-fill{height:100%;border-radius:4px;transition:width .5s ease;}
+.weight-bar-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);width:36px;text-align:right;flex-shrink:0;}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:#fff;color:#070b14;padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+/* NAV */
+.bnav{flex-shrink:0;background:rgba(7,11,20,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.1);display:flex;padding-bottom:var(--safe-b);}
+.nb{flex:1;background:none;border:none;color:var(--text3);padding:9px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;}
+.nb .ni{font-size:20px;}
+.nb.on{color:var(--teal);}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c"><div class="hdr-title">📊 ETF 포트폴리오</div><div class="hdr-sub">보유 현황 · 계좌별 관리</div></div>
+    <div style="width:36px;"></div>
+  </div>
+  <div class="scroll">
+    <div class="body">
+
+      <!-- 계좌 탭 -->
+      <div class="acct-tabs">
+        <div class="atab on" onclick="switchAcct('irp',this)" id="tab-irp">
+          <div class="atab-name">IRP</div><div class="atab-val" id="tabval-irp">0 원</div>
+        </div>
+        <div class="atab" onclick="switchAcct('pension',this)" id="tab-pension">
+          <div class="atab-name">연금저축</div><div class="atab-val" id="tabval-pension">0 원</div>
+        </div>
+        <div class="atab" onclick="switchAcct('general',this)" id="tab-general">
+          <div class="atab-name">일반</div><div class="atab-val" id="tabval-general">0 원</div>
+        </div>
+      </div>
+
+      <!-- 초기 투자금 설정 -->
+      <div class="sec">초기 투자금 설정</div>
+      <div class="initial-row">
+        <input class="init-inp" id="init-inp" type="number" placeholder="초기 투자금 (원)" min="0">
+        <button class="init-btn" onclick="saveInitial()">설정</button>
+      </div>
+
+      <!-- 계좌 요약 -->
+      <div class="acct-summary" id="acct-summary">
+        <div class="as-row"><span class="as-label">초기 투자금</span><span class="as-val" id="as-initial">0 원</span></div>
+        <div class="as-row"><span class="as-label">현재 평가액</span><span class="as-val" id="as-current">0 원</span></div>
+        <div class="as-row"><span class="as-label">수익금</span><span class="as-val pos" id="as-profit">0 원</span></div>
+        <div class="as-row"><span class="as-label">수익률</span><span class="as-val pos" id="as-rate">0.00%</span></div>
+        <div class="as-row"><span class="as-label">보유 종목 수</span><span class="as-val" id="as-count">0 종목</span></div>
+      </div>
+
+      <!-- 비중 차트 -->
+      <div class="weight-section" id="weight-section" style="display:none;">
+        <div class="sec" style="margin-bottom:0;">비중</div>
+        <div class="weight-bar-wrap" id="weight-bars"></div>
+      </div>
+
+      <!-- ETF 추가 -->
+      <div class="sec">ETF 추가</div>
+      <div class="add-form">
+        <div class="add-form-title">+ 새 ETF 추가</div>
+        <div class="form-row">
+          <input class="finp" id="f-code" placeholder="ETF 코드 (예: 448280)" maxlength="10">
+          <select class="fselect" id="f-brand">
+            <option value="tiger">TIGER</option>
+            <option value="kodex">KODEX</option>
+            <option value="ace">ACE</option>
+            <option value="kbstar">KBStar</option>
+            <option value="other">기타</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <input class="finp" id="f-name" placeholder="ETF 이름 (예: 미국S&P500커버드콜)" style="flex:2;">
+          <button class="fadd-btn" onclick="addETF()">+</button>
+        </div>
+        <div class="form-row">
+          <input class="finp" id="f-qty" type="number" placeholder="수량 (주)" min="0">
+          <input class="finp" id="f-avgprice" type="number" placeholder="평균단가 (원)" min="0">
+          <input class="finp" id="f-curprice" type="number" placeholder="현재가 (원)" min="0">
+        </div>
+        <div class="form-row">
+          <input class="finp" id="f-divrate" type="number" step="0.01" placeholder="분배율 % (연간)" min="0">
+          <input class="finp" id="f-divmonth" placeholder="분배 월 (예: 1,4,7,10)">
+        </div>
+      </div>
+
+      <!-- ETF 목록 -->
+      <div class="sec">보유 ETF</div>
+      <div class="etf-list" id="etf-list"></div>
+
+    </div>
+  </div>
+  <nav class="bnav">
+    <button class="nb" onclick="location.href='index.html'"><span class="ni">🏠</span>홈</button>
+    <button class="nb on"><span class="ni">📊</span>포트폴리오</button>
+    <button class="nb" onclick="location.href='dividend.html'"><span class="ni">💰</span>분배금</button>
+    <button class="nb" onclick="location.href='journal.html'"><span class="ni">📝</span>매매일지</button>
+    <button class="nb" onclick="location.href='checklist.html'"><span class="ni">🛡️</span>원칙</button>
+  </nav>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='henry_invest_v1';
+function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{accounts:{irp:{name:'퇴직연금 IRP',initial:0,etfs:[]},pension:{name:'연금저축',initial:0,etfs:[]},general:{name:'일반 계좌',initial:0,etfs:[]}},dividends:[],journal:[],checklist:{},settings:{}};}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
+let D=ld();
+let curAcct='irp';
+function fmt(n){return Math.round(n).toLocaleString('ko-KR');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+let toastT;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+
+const BRAND_COLORS={tiger:'tiger',kodex:'kodex',ace:'ace',kbstar:'kbstar',other:''};
+const PALETTE=['00d4aa','4a8fff','ffd060','ff5060','9060ff','ff8830','00c080','a070ff'];
+
+function switchAcct(key,btn){
+  curAcct=key;
+  document.querySelectorAll('.atab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('init-inp').value=D.accounts[key].initial||'';
+  renderAcct();
+}
+
+function updateTabVals(){
+  ['irp','pension','general'].forEach(ak=>{
+    const total=D.accounts[ak].etfs.reduce((s,e)=>s+(e.currentPrice||e.avgPrice||0)*(e.qty||0),0);
+    document.getElementById('tabval-'+ak).textContent=fmt(total)+' 원';
+  });
+}
+
+function renderAcct(){
+  const acct=D.accounts[curAcct];
+  const initial=acct.initial||0;
+  const current=acct.etfs.reduce((s,e)=>s+(e.currentPrice||e.avgPrice||0)*(e.qty||0),0);
+  const profit=current-initial;
+  const rate=initial>0?(profit/initial*100):0;
+
+  document.getElementById('as-initial').textContent=fmt(initial)+' 원';
+  document.getElementById('as-current').textContent=fmt(current)+' 원';
+  document.getElementById('as-profit').textContent=(profit>=0?'+':'')+fmt(profit)+' 원';
+  document.getElementById('as-profit').className='as-val '+(profit>=0?'pos':'neg');
+  document.getElementById('as-rate').textContent=(rate>=0?'+':'')+rate.toFixed(2)+'%';
+  document.getElementById('as-rate').className='as-val '+(rate>=0?'pos':'neg');
+  document.getElementById('as-count').textContent=acct.etfs.length+' 종목';
+
+  // 비중 바
+  const ws=document.getElementById('weight-section');
+  const wb=document.getElementById('weight-bars');
+  if(current>0&&acct.etfs.length>0){
+    ws.style.display='block';
+    wb.innerHTML='';
+    [...acct.etfs].sort((a,b)=>((b.currentPrice||b.avgPrice||0)*(b.qty||0))-((a.currentPrice||a.avgPrice||0)*(a.qty||0))).forEach((e,i)=>{
+      const val=(e.currentPrice||e.avgPrice||0)*(e.qty||0);
+      const pct=current>0?(val/current*100):0;
+      const color=PALETTE[i%PALETTE.length];
+      wb.innerHTML+=`<div class="weight-bar-row">
+        <div class="weight-bar-name" title="${esc(e.name)}">${esc(e.name||e.code)}</div>
+        <div class="weight-bar-bg"><div class="weight-bar-fill" style="width:${pct.toFixed(1)}%;background:#${color};"></div></div>
+        <div class="weight-bar-pct">${pct.toFixed(1)}%</div>
+      </div>`;
+    });
+  } else ws.style.display='none';
+
+  // ETF 목록
+  const list=document.getElementById('etf-list');
+  list.innerHTML='';
+  if(!acct.etfs.length){list.innerHTML='<div class="empty"><div class="ei">📊</div>아직 ETF가 없습니다<br>위에서 추가해보세요</div>';return;}
+
+  acct.etfs.forEach((e,i)=>{
+    const avgP=e.avgPrice||0,curP=e.currentPrice||avgP,qty=e.qty||0;
+    const evalAmt=curP*qty, costAmt=avgP*qty;
+    const profit=evalAmt-costAmt;
+    const rate=costAmt>0?(profit/costAmt*100):0;
+    const annualDiv=(e.divRate||0)/100*evalAmt;
+    const card=document.createElement('div');card.className='etf-card';
+    card.innerHTML=`
+      <div class="etf-top">
+        <span class="etf-badge ${BRAND_COLORS[e.brand]||''}">${(e.brand||'').toUpperCase()||e.code}</span>
+        <div class="etf-name">${esc(e.name||e.code)}</div>
+        <div class="etf-actions">
+          <button class="etf-btn" onclick="editETF(${i})" title="수정">✏️</button>
+          <button class="etf-btn" onclick="delETF(${i})" title="삭제" style="color:var(--rose);">×</button>
+        </div>
+      </div>
+      <div class="etf-grid">
+        <div class="etf-cell"><div class="etf-cell-label">수량</div><div class="etf-cell-val">${qty.toLocaleString()} 주</div></div>
+        <div class="etf-cell"><div class="etf-cell-label">평균단가</div><div class="etf-cell-val">${fmt(avgP)}</div></div>
+        <div class="etf-cell"><div class="etf-cell-label">현재가</div><div class="etf-cell-val">${fmt(curP)}</div></div>
+        <div class="etf-cell"><div class="etf-cell-label">평가금액</div><div class="etf-cell-val">${fmt(evalAmt)}</div></div>
+        <div class="etf-cell"><div class="etf-cell-label">수익금</div><div class="etf-cell-val ${profit>=0?'pos':'neg'}">${profit>=0?'+':''}${fmt(profit)}</div></div>
+        <div class="etf-cell"><div class="etf-cell-label">수익률</div><div class="etf-cell-val ${rate>=0?'pos':'neg'}">${rate>=0?'+':''}${rate.toFixed(2)}%</div></div>
+      </div>
+      ${e.divRate?`<div class="etf-div-row"><span class="etf-div-label">💰 예상 연간 분배금 (분배율 ${e.divRate}%)</span><span class="etf-div-val">${fmt(annualDiv)} 원</span></div>`:''}
+      ${e.divMonths?`<div style="font-size:10px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace;">분배월: ${e.divMonths}</div>`:''}`;
+    list.appendChild(card);
+  });
+  updateTabVals();
+}
+
+function saveInitial(){
+  const v=parseFloat(document.getElementById('init-inp').value)||0;
+  D.accounts[curAcct].initial=v;sv();renderAcct();toast('✅ 초기 투자금 저장됨');
+}
+
+function addETF(){
+  const code=document.getElementById('f-code').value.trim();
+  const name=document.getElementById('f-name').value.trim();
+  if(!name&&!code){toast('ETF 이름을 입력하세요');return;}
+  const etf={
+    id:Date.now(),code,name,
+    brand:document.getElementById('f-brand').value,
+    qty:parseFloat(document.getElementById('f-qty').value)||0,
+    avgPrice:parseFloat(document.getElementById('f-avgprice').value)||0,
+    currentPrice:parseFloat(document.getElementById('f-curprice').value)||0,
+    divRate:parseFloat(document.getElementById('f-divrate').value)||0,
+    divMonths:document.getElementById('f-divmonth').value.trim(),
+    addedAt:new Date().toISOString().slice(0,10)
+  };
+  D.accounts[curAcct].etfs.push(etf);sv();
+  ['f-code','f-name','f-qty','f-avgprice','f-curprice','f-divrate','f-divmonth'].forEach(id=>{document.getElementById(id).value='';});
+  renderAcct();toast('✅ ETF 추가됨');
+}
+
+function editETF(i){
+  const e=D.accounts[curAcct].etfs[i];
+  document.getElementById('f-code').value=e.code||'';
+  document.getElementById('f-name').value=e.name||'';
+  document.getElementById('f-brand').value=e.brand||'tiger';
+  document.getElementById('f-qty').value=e.qty||'';
+  document.getElementById('f-avgprice').value=e.avgPrice||'';
+  document.getElementById('f-curprice').value=e.currentPrice||'';
+  document.getElementById('f-divrate').value=e.divRate||'';
+  document.getElementById('f-divmonth').value=e.divMonths||'';
+  D.accounts[curAcct].etfs.splice(i,1);sv();renderAcct();
+  document.getElementById('f-name').focus();
+  toast('✏️ 수정 후 + 버튼으로 저장하세요');
+}
+
+function delETF(i){
+  if(!confirm('이 ETF를 삭제할까요?'))return;
+  D.accounts[curAcct].etfs.splice(i,1);sv();renderAcct();toast('🗑️ 삭제됨');
+}
+
+document.getElementById('init-inp').value=D.accounts[curAcct].initial||'';
+renderAcct();
+</script>
+</body>
+</html>

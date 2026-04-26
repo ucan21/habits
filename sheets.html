@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Google Sheets 백업</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b14;--s1:#0d1425;--s2:#111d35;--s3:#162040;--text:#e8f0fe;--text2:#a8b8d8;--text3:#506080;--blue:#4a8fff;--teal:#00d4aa;--gold:#ffd060;--rose:#ff5060;--green:#00c080;--violet:#9060ff;--border:rgba(255,255,255,0.07);--wborder:rgba(255,255,255,0.65);--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
+.shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
+.hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.back{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;}
+.back:active{transform:scale(.92);}
+.hdr-c{flex:1;text-align:center;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--green);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.body{padding:14px 14px 90px;}
+.sec{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:9px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* 액션 버튼들 */
+.action-btn{display:flex;align-items:center;gap:14px;width:100%;padding:16px;margin-bottom:10px;border:1.5px solid var(--wborder);border-radius:15px;cursor:pointer;text-decoration:none;touch-action:manipulation;transition:all .15s;background:var(--s1);}
+.action-btn:active{transform:scale(.97);}
+.ab-icon{font-size:28px;flex-shrink:0;}
+.ab-body{flex:1;text-align:left;}
+.ab-title{font-size:15px;font-weight:700;margin-bottom:3px;}
+.ab-sub{font-size:11px;color:var(--text3);}
+.ab-arr{font-size:18px;color:var(--text3);}
+
+.btn-csv{border-color:rgba(0,192,128,.4);background:linear-gradient(135deg,var(--bg),#0a1e0a);}
+.btn-csv .ab-title{color:var(--green);}
+.btn-json{border-color:rgba(255,208,96,.4);background:linear-gradient(135deg,var(--bg),#1a1200);}
+.btn-json .ab-title{color:var(--gold);}
+.btn-sheets{border-color:rgba(52,168,83,.5);background:linear-gradient(135deg,var(--bg),#0a180a);}
+.btn-sheets .ab-title{color:#34A853;}
+.btn-import{border-color:rgba(74,143,255,.4);background:linear-gradient(135deg,var(--bg),#0a0a28);}
+.btn-import .ab-title{color:var(--blue);}
+
+/* 데이터 현황 */
+.data-card{background:var(--s1);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;}
+.data-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);}
+.data-row:last-child{border:none;}
+.dr-key{font-size:13px;color:var(--text2);}
+.dr-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--teal);}
+
+/* Sheets 설정 */
+.setup-card{background:linear-gradient(135deg,var(--s1),var(--s2));border:1.5px solid rgba(52,168,83,.25);border-radius:14px;padding:14px;margin-bottom:14px;}
+.setup-title{font-size:13px;font-weight:700;color:#34A853;margin-bottom:10px;}
+.finp{width:100%;background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--text);font-size:14px;font-family:'DM Mono',monospace;outline:none;transition:border-color .2s;margin-bottom:8px;}
+.finp:focus{border-color:#34A853;}
+.finp::placeholder{color:var(--text3);font-size:12px;}
+.save-btn{width:100%;background:#34A853;border:none;color:#fff;padding:13px;border-radius:11px;cursor:pointer;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;transition:all .2s;}
+.save-btn:active{transform:scale(.98);}
+
+/* 안내 */
+.info-box{background:rgba(52,168,83,.07);border:1px solid rgba(52,168,83,.2);border-radius:14px;padding:13px 15px;margin-bottom:14px;}
+.info-title{font-size:12px;font-weight:700;color:#34A853;margin-bottom:7px;}
+.info-row{display:flex;gap:9px;margin-bottom:6px;align-items:flex-start;font-size:13px;color:var(--text2);line-height:1.55;}
+.info-row:last-child{margin:0;}
+.sn{background:#34A853;color:#fff;border-radius:50%;width:19px;height:19px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;}
+
+.toast{position:fixed;bottom:calc(var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:#fff;color:#070b14;padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.bnav{flex-shrink:0;background:rgba(7,11,20,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.1);display:flex;padding-bottom:var(--safe-b);}
+.nb{flex:1;background:none;border:none;color:var(--text3);padding:9px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;}
+.nb .ni{font-size:20px;}
+.nb.on{color:var(--green);}
+input[type=file]{display:none;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c"><div class="hdr-title">📋 Sheets 백업</div><div class="hdr-sub">데이터 내보내기 · 복원</div></div>
+    <div style="width:36px;"></div>
+  </div>
+  <div class="scroll">
+    <div class="body">
+
+      <!-- 데이터 현황 -->
+      <div class="sec">현재 데이터</div>
+      <div class="data-card" id="data-card"></div>
+
+      <!-- 내보내기 버튼 -->
+      <div class="sec">내보내기</div>
+      <div class="action-btn btn-csv" onclick="exportCSV()">
+        <span class="ab-icon">📊</span>
+        <div class="ab-body"><div class="ab-title">CSV 내보내기</div><div class="ab-sub">Excel · Google Sheets에서 열기 가능</div></div>
+        <span class="ab-arr">↓</span>
+      </div>
+      <div class="action-btn btn-json" onclick="exportJSON()">
+        <span class="ab-icon">💾</span>
+        <div class="ab-body"><div class="ab-title">JSON 백업</div><div class="ab-sub">전체 데이터 백업 · 복원용</div></div>
+        <span class="ab-arr">↓</span>
+      </div>
+      <div class="action-btn btn-sheets" onclick="openSheets()">
+        <span class="ab-icon">📋</span>
+        <div class="ab-body"><div class="ab-title">Google Sheets 열기</div><div class="ab-sub">연결된 스프레드시트 바로 열기</div></div>
+        <span class="ab-arr">↗</span>
+      </div>
+      <div class="action-btn btn-import" onclick="document.getElementById('file-inp').click()">
+        <span class="ab-icon">📥</span>
+        <div class="ab-body"><div class="ab-title">JSON 가져오기</div><div class="ab-sub">백업 파일로 데이터 복원</div></div>
+        <span class="ab-arr">↑</span>
+      </div>
+      <input type="file" id="file-inp" accept=".json" onchange="importJSON(event)">
+
+      <!-- Google Sheets 설정 -->
+      <div class="sec">Google Sheets 설정</div>
+      <div class="setup-card">
+        <div class="setup-title">📋 스프레드시트 URL 연결</div>
+        <input class="finp" id="sheets-url" placeholder="Google Sheets URL 붙여넣기..." type="url">
+        <button class="save-btn" onclick="saveSheets()">저장</button>
+      </div>
+
+      <!-- 안내 -->
+      <div class="info-box">
+        <div class="info-title">📋 Google Sheets 연동 방법</div>
+        <div class="info-row"><span class="sn">1</span>Google Sheets에서 새 스프레드시트 생성</div>
+        <div class="info-row"><span class="sn">2</span>URL을 복사해서 위에 붙여넣기 → 저장</div>
+        <div class="info-row"><span class="sn">3</span>CSV 내보내기로 데이터 다운로드</div>
+        <div class="info-row"><span class="sn">4</span>Google Sheets에서 파일 → 가져오기로 업로드</div>
+      </div>
+
+    </div>
+  </div>
+  <nav class="bnav">
+    <button class="nb" onclick="location.href='index.html'"><span class="ni">🏠</span>홈</button>
+    <button class="nb" onclick="location.href='portfolio.html'"><span class="ni">📊</span>포트폴리오</button>
+    <button class="nb" onclick="location.href='dividend.html'"><span class="ni">💰</span>분배금</button>
+    <button class="nb" onclick="location.href='journal.html'"><span class="ni">📝</span>매매일지</button>
+    <button class="nb on"><span class="ni">📋</span>Sheets</button>
+  </nav>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='henry_invest_v1';
+function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{accounts:{irp:{name:'IRP',initial:0,etfs:[]},pension:{name:'연금저축',initial:0,etfs:[]},general:{name:'일반',initial:0,etfs:[]}},dividends:[],journal:[],checklist:{},settings:{}};}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
+let D=ld();
+function fmt(n){return Math.round(n).toLocaleString('ko-KR');}
+let toastT;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2000);}
+
+function renderDataCard(){
+  const totalEtfs=Object.values(D.accounts).reduce((s,a)=>s+a.etfs.length,0);
+  const totalVal=Object.values(D.accounts).reduce((s,a)=>s+a.etfs.reduce((ss,e)=>ss+(e.currentPrice||e.avgPrice||0)*(e.qty||0),0),0);
+  const card=document.getElementById('data-card');
+  card.innerHTML=`
+    <div class="data-row"><span class="dr-key">📊 ETF 종목 수</span><span class="dr-val">${totalEtfs} 종목</span></div>
+    <div class="data-row"><span class="dr-key">💼 총 평가액</span><span class="dr-val">${fmt(totalVal)} 원</span></div>
+    <div class="data-row"><span class="dr-key">💰 분배금 기록</span><span class="dr-val">${D.dividends.length} 건</span></div>
+    <div class="data-row"><span class="dr-key">📝 매매 일지</span><span class="dr-val">${D.journal.length} 건</span></div>
+    <div class="data-row"><span class="dr-key">💾 데이터 크기</span><span class="dr-val">${((localStorage.getItem(KEY)||'').length/1024).toFixed(1)} KB</span></div>`;
+  // sheets url
+  if(D.settings&&D.settings.sheetsUrl) document.getElementById('sheets-url').value=D.settings.sheetsUrl;
+}
+
+function exportCSV(){
+  let csv='=== ETF 포트폴리오 ===\n';
+  csv+='계좌,코드,이름,브랜드,수량,평균단가,현재가,평가금액,수익금,수익률(%),분배율(%),예상연간분배금\n';
+  const ACCT={irp:'IRP',pension:'연금저축',general:'일반'};
+  Object.entries(D.accounts).forEach(([ak,acct])=>{
+    acct.etfs.forEach(e=>{
+      const avg=e.avgPrice||0,cur=e.currentPrice||avg,qty=e.qty||0;
+      const eval_=cur*qty,cost=avg*qty,profit=eval_-cost,rate=cost>0?(profit/cost*100):0;
+      const annDiv=(e.divRate||0)/100*eval_;
+      csv+=`${ACCT[ak]},${e.code||''},${e.name||''},${e.brand||''},${qty},${avg},${cur},${eval_},${profit},${rate.toFixed(2)},${e.divRate||0},${annDiv}\n`;
+    });
+  });
+  csv+='\n=== 분배금 기록 ===\n날짜,계좌,ETF,분배금(원)\n';
+  D.dividends.forEach(d=>{csv+=`${d.date},${ACCT[d.acct]||d.acct},${d.etfName||''},${d.amount||0}\n`;});
+  csv+='\n=== 매매 일지 ===\n날짜,구분,계좌,종목,수량,가격,목표가,손절가,이유\n';
+  D.journal.forEach(j=>{csv+=`${j.date},${j.type==='buy'?'매수':'매도'},${ACCT[j.acct]||j.acct},${j.name||''},${j.qty||0},${j.price||0},${j.target||0},${j.stop||0},"${(j.reason||'').replace(/"/g,'""')}"\n`;});
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download=`henry-invest-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();URL.revokeObjectURL(url);
+  toast('📊 CSV 내보내기 완료!');
+}
+
+function exportJSON(){
+  const json=JSON.stringify({...D,exportedAt:new Date().toISOString()},null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download=`henry-invest-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();URL.revokeObjectURL(url);
+  toast('💾 JSON 백업 완료!');
+}
+
+function importJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!confirm(`📁 ${file.name}\n이 파일로 복원할까요?\n현재 데이터가 덮어씌워집니다.`))return;
+      delete data.exportedAt;
+      Object.assign(D,data);sv();renderDataCard();
+      toast('✅ 가져오기 완료!');
+    }catch(err){toast('❌ 파일 형식 오류');}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+function openSheets(){
+  const url=(D.settings&&D.settings.sheetsUrl)||'https://sheets.google.com';
+  window.open(url,'_blank');
+}
+
+function saveSheets(){
+  const url=document.getElementById('sheets-url').value.trim();
+  if(!D.settings)D.settings={};D.settings.sheetsUrl=url;sv();
+  toast('✅ Sheets URL 저장됨');
+}
+
+renderDataCard();
+</script>
+</body>
+</html>

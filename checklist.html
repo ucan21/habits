@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>투자 원칙 체크</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b14;--s1:#0d1425;--s2:#111d35;--s3:#162040;--text:#e8f0fe;--text2:#a8b8d8;--text3:#506080;--blue:#4a8fff;--teal:#00d4aa;--gold:#ffd060;--rose:#ff5060;--green:#00c080;--violet:#9060ff;--orange:#ff8830;--border:rgba(255,255,255,0.07);--wborder:rgba(255,255,255,0.65);--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
+.shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
+.hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.back{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;}
+.back:active{transform:scale(.92);}
+.hdr-c{flex:1;text-align:center;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--rose);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.body{padding:14px 14px 90px;}
+.sec{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:9px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* 점수 링 */
+.score-card{background:linear-gradient(135deg,var(--s1),var(--s2));border:1.5px solid rgba(255,80,96,.25);border-radius:16px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:16px;}
+.ring-wrap{position:relative;width:80px;height:80px;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);width:80px;height:80px;}
+.rbg{fill:none;stroke:var(--s3);stroke-width:7;}
+.rpg{fill:none;stroke-width:7;stroke-linecap:round;stroke-dasharray:207;stroke-dashoffset:207;transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1);}
+.ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-num{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;}
+.ring-pt{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;}
+.score-info{flex:1;}
+.score-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.score-msg{font-size:12px;color:var(--text2);line-height:1.5;}
+.score-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;margin-top:6px;font-family:'DM Mono',monospace;}
+
+/* 체크리스트 카테고리 */
+.cat-card{background:var(--s1);border:1.5px solid var(--border);border-radius:15px;padding:14px;margin-bottom:12px;}
+.cat-hdr{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.cat-icon{font-size:20px;flex-shrink:0;}
+.cat-title{font-size:15px;font-weight:700;}
+.cat-score{margin-left:auto;font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);}
+.check-items{display:flex;flex-direction:column;gap:7px;}
+.check-item{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:12px 13px;display:flex;align-items:flex-start;gap:11px;cursor:pointer;touch-action:manipulation;transition:all .14s;user-select:none;}
+.check-item.checked{background:rgba(0,212,170,.08);border-color:rgba(0,212,170,.3);}
+.check-item:active{transform:scale(.98);}
+.chk-box{width:24px;height:24px;border-radius:7px;border:2px solid var(--s3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:transparent;background:var(--s3);transition:all .18s;margin-top:1px;}
+.check-item.checked .chk-box{background:var(--teal);border-color:var(--teal);color:#070b14;}
+.chk-body{flex:1;}
+.chk-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.check-item.checked .chk-title{color:var(--teal);}
+.chk-desc{font-size:12px;color:var(--text3);line-height:1.5;}
+.chk-weight{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);flex-shrink:0;}
+
+/* 경고 카드 */
+.warn-card{background:rgba(255,80,96,.08);border:1.5px solid rgba(255,80,96,.3);border-radius:14px;padding:14px;margin-bottom:14px;}
+.warn-title{font-size:13px;font-weight:700;color:var(--rose);margin-bottom:8px;}
+.warn-text{font-size:13px;color:var(--text2);line-height:1.65;}
+
+/* 리셋 버튼 */
+.reset-btn{width:100%;background:var(--s1);border:1.5px solid var(--wborder);border-radius:12px;color:var(--text3);padding:12px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;margin-bottom:14px;}
+
+.toast{position:fixed;bottom:calc(var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:#fff;color:#070b14;padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.bnav{flex-shrink:0;background:rgba(7,11,20,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.1);display:flex;padding-bottom:var(--safe-b);}
+.nb{flex:1;background:none;border:none;color:var(--text3);padding:9px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;}
+.nb .ni{font-size:20px;}
+.nb.on{color:var(--rose);}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c"><div class="hdr-title">🛡️ 투자 원칙 체크</div><div class="hdr-sub">감정적 매매 방지 체크리스트</div></div>
+    <div style="width:36px;"></div>
+  </div>
+  <div class="scroll">
+    <div class="body">
+
+      <!-- 점수 링 -->
+      <div class="score-card">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 80 80"><circle class="rbg" cx="40" cy="40" r="33"/><circle class="rpg" id="ring" cx="40" cy="40" r="33"/></svg>
+          <div class="ring-inner"><div class="ring-num" id="score-num">0</div><div class="ring-pt">점</div></div>
+        </div>
+        <div class="score-info">
+          <div class="score-title">투자 원칙 준수도</div>
+          <div class="score-msg" id="score-msg">—</div>
+          <span class="score-badge" id="score-badge">—</span>
+        </div>
+      </div>
+
+      <div class="warn-card">
+        <div class="warn-title">⚠️ 매매 전 반드시 확인하세요</div>
+        <div class="warn-text">아래 체크리스트를 통과하지 못하면 매매를 보류하세요.<br>감정적 결정은 장기 수익을 망칩니다.</div>
+      </div>
+
+      <!-- 카테고리별 체크리스트 -->
+      <div id="checklist-container"></div>
+
+      <button class="reset-btn" onclick="resetAll()">🔄 오늘 체크 초기화</button>
+
+    </div>
+  </div>
+  <nav class="bnav">
+    <button class="nb" onclick="location.href='index.html'"><span class="ni">🏠</span>홈</button>
+    <button class="nb" onclick="location.href='portfolio.html'"><span class="ni">📊</span>포트폴리오</button>
+    <button class="nb" onclick="location.href='dividend.html'"><span class="ni">💰</span>분배금</button>
+    <button class="nb" onclick="location.href='journal.html'"><span class="ni">📝</span>매매일지</button>
+    <button class="nb on"><span class="ni">🛡️</span>원칙</button>
+  </nav>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='henry_invest_v1';
+function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{accounts:{irp:{etfs:[]},pension:{etfs:[]},general:{etfs:[]}},dividends:[],journal:[],checklist:{}};}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
+let D=ld();
+let toastT;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+
+const CHECKLIST=[
+  {
+    id:'rational', icon:'🧠', title:'이성적 판단', color:'4a8fff',
+    items:[
+      {id:'c01',title:'이 ETF의 투자 목적이 명확한가?',desc:'분배금 수익? 성장? 목적이 뚜렷해야 합니다.',w:10},
+      {id:'c02',title:'시장이 급락해도 보유할 수 있는가?',desc:'-20% 하락 시에도 패닉셀 하지 않을 자신이 있나요?',w:10},
+      {id:'c03',title:'FOMO(놓칠 것 같은 두려움)로 매매하는 것은 아닌가?',desc:'남들이 산다고 따라 사면 안 됩니다.',w:10},
+      {id:'c04',title:'충분히 조사하고 이해한 상품인가?',desc:'ETF 구성종목, 분배율, 운용보수를 알고 있어야 합니다.',w:10},
+    ]
+  },
+  {
+    id:'risk', icon:'🛡️', title:'리스크 관리', color:'ff5060',
+    items:[
+      {id:'c05',title:'손절선을 미리 정했는가?',desc:'매수 전 -15% 또는 특정 가격 이하면 손절한다고 정하세요.',w:10},
+      {id:'c06',title:'포트폴리오 내 비중이 적절한가?',desc:'한 종목에 전체의 30% 이상 투자하지 마세요.',w:10},
+      {id:'c07',title:'여유 자금으로만 투자하는가?',desc:'생활비, 비상금을 제외한 여유 자금인지 확인하세요.',w:10},
+      {id:'c08',title:'레버리지/인버스 상품은 아닌가?',desc:'장기 보유 목적이라면 레버리지 상품은 피하세요.',w:10},
+    ]
+  },
+  {
+    id:'timing', icon:'⏰', title:'타이밍 판단', color:'ffd060',
+    items:[
+      {id:'c09',title:'단기 급등 후 고점 매수는 아닌가?',desc:'이미 많이 오른 종목은 신중하게 접근하세요.',w:10},
+      {id:'c10',title:'분할 매수 전략을 쓰고 있는가?',desc:'한 번에 전량 매수보다 3-5회 분할 매수가 안전합니다.',w:10},
+    ]
+  },
+  {
+    id:'principle', icon:'📋', title:'헨리의 투자 원칙', color:'00d4aa',
+    items:[
+      {id:'c11',title:'월 분배금 수익이 주목적인가?',desc:'커버드콜 ETF의 핵심은 꾸준한 분배금 수령입니다.',w:10},
+      {id:'c12',title:'장기 보유(최소 1년) 계획인가?',desc:'단기 시세 차익보다 장기 분배금 수익을 우선시하세요.',w:10},
+      {id:'c13',title:'IRP/연금저축 세제 혜택을 활용했는가?',desc:'세액공제 한도(연 900만원)를 최대 활용하고 있나요?',w:10},
+    ]
+  },
+];
+
+function calcScore(){
+  const checked=D.checklist||{};
+  const total=CHECKLIST.reduce((s,cat)=>s+cat.items.length,0);
+  const done=Object.values(checked).filter(Boolean).length;
+  return total>0?Math.round((done/total)*100):0;
+}
+
+function render(){
+  const score=calcScore();
+  const circ=207;
+  const ring=document.getElementById('ring');
+  ring.style.strokeDashoffset=circ-(score/100)*circ;
+  const color=score>=80?'00d4aa':score>=60?'4a8fff':score>=40?'ffd060':'ff5060';
+  ring.style.stroke='#'+color;
+  document.getElementById('score-num').textContent=score;
+  document.getElementById('score-num').style.color='#'+color;
+
+  let msg,badge,bc;
+  if(score>=90){msg='매매 진행 가능 ✅';badge='매매 OK';bc='rgba(0,212,170,.15)';}
+  else if(score>=70){msg='대부분 준수 · 미흡한 항목 검토';badge='검토 후 진행';bc='rgba(74,143,255,.15)';}
+  else if(score>=50){msg='절반 미만 준수 · 신중히 재검토';badge='신중 필요';bc='rgba(255,208,96,.15)';}
+  else{msg='기본 원칙 미준수 · 매매 보류 권장';badge='⚠️ 매매 보류';bc='rgba(255,80,96,.15)';}
+  document.getElementById('score-msg').textContent=msg;
+  const sb=document.getElementById('score-badge');
+  sb.textContent=badge;sb.style.background=bc;sb.style.color='#'+color;sb.style.border=`1px solid #${color}55`;
+
+  const container=document.getElementById('checklist-container');container.innerHTML='';
+  CHECKLIST.forEach(cat=>{
+    const catDone=cat.items.filter(it=>D.checklist[it.id]).length;
+    const div=document.createElement('div');div.className='cat-card';
+    div.style.borderColor=`rgba(${hexToRgb(cat.color)},0.3)`;
+    div.innerHTML=`<div class="cat-hdr">
+      <span class="cat-icon">${cat.icon}</span>
+      <span class="cat-title" style="color:#${cat.color};">${cat.title}</span>
+      <span class="cat-score">${catDone}/${cat.items.length}</span>
+    </div>
+    <div class="check-items" id="items-${cat.id}"></div>`;
+    container.appendChild(div);
+    const itemList=div.querySelector(`#items-${cat.id}`);
+    cat.items.forEach(it=>{
+      const isChecked=!!D.checklist[it.id];
+      const item=document.createElement('div');
+      item.className='check-item'+(isChecked?' checked':'');
+      item.innerHTML=`<div class="chk-box">${isChecked?'✓':''}</div>
+        <div class="chk-body">
+          <div class="chk-title">${it.title}</div>
+          <div class="chk-desc">${it.desc}</div>
+        </div>`;
+      item.addEventListener('click',()=>{
+        D.checklist[it.id]=!D.checklist[it.id];sv();render();
+        if(D.checklist[it.id]) toast('✅ 확인!');
+      });
+      itemList.appendChild(item);
+    });
+  });
+}
+
+function hexToRgb(hex){const r=parseInt(hex.slice(0,2),16);const g=parseInt(hex.slice(2,4),16);const b=parseInt(hex.slice(4,6),16);return `${r},${g},${b}`;}
+
+function resetAll(){
+  if(!confirm('오늘 체크를 모두 초기화할까요?'))return;
+  D.checklist={};sv();render();toast('🔄 초기화됨');
+}
+render();
+</script>
+</body>
+</html>

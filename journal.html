@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>매매 일지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b14;--s1:#0d1425;--s2:#111d35;--s3:#162040;--text:#e8f0fe;--text2:#a8b8d8;--text3:#506080;--blue:#4a8fff;--teal:#00d4aa;--gold:#ffd060;--rose:#ff5060;--green:#00c080;--violet:#9060ff;--orange:#ff8830;--border:rgba(255,255,255,0.07);--wborder:rgba(255,255,255,0.65);--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
+.shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
+.hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.back{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;}
+.back:active{transform:scale(.92);}
+.hdr-c{flex:1;text-align:center;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--blue);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.body{padding:14px 14px 90px;}
+.sec{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:9px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* 필터 */
+.filter-row{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.filter-row::-webkit-scrollbar{display:none;}
+.fbtn{background:var(--s1);border:1px solid var(--wborder);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;touch-action:manipulation;font-weight:500;transition:all .15s;}
+.fbtn.on{background:var(--blue);border-color:var(--blue);color:#fff;}
+
+/* 입력 폼 */
+.add-form{background:linear-gradient(135deg,var(--s1),var(--s2));border:1.5px solid rgba(74,143,255,.25);border-radius:15px;padding:14px;margin-bottom:14px;}
+.add-form-title{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:12px;}
+.form-row{display:flex;gap:7px;margin-bottom:8px;}
+.form-row:last-child{margin:0;}
+.finp{flex:1;background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;}
+.finp:focus{border-color:var(--blue);}
+.finp::placeholder{color:var(--text3);font-size:12px;}
+.fta{resize:none;min-height:70px;line-height:1.6;}
+.fselect{background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--text);font-size:13px;outline:none;}
+.fadd-btn{width:100%;background:var(--blue);border:none;color:#fff;padding:13px;border-radius:11px;cursor:pointer;font-size:14px;font-weight:700;touch-action:manipulation;margin-top:4px;}
+.fadd-btn:active{transform:scale(.98);}
+
+/* 매매 일지 카드 */
+.journal-list{display:flex;flex-direction:column;gap:10px;}
+.jcard{background:var(--s1);border:1.5px solid var(--border);border-radius:15px;padding:14px;}
+.jcard-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.jcard-type{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;flex-shrink:0;}
+.type-buy{background:rgba(0,212,170,.15);border:1px solid rgba(0,212,170,.3);color:var(--teal);}
+.type-sell{background:rgba(255,80,96,.15);border:1px solid rgba(255,80,96,.3);color:var(--rose);}
+.jcard-name{flex:1;font-size:15px;font-weight:700;color:var(--text);}
+.jcard-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);}
+.jcard-del{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;opacity:.25;touch-action:manipulation;}
+.jcard-del:active{opacity:1;color:var(--rose);}
+.jcard-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+.jcell{background:var(--s2);border-radius:8px;padding:7px 9px;}
+.jcell-label{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:2px;text-transform:uppercase;}
+.jcell-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--text);}
+.jcell-val.target{color:var(--teal);}
+.jcell-val.stop{color:var(--rose);}
+.jcard-section{margin-bottom:8px;}
+.jcard-section-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:5px;}
+.jcard-section-body{font-size:13px;color:var(--text2);line-height:1.6;}
+.jcard-result{display:flex;align-items:center;justify-content:space-between;background:var(--s2);border-radius:8px;padding:8px 10px;margin-top:8px;}
+.jr-label{font-size:12px;color:var(--text3);}
+.jr-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;}
+
+.empty{text-align:center;padding:28px 0;color:var(--text3);font-size:13px;}
+.empty .ei{font-size:32px;margin-bottom:8px;}
+.toast{position:fixed;bottom:calc(var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:#fff;color:#070b14;padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.bnav{flex-shrink:0;background:rgba(7,11,20,0.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.1);display:flex;padding-bottom:var(--safe-b);}
+.nb{flex:1;background:none;border:none;color:var(--text3);padding:9px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;}
+.nb .ni{font-size:20px;}
+.nb.on{color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c"><div class="hdr-title">📝 매매 일지</div><div class="hdr-sub">매수 이유 · 목표가 · 손절선</div></div>
+    <div style="width:36px;"></div>
+  </div>
+  <div class="scroll">
+    <div class="body">
+
+      <!-- 필터 -->
+      <div class="filter-row">
+        <button class="fbtn on" onclick="setFilter('all',this)">전체</button>
+        <button class="fbtn" onclick="setFilter('buy',this)">매수</button>
+        <button class="fbtn" onclick="setFilter('sell',this)">매도</button>
+      </div>
+
+      <!-- 입력 폼 -->
+      <div class="sec">매매 기록 추가</div>
+      <div class="add-form">
+        <div class="add-form-title">📝 새 매매 기록</div>
+        <div class="form-row">
+          <input class="finp" id="f-date" type="date">
+          <select class="fselect" id="f-type">
+            <option value="buy">매수</option>
+            <option value="sell">매도</option>
+          </select>
+          <select class="fselect" id="f-acct">
+            <option value="irp">IRP</option>
+            <option value="pension">연금저축</option>
+            <option value="general">일반</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <input class="finp" id="f-name" placeholder="ETF / 종목명" list="etf-dl">
+          <datalist id="etf-dl"></datalist>
+          <input class="finp" id="f-qty" type="number" placeholder="수량" min="0" style="flex:0.6;">
+          <input class="finp" id="f-price" type="number" placeholder="가격(원)" min="0">
+        </div>
+        <div class="form-row">
+          <input class="finp" id="f-target" type="number" placeholder="🎯 목표가 (원)" min="0">
+          <input class="finp" id="f-stop" type="number" placeholder="🛑 손절가 (원)" min="0">
+        </div>
+        <div class="form-row">
+          <textarea class="finp fta" id="f-reason" placeholder="📌 매수/매도 이유&#10;예) 커버드콜 ETF 월배당 수익, 분배율 12% 수준..."></textarea>
+        </div>
+        <div class="form-row">
+          <textarea class="finp fta" id="f-memo" placeholder="📋 추가 메모 (선택)&#10;시장 상황, 특이사항 등..." style="min-height:50px;"></textarea>
+        </div>
+        <button class="fadd-btn" onclick="addJournal()">💾 매매 기록 저장</button>
+      </div>
+
+      <!-- 목록 -->
+      <div class="sec">매매 기록</div>
+      <div class="journal-list" id="journal-list"></div>
+
+    </div>
+  </div>
+  <nav class="bnav">
+    <button class="nb" onclick="location.href='index.html'"><span class="ni">🏠</span>홈</button>
+    <button class="nb" onclick="location.href='portfolio.html'"><span class="ni">📊</span>포트폴리오</button>
+    <button class="nb" onclick="location.href='dividend.html'"><span class="ni">💰</span>분배금</button>
+    <button class="nb on"><span class="ni">📝</span>매매일지</button>
+    <button class="nb" onclick="location.href='checklist.html'"><span class="ni">🛡️</span>원칙</button>
+  </nav>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='henry_invest_v1';
+function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{accounts:{irp:{etfs:[]},pension:{etfs:[]},general:{etfs:[]}},dividends:[],journal:[],checklist:{}};}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
+let D=ld();
+let curFilter='all';
+function fmt(n){return Math.round(n).toLocaleString('ko-KR');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+let toastT;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+const ACCT_N={irp:'IRP',pension:'연금저축',general:'일반'};
+
+function setFilter(f,btn){curFilter=f;document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderList();}
+
+function renderList(){
+  // ETF datalist
+  const dl=document.getElementById('etf-dl');dl.innerHTML='';
+  const names=new Set();Object.values(D.accounts).forEach(a=>a.etfs.forEach(e=>{if(e.name)names.add(e.name);}));
+  names.forEach(n=>{const o=document.createElement('option');o.value=n;dl.appendChild(o);});
+
+  const list=document.getElementById('journal-list');list.innerHTML='';
+  let items=[...D.journal].sort((a,b)=>b.date.localeCompare(a.date));
+  if(curFilter!=='all') items=items.filter(j=>j.type===curFilter);
+  if(!items.length){list.innerHTML='<div class="empty"><div class="ei">📝</div>매매 기록이 없습니다</div>';return;}
+  items.forEach(j=>{
+    const origIdx=D.journal.indexOf(j);
+    const isBuy=j.type==='buy';
+    const totalAmt=(j.price||0)*(j.qty||0);
+    const profit=j.sellPrice?(j.sellPrice-j.price)*(j.qty||0):null;
+    const rate=profit!==null&&totalAmt>0?(profit/totalAmt*100):null;
+    const el=document.createElement('div');el.className='jcard';
+    el.innerHTML=`
+      <div class="jcard-top">
+        <span class="jcard-type ${isBuy?'type-buy':'type-sell'}">${isBuy?'매수':'매도'}</span>
+        <div class="jcard-name">${esc(j.name)}</div>
+        <span class="jcard-date">${j.date}</span>
+        <button class="jcard-del" onclick="delJ(${origIdx})">×</button>
+      </div>
+      <div class="jcard-grid">
+        <div class="jcell"><div class="jcell-label">계좌</div><div class="jcell-val">${ACCT_N[j.acct]||j.acct}</div></div>
+        <div class="jcell"><div class="jcell-label">수량</div><div class="jcell-val">${(j.qty||0).toLocaleString()} 주</div></div>
+        <div class="jcell"><div class="jcell-label">${isBuy?'매수가':'매도가'}</div><div class="jcell-val">${fmt(j.price||0)}</div></div>
+        <div class="jcell"><div class="jcell-label">총 금액</div><div class="jcell-val">${fmt(totalAmt)}</div></div>
+        ${j.target?`<div class="jcell"><div class="jcell-label">🎯 목표가</div><div class="jcell-val target">${fmt(j.target)}</div></div>`:'<div class="jcell"></div>'}
+        ${j.stop?`<div class="jcell"><div class="jcell-label">🛑 손절가</div><div class="jcell-val stop">${fmt(j.stop)}</div></div>`:'<div class="jcell"></div>'}
+      </div>
+      ${j.reason?`<div class="jcard-section"><div class="jcard-section-title">📌 이유</div><div class="jcard-section-body">${esc(j.reason)}</div></div>`:''}
+      ${j.memo?`<div class="jcard-section"><div class="jcard-section-title">📋 메모</div><div class="jcard-section-body">${esc(j.memo)}</div></div>`:''}
+      ${profit!==null?`<div class="jcard-result"><span class="jr-label">수익금</span><span class="jr-val" style="color:${profit>=0?'var(--teal)':'var(--rose)'};">${profit>=0?'+':''}${fmt(profit)} 원 (${rate.toFixed(2)}%)</span></div>`:''}`;
+    list.appendChild(el);
+  });
+}
+
+function addJournal(){
+  const date=document.getElementById('f-date').value;
+  const name=document.getElementById('f-name').value.trim();
+  if(!date||!name){toast('날짜와 종목명을 입력하세요');return;}
+  D.journal.push({
+    id:Date.now(),date,
+    type:document.getElementById('f-type').value,
+    acct:document.getElementById('f-acct').value,
+    name,
+    qty:parseFloat(document.getElementById('f-qty').value)||0,
+    price:parseFloat(document.getElementById('f-price').value)||0,
+    target:parseFloat(document.getElementById('f-target').value)||0,
+    stop:parseFloat(document.getElementById('f-stop').value)||0,
+    reason:document.getElementById('f-reason').value.trim(),
+    memo:document.getElementById('f-memo').value.trim(),
+  });
+  sv();
+  ['f-name','f-qty','f-price','f-target','f-stop','f-reason','f-memo'].forEach(id=>document.getElementById(id).value='');
+  renderList();toast('✅ 매매 기록 저장됨');
+}
+function delJ(i){if(!confirm('삭제할까요?'))return;D.journal.splice(i,1);sv();renderList();toast('🗑️ 삭제됨');}
+
+document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
+renderList();
+</script>
+</body>
+</html>
