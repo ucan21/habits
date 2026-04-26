@@ -1,11 +1,11 @@
 {
-  "name": "헨리의 투자 연구소",
-  "short_name": "투자연구소",
-  "description": "ETF 포트폴리오 · 분배금 · 매매일지 · 투자원칙",
+  "name": "Henry's Atomic Habits",
+  "short_name": "Henry",
+  "description": "습관 · 감사일기 · Task · Brain Dump · 정보",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#070b14",
-  "theme_color": "#070b14",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
   "orientation": "portrait",
   "icons": [
     {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
