@@ -114,7 +114,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 <canvas id="coinCanvas"></canvas>
 <div class="shell">
   <div class="hdr">
-    <a class="back" href="index.html">←</a>
+    <a class="back" href="/habits/index.html" onclick="event.preventDefault();window.location.href='/habits/index.html'">←</a>
     <div class="hdr-c">
       <div class="hdr-title">헨리의 습관</div>
       <div class="hdr-sub">Daily Habit Tracker</div>
@@ -152,7 +152,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     </div>
     <!-- BOTTOM NAV -->
   <nav class="bnav">
-    <button class="nb" style="color:var(--blue);" onclick="window.location.href='index.html'">
+    <button class="nb" style="color:var(--blue);" onclick="window.location.href='/habits/index.html'">
       <span class="ni">🏠</span>홈
     </button>
     <button class="nb on" onclick="window.location.href='habits.html'">
@@ -202,8 +202,7 @@ let curD=todayStr();
 function chDate(d){const nxt=addDays(curD,d);if(nxt>addDays(todayStr(),1))return;curD=nxt;render();}
 function goToday(){curD=todayStr();render();}
 function getWeight(id){
-  if(id==='h3'||id==='h6'||id==='h9') return 20;
-  return 40/7;
+  return 10; // 동일 비율 — 10개 습관 각 10%
 }
 function score(dk){
   const rec=D.records[dk]||{};

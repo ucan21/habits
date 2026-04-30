@@ -92,7 +92,7 @@ body{
 }
 .q-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-family:'DM Mono',monospace;font-weight:700;margin-bottom:6px;opacity:.85;}
 .q-text{font-size:14px;font-weight:400;color:#ffffff;line-height:1.65;word-break:keep-all;font-family:'Nanum Myeongjo','Batang','Georgia',serif;letter-spacing:.3px;}
-.q-en{font-size:14px;font-weight:500;color:#ffc020;line-height:1.65;margin-top:8px;font-family:'Georgia','Times New Roman',serif;font-style:italic;word-break:break-word;text-shadow:0 0 18px rgba(255,192,32,0.25);}
+.q-en{font-size:12px;font-weight:400;color:rgba(255,255,255,0.5);line-height:1.6;margin-top:7px;font-family:'Georgia','Times New Roman',serif;font-style:italic;word-break:break-word;}
 .q-author{font-size:10px;color:rgba(255,255,255,0.55);margin-top:5px;font-family:'DM Mono',monospace;text-align:right;}
 
 /* ── CARD BUTTONS (메인 콘텐츠 카드) ── */
@@ -275,7 +275,7 @@ body{
 
 <script>
 /* 페이지 이동 — window.location으로 확실하게 */
-function go(url){ window.location.href = url; }
+function go(url){ window.location.href = '/habits/' + url; }
 
 /* 날짜 표시 */
 (function(){
@@ -341,18 +341,31 @@ const QQ=[
 /* ══ 1시간마다 명언 업데이트 ══ */
 function showQuote(){
   const n=new Date();
-  // 날짜 × 24 + 시간 → 1시간마다 다른 명언
-  const hourSlot=n.getFullYear()*8760+n.getMonth()*730+n.getDate()*24+n.getHours();
+  const h=n.getHours();
+  // 오후 11시(23시)~새벽 6시 → 명언 교체 중지, 취침 메시지 표시
+  if(h>=23||h<6){
+    document.getElementById('q-label').textContent='🌙 취침 시간';
+    document.getElementById('q-text').textContent='충분한 수면이 내일의 에너지를 만듭니다. 편안한 밤 되세요.';
+    document.getElementById('q-en').textContent='A good night's sleep is the foundation of tomorrow's success.';
+    document.getElementById('q-author').textContent='— Henry's Diary';
+    // 새벽 6시에 다시 시작
+    const next6am=new Date(n);
+    if(h<6) next6am.setHours(6,0,5,0);
+    else{next6am.setDate(n.getDate()+1);next6am.setHours(6,0,5,0);}
+    setTimeout(()=>showQuote(), next6am-n);
+    return;
+  }
+  // 활동 시간(6시~23시) — 1시간마다 명언 업데이트
+  const hourSlot=n.getFullYear()*8760+n.getMonth()*730+n.getDate()*24+h;
   const idx=hourSlot%QQ.length;
   const q=QQ[idx];
   document.getElementById('q-text').textContent=q.t;
   document.getElementById('q-en').textContent=q.e;
   document.getElementById('q-author').textContent='— '+q.a;
-  // 다음 정시까지 남은 시간 계산
-  const msLeft=((60-n.getMinutes())*60-(n.getSeconds()))*1000;
-  document.getElementById('q-label').textContent=
-    '✦ 오늘의 명언  ·  '+n.getHours()+'시';
-  setTimeout(()=>{showQuote();},msLeft+500); // 정시+0.5초에 갱신
+  document.getElementById('q-label').textContent='✦ 오늘의 명언  ·  '+h+'시';
+  // 다음 정시까지 남은 시간
+  const msLeft=((60-n.getMinutes())*60-n.getSeconds())*1000;
+  setTimeout(()=>showQuote(), msLeft+500);
 }
 showQuote();
 
@@ -366,17 +379,16 @@ showQuote();
     const rec=(d.records||{})[tk]||{};
     const grat=((d.grat||{})[tk]||[]);
     if(habits.length){
-      function gw(id){return(id==='h3'||id==='h6'||id==='h9')?20:40/7;}
       const anyChk=habits.some(h=>rec[h.id]);
       if(!anyChk){document.getElementById('score-badge').textContent='0점';}
       else{
         const allChk=habits.every(h=>rec[h.id]);
         if(allChk){document.getElementById('score-badge').textContent='100점';}
         else{
+          const w=100/habits.length;
           let sc=0;
-          habits.forEach(h=>{if(rec[h.id])sc+=gw(h.id);});
-          const r=Math.round(sc*10)/10;
-          document.getElementById('score-badge').textContent=(r<1?0:Math.round(r))+'점';
+          habits.forEach(h=>{if(rec[h.id])sc+=w;});
+          document.getElementById('score-badge').textContent=Math.round(sc)+'점';
         }
       }
     }

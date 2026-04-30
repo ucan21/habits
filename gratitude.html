@@ -57,6 +57,17 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .ginp:focus{border-color:rgba(255,192,32,.5);background:var(--s3);}
 .ginp::placeholder{color:var(--text3);font-size:12px;}
 .ginp.fil{border-color:rgba(255,192,32,.3);}
+/* 사진 기능 */
+.photo-section{margin-bottom:12px;}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
+.photo-item{position:relative;aspect-ratio:1;border-radius:11px;overflow:hidden;background:var(--s2);border:1px solid rgba(255,192,32,.2);}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-del{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);border:none;color:#fff;width:22px;height:22px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.photo-add-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;padding:13px;background:rgba(255,192,32,.07);border:1.5px dashed rgba(255,192,32,.35);border-radius:11px;cursor:pointer;color:rgba(255,192,32,.8);font-size:12px;font-weight:700;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;transition:all .18s;}
+.photo-add-btn:active{background:rgba(255,192,32,.15);}
+.photo-add-icon{font-size:24px;}
+.photo-add-btns{display:flex;gap:7px;}
+.photo-add-btns .photo-add-btn{flex:1;}
 .grow-del{background:none;border:none;color:rgba(255,255,255,.22);font-size:20px;cursor:pointer;padding:2px 6px;touch-action:manipulation;flex-shrink:0;margin-top:6px;line-height:1;transition:all .15s;}
 .grow-del:active{color:var(--rose);transform:scale(.9);}
 .grat-add-btn{width:100%;margin:10px 0 0;background:rgba(255,192,32,.08);border:1.5px dashed rgba(255,192,32,.35);color:rgba(255,192,32,.75);padding:12px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;transition:all .18s;}
@@ -109,7 +120,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 <canvas id="coinCanvas"></canvas>
 <div class="shell">
   <div class="hdr">
-    <a class="back" href="index.html">←</a>
+    <a class="back" href="/habits/index.html" onclick="event.preventDefault();window.location.href='/habits/index.html'">←</a>
     <div class="hdr-c">
       <div class="hdr-title">🙏 Today's Gratitude Journal</div>
       <div class="hdr-sub">오늘의 다섯 가지 감사</div>
@@ -139,6 +150,21 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
           <div class="grat-title">오늘의 감사 🙏</div>
           <div class="grat-cnt" id="gcnt">0 / 5</div>
         </div>
+
+        <!-- 사진 섹션 -->
+        <div class="photo-section">
+          <div class="photo-grid" id="photo-grid"></div>
+          <div class="photo-add-btns">
+            <button class="photo-add-btn" onclick="takePhoto()">
+              <span class="photo-add-icon">📷</span>카메라 촬영
+            </button>
+            <button class="photo-add-btn" onclick="pickPhoto()">
+              <span class="photo-add-icon">🖼️</span>앨범에서 선택
+            </button>
+          </div>
+          <input type="file" id="cam-inp" accept="image/*" capture="environment" style="display:none" onchange="onPhotoSelected(event)">
+          <input type="file" id="gallery-inp" accept="image/*" style="display:none" onchange="onPhotoSelected(event)">
+        </div>
         <div class="grat-items" id="grat-items"></div>
         <button class="grat-add-btn" onclick="addGratItem()">+ 감사 항목 추가</button>
         <button class="save-btn" onclick="saveGrat()">✨ 감사 일기 저장하기</button>
@@ -149,22 +175,22 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     </div>
     <!-- BOTTOM NAV -->
   <nav class="bnav">
-    <button class="nb" style="color:var(--blue);" onclick="window.location.href='index.html'">
+    <button class="nb" style="color:var(--blue);" onclick="window.location.href='/habits/index.html'">
       <span class="ni">🏠</span>홈
     </button>
-    <button class="nb" onclick="window.location.href='habits.html'">
+    <button class="nb" onclick="window.location.href='/habits/habits.html'">
       <span class="ni">✅</span>습관
     </button>
-    <button class="nb on" onclick="window.location.href='gratitude.html'">
+    <button class="nb on" onclick="window.location.href='/habits/gratitude.html'">
       <span class="ni">🙏</span>감사
     </button>
-    <button class="nb" onclick="window.location.href='brain.html'">
+    <button class="nb" onclick="window.location.href='/habits/brain.html'">
       <span class="ni">🧠</span>Brain
     </button>
-    <button class="nb" onclick="window.location.href='gtask.html'">
+    <button class="nb" onclick="window.location.href='/habits/gtask.html'">
       <span class="ni">☑️</span>Tasks
     </button>
-    <button class="nb" onclick="window.location.href='gcal.html'">
+    <button class="nb" onclick="window.location.href='/habits/gcal.html'">
       <span class="ni">📅</span>캘린더
     </button>
     <button class="nb" onclick="window.location.href=\'backup.html\'"><span class="ni">☁️</span>백업
@@ -304,6 +330,7 @@ function render(){
     }
   });
   updateCnt();
+  renderPhotos();
 
   // 아카이브
   const arc=document.getElementById('archive');arc.innerHTML='';
@@ -324,6 +351,41 @@ function render(){
     <div>${entries.map((e,i)=>`<div class="arc-item"><span class="arc-n">${i+1}</span><span class="arc-text">${esc(e)}</span></div>`).join('')}</div>`;
     arc.appendChild(card);
   });
+}
+
+/* ── 사진 기능 ── */
+function takePhoto(){ document.getElementById('cam-inp').click(); }
+function pickPhoto(){ document.getElementById('gallery-inp').click(); }
+
+function onPhotoSelected(e){
+  const file=e.target.files[0]; if(!file)return;
+  if(file.size>5*1024*1024){toast('📷 5MB 이하 사진만 가능합니다');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    if(!D.grat)D.grat={};
+    if(!D.grat[curD+'_photos'])D.grat[curD+'_photos']=[];
+    if(D.grat[curD+'_photos'].length>=6){toast('📷 최대 6장까지 가능합니다');return;}
+    D.grat[curD+'_photos'].push(ev.target.result);
+    sv();renderPhotos();toast('📷 사진 추가됨');
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+function renderPhotos(){
+  const grid=document.getElementById('photo-grid');grid.innerHTML='';
+  const photos=(D.grat&&D.grat[curD+'_photos'])||[];
+  photos.forEach((src,i)=>{
+    const item=document.createElement('div');item.className='photo-item';
+    item.innerHTML=`<img src="${src}" alt="감사 사진 ${i+1}">
+      <button class="photo-del" onclick="delPhoto(${i})">×</button>`;
+    grid.appendChild(item);
+  });
+}
+
+function delPhoto(i){
+  if(!confirm('이 사진을 삭제할까요?'))return;
+  D.grat[curD+'_photos'].splice(i,1);sv();renderPhotos();toast('🗑️ 삭제됨');
 }
 
 function saveGrat(){
