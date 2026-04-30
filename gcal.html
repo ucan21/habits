@@ -22,7 +22,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
 /* HEADER */
 .hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.back{background:var(--s2);border:1px solid var(--border2);color:var(--text2);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;}
+.back{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;cursor:pointer;-webkit-appearance:none;}
 .back:active{transform:scale(.92);}
 .hdr-c{flex:1;text-align:center;}
 .hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--blue);line-height:1;}
@@ -105,7 +105,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 <body>
 <div class="shell">
   <div class="hdr">
-    <a class="back" href="/habits/index.html" onclick="event.preventDefault();window.location.href='/habits/index.html'">←</a>
+    <button class="back" onclick="window.location.href='index.html'">←</button>
     <div class="hdr-c">
       <div class="hdr-title">📅 Google Calendar</div>
       <div class="hdr-sub">Google 캘린더 바로가기</div>
@@ -204,22 +204,22 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
   <!-- BOTTOM NAV -->
   <nav class="bnav">
-    <button class="nb" style="color:var(--blue);" onclick="window.location.href='/habits/index.html'">
+    <button class="nb" style="color:var(--blue);" onclick="window.location.href='index.html'">
       <span class="ni">🏠</span>홈
     </button>
-    <button class="nb" onclick="window.location.href='/habits/habits.html'">
+    <button class="nb" onclick="window.location.href='habits.html'">
       <span class="ni">✅</span>습관
     </button>
-    <button class="nb" onclick="window.location.href='/habits/gratitude.html'">
+    <button class="nb" onclick="window.location.href='gratitude.html'">
       <span class="ni">🙏</span>감사
     </button>
-    <button class="nb" onclick="window.location.href='/habits/brain.html'">
+    <button class="nb" onclick="window.location.href='brain.html'">
       <span class="ni">🧠</span>Brain
     </button>
-    <button class="nb" onclick="window.location.href='/habits/gtask.html'">
+    <button class="nb" onclick="window.location.href='gtask.html'">
       <span class="ni">☑️</span>Tasks
     </button>
-    <button class="nb on" onclick="window.location.href='/habits/gcal.html'">
+    <button class="nb on" onclick="window.location.href='gcal.html'">
       <span class="ni">📅</span>캘린더
     </button>
     <button class="nb" onclick="window.location.href=\'backup.html\'"><span class="ni">☁️</span>백업
