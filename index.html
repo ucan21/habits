@@ -86,6 +86,9 @@ body{
   position:relative;overflow:hidden;
   cursor:pointer;touch-action:manipulation;
   transition:transform .12s,border-color .2s;
+  -webkit-appearance:none;appearance:none;
+  display:block;width:100%;text-align:left;
+  font-family:inherit;
 }
 .quote-card:active{transform:scale(.98);border-color:rgba(255,208,96,.8);}
 .quote-card::before{
@@ -185,12 +188,12 @@ body{
     <div class="content">
 
       <!-- 명언 -->
-      <div class="quote-card" onclick="nextQuote()">
+      <button class="quote-card" onclick="nextQuote()" style="width:100%;text-align:left;background:linear-gradient(135deg,#12121a,#1a1a2e);cursor:pointer;">
         <div class="q-label" id="q-label">✦ 오늘의 명언 &nbsp;·&nbsp; 탭하면 다음 ›</div>
         <div class="q-text" id="q-text">—</div>
         <div class="q-en" id="q-en" style="color:#ffd060!important;font-size:15px;font-weight:500;font-style:italic;margin-top:8px;line-height:1.7;word-break:break-word;">—</div>
         <div class="q-author" id="q-author">—</div>
-      </div>
+      </button>
 
       <!-- 카드 버튼들 — onclick으로 이동 (← 화살표 불필요) -->
       <div class="nav-btn btn-habit" onclick="go('habits.html')">
