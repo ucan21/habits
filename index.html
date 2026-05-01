@@ -346,10 +346,28 @@ function displayQuote(idx){
 
 function nextQuote(){
   curQIdx=(curQIdx+1)%QQ.length;
-  // localStorage에 저장 (다음번 접속시 이어서)
+  // localStorage에 저장
   try{localStorage.setItem('henry_qidx',curQIdx);}catch(e){}
-  // 진동 (지원 기기만)
-  if(navigator.vibrate) navigator.vibrate(30);
+  // 진동 — Android
+  if(navigator.vibrate) navigator.vibrate(40);
+  // iOS 햅틱 — AudioContext 짧은 클릭음 (무음에 가까운 틱)
+  try{
+    const ac=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=ac.createOscillator();
+    const gain=ac.createGain();
+    osc.connect(gain);gain.connect(ac.destination);
+    osc.type='sine';osc.frequency.value=880;
+    gain.gain.setValueAtTime(0.15,ac.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.06);
+    osc.start(ac.currentTime);osc.stop(ac.currentTime+0.06);
+  }catch(e){}
+  // 카드 흔들림 애니메이션
+  const card=document.querySelector('.quote-card');
+  if(card){
+    card.style.transform='scale(0.97)';
+    card.style.transition='transform 0.08s';
+    setTimeout(()=>{card.style.transform='scale(1)';card.style.transition='transform 0.15s';},80);
+  }
   displayQuote(curQIdx);
 }
 
