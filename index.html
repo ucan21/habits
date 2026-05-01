@@ -84,7 +84,10 @@ body{
   border:2px solid rgba(255,255,255,0.75);
   border-radius:14px;padding:10px 13px;margin-bottom:12px;
   position:relative;overflow:hidden;
+  cursor:pointer;touch-action:manipulation;
+  transition:transform .12s,border-color .2s;
 }
+.quote-card:active{transform:scale(.98);border-color:rgba(255,208,96,.8);}
 .quote-card::before{
   content:'"';font-family:'Bebas Neue',sans-serif;font-size:50px;
   color:rgba(74,143,255,0.06);position:absolute;top:-5px;left:6px;
@@ -182,8 +185,8 @@ body{
     <div class="content">
 
       <!-- 명언 -->
-      <div class="quote-card">
-        <div class="q-label" id="q-label">✦ 오늘의 명언</div>
+      <div class="quote-card" onclick="nextQuote()">
+        <div class="q-label" id="q-label">✦ 오늘의 명언 &nbsp;·&nbsp; 탭하면 다음 ›</div>
         <div class="q-text" id="q-text">—</div>
         <div class="q-en" id="q-en" style="color:#ffd060!important;font-size:15px;font-weight:500;font-style:italic;margin-top:8px;line-height:1.7;word-break:break-word;">—</div>
         <div class="q-author" id="q-author">—</div>
@@ -317,10 +320,33 @@ const QQ=[
 ];
 
 /* ══ 1시간마다 명언 업데이트 ══ */
+/* ── 명언 인덱스 ── */
+let curQIdx=(()=>{
+  const n=new Date();
+  return (n.getFullYear()*8760+n.getMonth()*730+n.getDate()*24+n.getHours())%QQ.length;
+})();
+
+function displayQuote(idx){
+  const q=QQ[idx];
+  const ql=document.getElementById('q-label');
+  const qt=document.getElementById('q-text');
+  const qe=document.getElementById('q-en');
+  const qa=document.getElementById('q-author');
+  if(qt) qt.textContent=q.t;
+  if(qe) qe.textContent=q.e;
+  if(qa) qa.textContent='— '+q.a;
+  if(ql) ql.innerHTML='✦ 오늘의 명언 &nbsp;·&nbsp; 탭하면 다음 ›';
+}
+
+function nextQuote(){
+  curQIdx=(curQIdx+1)%QQ.length;
+  displayQuote(curQIdx);
+}
+
 function showQuote(){
   const n=new Date();
   const h=n.getHours();
-  // 오후 11시(23)~새벽 6시 → 취침 메시지 고정
+  // 오후 11시~새벽 6시 → 취침 메시지
   if(h>=23||h<6){
     const ql=document.getElementById('q-label');
     const qt=document.getElementById('q-text');
@@ -330,24 +356,10 @@ function showQuote(){
     if(qt) qt.textContent='충분한 수면이 내일의 에너지를 만듭니다. 편안한 밤 되세요.';
     if(qe) qe.textContent="A good night's sleep is the foundation of tomorrow's success.";
     if(qa) qa.textContent="— Henry's Diary";
-    // 다음 체크: 30분 후 (6시가 됐는지 확인)
     setTimeout(showQuote, 30*60*1000);
     return;
   }
-  // 활동 시간 — 명언 표시
-  const slot=n.getFullYear()*8760+n.getMonth()*730+n.getDate()*24+h;
-  const q=QQ[slot%QQ.length];
-  const ql=document.getElementById('q-label');
-  const qt=document.getElementById('q-text');
-  const qe=document.getElementById('q-en');
-  const qa=document.getElementById('q-author');
-  if(qt) qt.textContent=q.t;
-  if(qe) qe.textContent=q.e;
-  if(qa) qa.textContent='— '+q.a;
-  if(ql) ql.textContent='✦ 오늘의 명언  ·  '+h+'시';
-  // 다음 정시까지
-  const ms=((60-n.getMinutes())*60-(n.getSeconds()))*1000;
-  setTimeout(showQuote, Math.max(ms,1000));
+  displayQuote(curQIdx);
 }
 showQuote();
 
