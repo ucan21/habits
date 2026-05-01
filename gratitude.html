@@ -51,13 +51,14 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .grat-title{font-size:16px;font-weight:700;color:var(--gold);}
 .grat-cnt{background:var(--gold-d);border:1px solid rgba(255,192,32,.35);border-radius:20px;padding:3px 12px;font-family:'DM Mono',monospace;font-size:12px;color:var(--gold);font-weight:700;}
 .grat-items{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
-.grat-row{display:flex;align-items:flex-start;gap:9px;}
+.grat-row{display:flex;flex-direction:column;gap:0;margin-bottom:12px;}
 .gnum{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);opacity:.35;line-height:1;padding-top:9px;min-width:18px;}
 .ginp{flex:1;background:var(--s2);border:1px solid rgba(255,192,32,.15);border-radius:11px;padding:11px 13px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;resize:none;min-height:80px;line-height:1.7;overflow-y:hidden;word-break:break-all;box-sizing:border-box;}
 .ginp:focus{border-color:rgba(255,192,32,.5);background:var(--s3);}
 .ginp::placeholder{color:var(--text3);font-size:12px;}
 .ginp.fil{border-color:rgba(255,192,32,.3);}
-.trans-wrap{margin-top:5px;min-height:0;transition:all .25s;}
+.grat-inp-row{display:flex;align-items:flex-start;gap:9px;}
+.trans-wrap{margin-top:0;border-left:3px solid rgba(255,136,48,.4);margin-left:27px;padding:5px 10px 6px;background:rgba(255,136,48,.05);border-radius:0 0 9px 9px;}
 .trans-text{font-size:12px;color:#ff8830;font-style:italic;font-family:'Georgia',serif;line-height:1.6;padding:5px 13px 5px 13px;word-break:break-word;}
 .trans-loading{font-size:11px;color:var(--text3);padding:4px 13px;font-family:'DM Mono',monospace;animation:blink .8s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:.4;}50%{opacity:1;}}
@@ -342,9 +343,14 @@ function makeRow(idx, val){
     reIndex();
   };
 
-  row.appendChild(num);
-  row.appendChild(ta);
-  row.appendChild(del);
+  // 입력 행 (번호 + textarea + 삭제)
+  const inpRow=document.createElement('div');
+  inpRow.className='grat-inp-row';
+  inpRow.appendChild(num);
+  inpRow.appendChild(ta);
+  inpRow.appendChild(del);
+  row.appendChild(inpRow);
+  // 영어 번역은 아래 별도 행
   row.appendChild(transWrap);
   return row;
 }
