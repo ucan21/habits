@@ -57,6 +57,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .ginp:focus{border-color:rgba(255,192,32,.5);background:var(--s3);}
 .ginp::placeholder{color:var(--text3);font-size:12px;}
 .ginp.fil{border-color:rgba(255,192,32,.3);}
+.trans-wrap{margin-top:5px;min-height:0;transition:all .25s;}
+.trans-text{font-size:12px;color:#ff8830;font-style:italic;font-family:'Georgia',serif;line-height:1.6;padding:5px 13px 5px 13px;word-break:break-word;}
+.trans-loading{font-size:11px;color:var(--text3);padding:4px 13px;font-family:'DM Mono',monospace;animation:blink .8s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:.4;}50%{opacity:1;}}
 /* 사진 기능 */
 .photo-section{margin-bottom:12px;}
 .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
@@ -268,6 +272,29 @@ function reIndex(){
   updateCnt();
 }
 
+/* ─── 번역 캐시 & 함수 (MyMemory 무료 API) ─── */
+const transCache={};
+
+async function translateToEn(text, wrap){
+  if(!text||text.trim().length<3){wrap.innerHTML='';return;}
+  const key=text.trim();
+  if(transCache[key]){
+    wrap.innerHTML=`<div class="trans-text">🇺🇸 ${transCache[key]}</div>`;
+    return;
+  }
+  wrap.innerHTML='<div class="trans-loading">🇺🇸 번역 중...</div>';
+  try{
+    const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(key)+'&langpair=ko|en';
+    const res=await fetch(url);
+    const data=await res.json();
+    const en=(data.responseData&&data.responseData.translatedText||'').trim();
+    if(en&&en!==key){
+      transCache[key]=en;
+      wrap.innerHTML=`<div class="trans-text">🇺🇸 ${en}</div>`;
+    } else wrap.innerHTML='';
+  }catch(e){wrap.innerHTML='';}
+}
+
 /* ─── 행 생성 ─── */
 function makeRow(idx, val){
   const row=document.createElement('div');
@@ -281,13 +308,28 @@ function makeRow(idx, val){
   ta.className='ginp'+(val&&val.trim()?' fil':'');
   ta.placeholder=`감사한 일 ${idx+1}번째...`;
   ta.value=val||'';
+
+  // 번역 표시 영역
+  const transWrap=document.createElement('div');
+  transWrap.className='trans-wrap';
+
   ta.addEventListener('input',function(){
     this.style.height='0px';
     this.style.height=Math.max(this.scrollHeight+2,80)+'px';
     updateCnt();
     if(this.value.trim()) this.classList.add('fil');
-    else this.classList.remove('fil');
+    else{this.classList.remove('fil');transWrap.innerHTML='';}
   });
+
+  // 포커스 잃을 때 → 번역 실행
+  ta.addEventListener('blur',function(){
+    const v=this.value.trim();
+    if(v.length>=3) translateToEn(v, transWrap);
+    else transWrap.innerHTML='';
+  });
+
+  // 저장된 값 → 즉시 번역 요청
+  if(val&&val.trim()) setTimeout(()=>translateToEn(val.trim(), transWrap), 100);
 
   const del=document.createElement('button');
   del.className='grow-del';
@@ -303,6 +345,7 @@ function makeRow(idx, val){
   row.appendChild(num);
   row.appendChild(ta);
   row.appendChild(del);
+  row.appendChild(transWrap);
   return row;
 }
 
