@@ -324,7 +324,10 @@ const QQ=[
 
 /* ══ 1시간마다 명언 업데이트 ══ */
 /* ── 명언 인덱스 ── */
+/* 마지막 탭한 명언 인덱스 — localStorage 유지 */
 let curQIdx=(()=>{
+  const saved=localStorage.getItem('henry_qidx');
+  if(saved!==null) return parseInt(saved)||0;
   const n=new Date();
   return (n.getFullYear()*8760+n.getMonth()*730+n.getDate()*24+n.getHours())%QQ.length;
 })();
@@ -343,6 +346,10 @@ function displayQuote(idx){
 
 function nextQuote(){
   curQIdx=(curQIdx+1)%QQ.length;
+  // localStorage에 저장 (다음번 접속시 이어서)
+  try{localStorage.setItem('henry_qidx',curQIdx);}catch(e){}
+  // 진동 (지원 기기만)
+  if(navigator.vibrate) navigator.vibrate(30);
   displayQuote(curQIdx);
 }
 
