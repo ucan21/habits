@@ -96,6 +96,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .arc-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
 .arc-item{display:flex;gap:7px;padding:4px 0;border-bottom:1px solid var(--border);}
 .arc-item:last-child{border:none;}
+.arc-photo-grid{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.arc-photo-thumb{width:64px;height:64px;border-radius:8px;object-fit:cover;cursor:pointer;border:1.5px solid rgba(255,192,32,.2);transition:transform .15s;}
+.arc-photo-thumb:active{transform:scale(.93);}
+.arc-photo-count{font-size:10px;color:var(--gold);font-family:'DM Mono',monospace;margin-top:6px;display:flex;align-items:center;gap:5px;}
 .arc-n{color:var(--gold);opacity:.45;font-size:11px;font-family:'Bebas Neue',sans-serif;min-width:14px;}
 .arc-text{font-size:13px;color:var(--text2);line-height:1.5;}
 .empty-v{text-align:center;padding:30px 0;color:var(--text3);font-size:13px;}
@@ -409,11 +413,33 @@ function render(){
   dates.slice(0,20).forEach(d=>{
     const f2=fmtDisp(d);
     const entries=(D.grat[d]||[]).filter(x=>x&&x.trim());
+    const photos=(D.grat[d+'_photos'])||[];
     const card=document.createElement('div');card.className='arc-card';
-    card.innerHTML=`<div class="arc-date">📅 ${f2.str} (${f2.dow})
+
+    // 날짜 헤더
+    const dateHdr=document.createElement('div');dateHdr.className='arc-date';
+    dateHdr.innerHTML=`📅 ${f2.str} (${f2.dow})
       <span style="background:rgba(255,192,32,.15);color:var(--gold);border:1px solid rgba(255,192,32,.3);border-radius:12px;padding:1px 8px;font-size:10px;font-family:'DM Mono',monospace;">${entries.length}개 작성</span>
-    </div>
-    <div>${entries.map((e,i)=>`<div class="arc-item"><span class="arc-n">${i+1}</span><span class="arc-text">${esc(e)}</span></div>`).join('')}</div>`;
+      ${photos.length?`<span style="background:rgba(255,192,32,.1);color:var(--gold);border:1px solid rgba(255,192,32,.25);border-radius:12px;padding:1px 8px;font-size:10px;font-family:'DM Mono',monospace;">📷 ${photos.length}장</span>`:''}`;
+    card.appendChild(dateHdr);
+
+    // 감사 일기 텍스트
+    const txtDiv=document.createElement('div');
+    txtDiv.innerHTML=entries.map((e,i)=>`<div class="arc-item"><span class="arc-n">${i+1}</span><span class="arc-text">${esc(e)}</span></div>`).join('');
+    card.appendChild(txtDiv);
+
+    // 사진 썸네일 (있을 때만)
+    if(photos.length){
+      const pgrid=document.createElement('div');pgrid.className='arc-photo-grid';
+      photos.forEach((src,i)=>{
+        const img=document.createElement('img');
+        img.className='arc-photo-thumb';
+        img.src=src;img.alt=`${f2.str} 사진 ${i+1}`;
+        img.onclick=()=>openArcViewer(photos,i,f2.str);
+        pgrid.appendChild(img);
+      });
+      card.appendChild(pgrid);
+    }
     arc.appendChild(card);
   });
 }
@@ -482,6 +508,11 @@ function openViewer(i){
 }
 function closeViewer(){
   document.getElementById('photo-viewer').classList.remove('open');
+}
+function openArcViewer(photos,idx,dateStr){
+  viewerPhotos=photos;viewerIdx=idx;
+  document.getElementById('viewer-img').src=photos[idx];
+  document.getElementById('photo-viewer').classList.add('open');
 }
 function viewerNav(dir){
   viewerIdx=(viewerIdx+dir+viewerPhotos.length)%viewerPhotos.length;
