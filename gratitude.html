@@ -227,6 +227,26 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
 <script>
 const KEY='henry_v9';
+
+/* 앱 시작 시 data:image 잘못 섞인 텍스트 자동 정리 */
+(function cleanGratData(){
+  try{
+    const raw=localStorage.getItem('henry_v9');
+    if(!raw)return;
+    const d=JSON.parse(raw);
+    if(!d.grat)return;
+    let changed=false;
+    Object.keys(d.grat).forEach(k=>{
+      if(k.endsWith('_photos'))return;
+      if(Array.isArray(d.grat[k])){
+        const before=d.grat[k].length;
+        d.grat[k]=d.grat[k].filter(v=>v==null||!String(v).startsWith('data:image'));
+        if(d.grat[k].length!==before) changed=true;
+      }
+    });
+    if(changed) localStorage.setItem('henry_v9',JSON.stringify(d));
+  }catch(e){}
+})();
 function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{habits:[],records:{},grat:{},tasks:[],todos:[],braindump:'',info:{}};}
 function sv(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
 let D=ld();
@@ -383,7 +403,7 @@ function render(){
   document.getElementById('total-days').textContent=allDates.length;
 
   // 저장된 값 — 최소 5칸 보장
-  const saved=(D.grat||{})[curD]||[];
+  const saved=((D.grat||{})[curD]||[]).filter(v=>!v||!String(v).startsWith('data:image'));
   const g=saved.length>=5?[...saved]:[...saved,...Array(5-saved.length).fill('')];
 
   const cont=document.getElementById('grat-items');
@@ -412,7 +432,7 @@ function render(){
   }
   dates.slice(0,20).forEach(d=>{
     const f2=fmtDisp(d);
-    const entries=(D.grat[d]||[]).filter(x=>x&&x.trim());
+    const entries=(D.grat[d]||[]).filter(x=>x&&x.trim()&&!x.startsWith('data:image'));
     const photos=(D.grat[d+'_photos'])||[];
     const card=document.createElement('div');card.className='arc-card';
 
@@ -527,7 +547,9 @@ function delPhoto(i){
 }
 
 function saveGrat(){
-  const vals=[...document.querySelectorAll('.ginp')].map(x=>x.value.trim());
+  const vals=[...document.querySelectorAll('.ginp')]
+    .map(x=>x.value.trim())
+    .filter(v=>!v.startsWith('data:image')); // 이미지 데이터 제거
   if(!D.grat) D.grat={};
   D.grat[curD]=vals;
   sv();
