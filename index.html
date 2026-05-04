@@ -193,7 +193,7 @@ body{
 
       <!-- 명언 -->
       <button class="quote-card" onclick="nextQuote()" style="width:100%;text-align:left;background:linear-gradient(135deg,#12121a,#1a1a2e);cursor:pointer;">
-        <div class="q-label" id="q-label">✦ 오늘의 명언 &nbsp;·&nbsp; 탭하면 다음 ›</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;"><div class="q-label" id="q-label">✦ 오늘의 명언 &nbsp;·&nbsp; 탭하면 다음 ›</div><button onclick="event.stopPropagation();openQuoteModal()" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);border-radius:8px;color:#ffc020;font-size:11px;padding:3px 9px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;white-space:nowrap;">관리 ✦</button></div>
         <div class="q-text" id="q-text">—</div>
         <div class="q-en" id="q-en" style="color:#ffd060!important;font-size:15px;font-weight:500;font-style:italic;margin-top:8px;line-height:1.7;word-break:break-word;">—</div>
         <div class="q-author" id="q-author">—</div>
@@ -261,7 +261,10 @@ body{
 
   <!-- BOTTOM NAV -->
   <nav class="bnav">
-    <button class="nb nb-habit current" onclick="go('habits.html')">
+    <button class="nb current" onclick="go('index.html')">
+      <span class="ni">🏠</span>홈
+    </button>
+    <button class="nb nb-habit" onclick="go('habits.html')">
       <span class="ni">✅</span>습관
     </button>
     <button class="nb nb-grat" onclick="go('gratitude.html')">
@@ -272,9 +275,6 @@ body{
     </button>
     <button class="nb nb-gtask2" onclick="window.open('https://tasks.google.com','_blank')">
       <span class="ni">☑️</span>Tasks
-    </button>
-    <button class="nb nb-gcal" onclick="go('gcal.html')">
-      <span class="ni">📅</span>캘린더
     </button>
     <button class="nb" onclick="go('backup.html')">
       <span class="ni">☁️</span>백업
@@ -407,6 +407,72 @@ function showQuote(){
   displayQuote(curQIdx);
 }
 showQuote();
+
+/* ── 명언 관리 ── */
+const Q_KEY='henry_quotes_v1';
+function loadCustomQuotes(){
+  try{const r=localStorage.getItem(Q_KEY);if(r)return JSON.parse(r);}catch(e){}return null;
+}
+function saveCustomQuotes(arr){try{localStorage.setItem(Q_KEY,JSON.stringify(arr));}catch(e){}}
+
+// 커스텀 명언이 있으면 QQ 교체
+(function(){
+  const custom=loadCustomQuotes();
+  if(custom&&custom.length>0){
+    QQ.length=0;
+    custom.forEach(q=>QQ.push(q));
+  }
+})();
+
+function openQuoteModal(){
+  document.getElementById('quote-modal').style.display='block';
+  renderQuoteModal();
+}
+function closeQuoteModal(){
+  document.getElementById('quote-modal').style.display='none';
+}
+function renderQuoteModal(){
+  const list=document.getElementById('quote-list-modal');
+  list.innerHTML='';
+  QQ.forEach((q,i)=>{
+    const item=document.createElement('div');
+    item.style.cssText='background:#1a1a26;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;margin-bottom:8px;';
+    item.innerHTML=`
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-size:13px;color:#f0f0f8;line-height:1.5;margin-bottom:4px;">${i+1}. ${q.t}</div>
+          <div style="font-size:11px;color:#ff8830;font-style:italic;margin-bottom:3px;">${q.e}</div>
+          <div style="font-size:11px;color:#606080;font-family:'DM Mono',monospace;">— ${q.a}</div>
+        </div>
+        <button onclick="deleteQuote(${i})" style="background:rgba(255,80,96,.15);border:1px solid rgba(255,80,96,.3);border-radius:7px;color:#ff5060;font-size:13px;padding:4px 10px;cursor:pointer;flex-shrink:0;touch-action:manipulation;">삭제</button>
+      </div>`;
+    list.appendChild(item);
+  });
+}
+function addQuote(){
+  const t=document.getElementById('q-add-kor').value.trim();
+  const e=document.getElementById('q-add-eng').value.trim();
+  const a=document.getElementById('q-add-auth').value.trim();
+  if(!t){alert('한글 명언을 입력하세요');return;}
+  QQ.push({t,e:e||t,a:a||'—'});
+  saveCustomQuotes(QQ.map(q=>({t:q.t,e:q.e,a:q.a})));
+  document.getElementById('q-add-kor').value='';
+  document.getElementById('q-add-eng').value='';
+  document.getElementById('q-add-auth').value='';
+  renderQuoteModal();
+  // 바로 새 명언 표시
+  curQIdx=QQ.length-1;
+  displayQuote(curQIdx);
+}
+function deleteQuote(i){
+  if(!confirm(`이 명언을 삭제할까요?\n\n"${QQ[i].t}"`))return;
+  QQ.splice(i,1);
+  saveCustomQuotes(QQ.map(q=>({t:q.t,e:q.e,a:q.a})));
+  if(curQIdx>=QQ.length) curQIdx=0;
+  displayQuote(curQIdx);
+  renderQuoteModal();
+}
+
 
 /* 오늘 습관 점수 뱃지 */
 (function(){
