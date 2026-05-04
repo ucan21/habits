@@ -256,10 +256,49 @@ window.onload=function(){
     accessToken=saved.token;
     showMain(saved.user);
     loadList();
+    // 마지막 자동백업이 1시간 이상 됐으면 자동 백업
+    const lastAuto=parseInt(localStorage.getItem('henry_last_auto_backup')||'0');
+    if(Date.now()-lastAuto > 60*60*1000){
+      setTimeout(autoBackup, 2000); // 2초 후 자동 백업
+    }
   }
   if(typeof google!=='undefined') initGIS();
   else document.querySelector('script[src*="gsi"]').addEventListener('load',initGIS);
 };
+
+/* ── 자동 백업 (조용히) ── */
+async function autoBackup(){
+  if(!accessToken) return;
+  try{
+    const folder=await getOrCreateFolder();
+    const data=collectData();
+    // 데이터가 비어있으면 백업 안 함
+    const hasData=Object.keys(data.main).length>0||Object.keys(data.brain.items||[]).length>0;
+    if(!hasData) return;
+    const json=JSON.stringify(data,null,2);
+    const name='henry-diary-AUTO-'+new Date().toISOString().slice(0,10)+'.json';
+    const boundary='----AutoBoundary'+Date.now();
+    const meta=JSON.stringify({name,parents:[folder]});
+    const body=[
+      `--${boundary}`,
+      'Content-Type: application/json; charset=UTF-8',
+      '',meta,'',
+      `--${boundary}`,
+      'Content-Type: application/json; charset=UTF-8',
+      '',json,'',
+      `--${boundary}--`
+    ].join('\r\n');
+    const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{
+      method:'POST',
+      headers:{Authorization:'Bearer '+accessToken,'Content-Type':`multipart/related; boundary=${boundary}`},
+      body
+    });
+    if(r.ok){
+      localStorage.setItem('henry_last_auto_backup', Date.now().toString());
+      toast('☁️ 자동 백업 완료', 2000);
+    }
+  }catch(e){ console.log('자동백업 실패:', e.message); }
+}
 
 function initGIS(){
   try{
@@ -431,8 +470,15 @@ async function restoreFile(fileId, fileName){
     const ok=applyData(data);
     hideOv();
     if(ok){
-      toast('✅ 복원 완료! 홈으로 이동합니다...', 2000);
-      setTimeout(()=>{location.href='index.html';}, 2000);
+      hideOv();
+      // 복원 성공 — 화면에 크게 표시
+      document.getElementById('view-main').innerHTML=`
+        <div style="text-align:center;padding:40px 20px;">
+          <div style="font-size:60px;margin-bottom:16px;">✅</div>
+          <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;">복원 완료!</div>
+          <div style="font-size:14px;color:#b0b0c8;margin-bottom:24px;">데이터가 성공적으로 복원됐습니다<br>홈으로 이동합니다...</div>
+        </div>`;
+      setTimeout(()=>{location.href='index.html';}, 2500);
     }
   }catch(e){
     hideOv();

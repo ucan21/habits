@@ -195,6 +195,19 @@ body{
     <div class="content">
 
       <!-- 명언 -->
+      <!-- 백업 상태 배너 -->
+      <div id="backup-banner" style="display:none;background:rgba(255,80,96,.1);border:1px solid rgba(255,80,96,.3);border-radius:12px;padding:11px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="window.location.href='backup.html'">
+        <span style="font-size:20px;">⚠️</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;color:#ff5060;">백업이 필요합니다</div>
+          <div style="font-size:11px;color:#b0b0c8;margin-top:2px;">탭하여 백업 페이지로 이동 →</div>
+        </div>
+      </div>
+      <div id="backup-ok-banner" style="display:none;background:rgba(40,196,144,.08);border:1px solid rgba(40,196,144,.25);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">☁️</span>
+        <div style="font-size:12px;color:#28c490;" id="backup-ok-text">Drive 백업 완료</div>
+      </div>
+
       <!-- 명언 카드 -->
       <div class="quote-card" style="position:relative;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
@@ -416,6 +429,32 @@ function showQuote(){
   displayQuote(curQIdx);
 }
 showQuote();
+/* ── 백업 상태 확인 ── */
+(function checkBackupStatus(){
+  const lastAuto=parseInt(localStorage.getItem('henry_last_auto_backup')||'0');
+  const authSaved=localStorage.getItem('henry_gauth_v2');
+  const banner=document.getElementById('backup-banner');
+  const okBanner=document.getElementById('backup-ok-banner');
+  const okText=document.getElementById('backup-ok-text');
+  if(!banner||!okBanner) return;
+  if(!authSaved){
+    // 로그인 안 됨 — 백업 필요 배너
+    banner.style.display='flex';
+    okBanner.style.display='none';
+  } else if(Date.now()-lastAuto > 24*60*60*1000){
+    // 24시간 이상 백업 없음
+    banner.style.display='flex';
+    okBanner.style.display='none';
+  } else {
+    // 최근 백업 있음
+    banner.style.display='none';
+    okBanner.style.display='flex';
+    const d=new Date(lastAuto);
+    const p2=n=>String(n).padStart(2,'0');
+    okText.textContent=`☁️ 마지막 백업: ${d.getMonth()+1}/${d.getDate()} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
+  }
+})();
+
 
 /* ── 명언 관리 ── */
 const Q_KEY='henry_quotes_v1';
