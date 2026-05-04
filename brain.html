@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0a0f;--s1:#12121a;--s2:#1a1a26;--s3:#222232;--s4:#2a2a3e;
+  --bg:#0a0a0f;--s1:#12121a;--s2:#1a1a26;--s3:#222232;
   --text:#f0f0f8;--text2:#b0b0c8;--text3:#606080;
   --green:#30c060;--green-d:#0a2818;--rose:#ff5060;--blue:#4a8fff;--gold:#ffc020;
   --border:rgba(255,255,255,0.08);--wborder:rgba(255,255,255,0.5);
@@ -19,16 +19,12 @@
 html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
 .shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
-
-/* HEADER */
 .hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.back{background:var(--s2);border:1px solid var(--wborder);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;cursor:pointer;-webkit-appearance:none;border:none;touch-action:manipulation;}
+.back{background:var(--s2);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;cursor:pointer;-webkit-appearance:none;border:none;touch-action:manipulation;}
 .back:active{transform:scale(.92);}
 .hdr-c{flex:1;text-align:center;}
 .hdr-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--green);line-height:1;}
 .hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
-
-/* SCROLL */
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 .scroll::-webkit-scrollbar{width:2px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--s3);}
@@ -40,54 +36,64 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green);line-height:1;}
 .stat-lbl{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;}
 
-/* 추가 박스 */
-.add-box{background:linear-gradient(135deg,var(--s1),var(--green-d));border:1.5px solid rgba(48,192,96,.3);border-radius:15px;padding:14px;margin-bottom:14px;}
-.add-row{display:flex;gap:7px;}
-.add-inp{flex:1;background:var(--s2);border:1px solid var(--wborder);border-radius:11px;padding:12px 13px;color:var(--text);font-size:15px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;}
-.add-inp:focus{border-color:var(--green);}
-.add-inp::placeholder{color:var(--text3);}
-.add-btn{background:var(--green);border:none;color:#0a0a0f;padding:12px 16px;border-radius:11px;cursor:pointer;font-size:22px;font-weight:700;line-height:1;touch-action:manipulation;transition:all .14s;}
-.add-btn:active{transform:scale(.91);}
-
 /* 필터 */
-.filter-row{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
-.filter-row::-webkit-scrollbar{display:none;}
-.fbtn{background:var(--s1);border:1.5px solid var(--wborder);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;touch-action:manipulation;font-weight:500;transition:all .15s;}
+.filter-row{display:flex;gap:6px;margin-bottom:12px;}
+.fbtn{background:var(--s1);border:1.5px solid var(--wborder);border-radius:20px;padding:6px 16px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;touch-action:manipulation;font-weight:500;transition:all .15s;}
 .fbtn.on{background:var(--green);border-color:var(--green);color:#0a0a0f;}
-.fbtn:active{transform:scale(.95);}
 
 /* 항목 카드 */
-.items-list{display:flex;flex-direction:column;gap:8px;}
-.item-card{background:var(--s1);border:1.5px solid var(--wborder);border-radius:14px;padding:13px;}
-.item-card.pinned{border-color:rgba(255,192,32,.5);background:linear-gradient(135deg,var(--s1),#1a1800);}
-.item-top{display:flex;align-items:flex-start;gap:9px;margin-bottom:7px;}
-.item-text{flex:1;font-size:14px;font-weight:500;color:var(--text);line-height:1.55;word-break:break-all;}
-.item-edit-inp{flex:1;background:var(--s2);border:1px solid var(--green);border-radius:8px;padding:8px 10px;color:var(--text);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;resize:none;min-height:40px;line-height:1.5;}
-.item-actions{display:flex;gap:2px;flex-shrink:0;}
-.ia{background:none;border:none;font-size:16px;cursor:pointer;padding:3px 4px;opacity:.28;touch-action:manipulation;transition:all .18s;}
-.ia:active{opacity:1;transform:scale(.9);}
-.ia.edit:active{color:var(--blue);}
-.ia.pin:active{color:var(--gold);}
-.ia.pin.pinned{opacity:1;color:var(--gold);}
-.ia.del:active{color:var(--rose);}
-.item-save-btn{background:var(--green);border:none;color:#0a0a0f;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;margin-top:6px;}
-.item-footer{display:flex;align-items:center;justify-content:space-between;}
+.items-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.item-card{background:var(--s1);border:1.5px solid var(--wborder);border-radius:14px;padding:13px 13px 10px;}
+.item-ta{
+  width:100%;background:transparent;border:none;
+  color:var(--text);font-size:15px;font-weight:500;
+  font-family:'Noto Sans KR',sans-serif;
+  outline:none;resize:none;min-height:44px;
+  line-height:1.65;word-break:break-all;
+  -webkit-appearance:none;display:block;
+}
+.item-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:7px;border-top:1px solid var(--border);}
 .item-date{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;}
-.item-pin-badge{font-size:10px;color:var(--gold);}
+.item-del{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;opacity:.22;touch-action:manipulation;padding:0 4px;}
+.item-del:active{opacity:1;color:var(--rose);}
 
-.empty{text-align:center;padding:32px 0;color:var(--text3);}
-.empty .ei{font-size:36px;margin-bottom:8px;}
+/* 새 항목 입력 박스 */
+.add-box{background:linear-gradient(135deg,var(--s1),var(--green-d));border:1.5px solid rgba(48,192,96,.35);border-radius:16px;padding:14px;}
+.add-box-label{font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px;letter-spacing:.5px;}
+.add-ta{
+  width:100%;background:var(--s2);
+  border:1.5px solid var(--wborder);border-radius:11px;
+  padding:13px 14px;color:var(--text);
+  font-size:15px;font-family:'Noto Sans KR',sans-serif;
+  outline:none;resize:none;min-height:100px;
+  line-height:1.7;word-break:break-all;
+  -webkit-appearance:none;display:block;
+  transition:border-color .2s;
+}
+.add-ta:focus{border-color:var(--green);}
+.add-ta::placeholder{color:var(--text3);font-size:14px;}
+.save-btn{
+  width:100%;margin-top:10px;
+  background:var(--green);border:none;
+  color:#0a0a0f;padding:15px;border-radius:12px;
+  cursor:pointer;font-size:15px;font-weight:700;
+  font-family:'Noto Sans KR',sans-serif;
+  touch-action:manipulation;letter-spacing:.5px;
+}
+.save-btn:active{transform:scale(.98);filter:brightness(.9);}
+
+.empty{text-align:center;padding:28px 0;color:var(--text3);}
+.empty .ei{font-size:34px;margin-bottom:8px;}
 .empty p{font-size:13px;line-height:1.6;}
 
 /* TOAST */
 .toast{position:fixed;bottom:calc(var(--safe-b)+66px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:#fff;color:#0a0a0f;padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:300;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
-/* BOTTOM NAV */
+/* NAV */
 .bnav{flex-shrink:0;background:rgba(10,10,15,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.12);display:flex;padding-bottom:var(--safe-b);}
 .nb{flex:1;background:none;border:none;color:var(--text3);padding:9px 2px 7px;cursor:pointer;font-size:9.5px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .18s;touch-action:manipulation;}
-.nb .ni{font-size:21px;transition:transform .18s;}
-.nb:active .ni{transform:scale(1.2);}
+.nb .ni{font-size:21px;}
 .nb.on{color:var(--green);}
 </style>
 </head>
@@ -109,38 +115,35 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       <div class="stats-row">
         <div class="stat-pill"><div class="stat-num" id="cnt-total">0</div><div class="stat-lbl">전체</div></div>
         <div class="stat-pill"><div class="stat-num" id="cnt-today">0</div><div class="stat-lbl">오늘</div></div>
-        <div class="stat-pill"><div class="stat-num" id="cnt-pin">0</div><div class="stat-lbl">📌 고정</div></div>
-      </div>
-
-      <!-- 입력 -->
-      <div class="add-box">
-        <div class="add-row">
-          <input class="add-inp" id="new-inp" placeholder="지금 머릿속에 있는 것을 적어보세요..." maxlength="200"
-            onkeydown="if(event.key==='Enter'&&!event.shiftKey){addItem();this.blur();}">
-          <button class="add-btn" onclick="addItem()">+</button>
-        </div>
       </div>
 
       <!-- 필터 -->
       <div class="filter-row">
         <button class="fbtn on" onclick="setFilter('all',this)">전체</button>
-        <button class="fbtn" onclick="setFilter('pin',this)">📌 고정</button>
         <button class="fbtn" onclick="setFilter('today',this)">오늘</button>
       </div>
 
-      <!-- 목록 -->
+      <!-- 기존 항목 목록 -->
       <div class="items-list" id="items-list"></div>
+
+      <!-- 새 항목 추가 -->
+      <div class="add-box">
+        <div class="add-box-label">+ 새로운 생각 기록</div>
+        <textarea class="add-ta" id="new-inp"
+          placeholder="지금 머릿속에 있는 것을 자유롭게 적어보세요...&#10;&#10;아이디어, 고민, 할 일, 떠오른 생각 무엇이든"></textarea>
+        <button class="save-btn" onclick="addItem()">💾 저장</button>
+      </div>
 
     </div>
   </div>
 
   <nav class="bnav">
-    <button class="nb" onclick="window.location.href='index.html'"><span class="ni">🏠</span>홈</button>
-    <button class="nb" onclick="window.location.href='habits.html'"><span class="ni">✅</span>습관</button>
-    <button class="nb" onclick="window.location.href='gratitude.html'"><span class="ni">🙏</span>감사</button>
+    <button class="nb" onclick="location.href='index.html'"><span class="ni">🏠</span>홈</button>
+    <button class="nb" onclick="location.href='habits.html'"><span class="ni">✅</span>습관</button>
+    <button class="nb" onclick="location.href='gratitude.html'"><span class="ni">🙏</span>감사</button>
     <button class="nb on"><span class="ni">🧠</span>Brain</button>
-    <button class="nb" onclick="window.location.href='gcal.html'"><span class="ni">📅</span>캘린더</button>
-    <button class="nb" onclick="window.location.href='backup.html'"><span class="ni">☁️</span>백업</button>
+    <button class="nb" onclick="location.href='gcal.html'"><span class="ni">📅</span>캘린더</button>
+    <button class="nb" onclick="location.href='backup.html'"><span class="ni">☁️</span>백업</button>
   </nav>
 </div>
 <div class="toast" id="toast"></div>
@@ -153,12 +156,10 @@ let BD=ld();
 let curFilter='all';
 
 function p2(n){return String(n).padStart(2,'0');}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function todayStr(){const n=new Date();return n.getFullYear()+'-'+p2(n.getMonth()+1)+'-'+p2(n.getDate());}
 function nowStr(){const n=new Date();return`${n.getFullYear()}.${p2(n.getMonth()+1)}.${p2(n.getDate())} ${p2(n.getHours())}:${p2(n.getMinutes())}`;}
-
-let toastT=null;
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1700);}
+let toastT;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1700);}
 
 function setFilter(f,btn){
   curFilter=f;
@@ -167,88 +168,101 @@ function setFilter(f,btn){
   render();
 }
 
+function fit(ta){
+  ta.style.height='0px';
+  ta.style.height=Math.max(ta.scrollHeight+2,44)+'px';
+}
+
 function render(){
   const today=todayStr();
+  let items=[...BD.items].sort((a,b)=>b.id-a.id);
+  if(curFilter==='today') items=items.filter(i=>i.date===today);
+
   document.getElementById('cnt-total').textContent=BD.items.length;
   document.getElementById('cnt-today').textContent=BD.items.filter(i=>i.date===today).length;
-  document.getElementById('cnt-pin').textContent=BD.items.filter(i=>i.pinned).length;
 
-  let items=[...BD.items];
-  // 고정 먼저, 최신순
-  items.sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)||(b.id-a.id));
-  if(curFilter==='pin') items=items.filter(i=>i.pinned);
-  else if(curFilter==='today') items=items.filter(i=>i.date===today);
+  const list=document.getElementById('items-list');
+  list.innerHTML='';
 
-  const list=document.getElementById('items-list');list.innerHTML='';
   if(!items.length){
-    list.innerHTML=`<div class="empty"><div class="ei">🧠</div><p>${curFilter==='pin'?'고정된 항목이 없습니다':'아직 기록이 없습니다\n위에서 생각을 적어보세요'}</p></div>`;
+    list.innerHTML=`<div class="empty"><div class="ei">🧠</div><p>${curFilter==='today'?'오늘 기록이 없습니다':'아래에서 첫 생각을 기록해보세요'}</p></div>`;
     return;
   }
+
   items.forEach(item=>{
-    const origIdx=BD.items.findIndex(i=>i.id===item.id);
-    const el=document.createElement('div');
-    el.className='item-card'+(item.pinned?' pinned':'');
-    el.innerHTML=`
-      <div class="item-top">
-        <div class="item-text">${esc(item.text)}</div>
-        <div class="item-actions">
-          <button class="ia edit" onclick="startEdit(${item.id})" title="수정">✏️</button>
-          <button class="ia pin${item.pinned?' pinned':''}" onclick="pinItem(${item.id})" title="고정">${item.pinned?'📌':'📍'}</button>
-          <button class="ia del" onclick="delItem(${item.id})" title="삭제">×</button>
-        </div>
-      </div>
-      <div class="item-footer">
-        <span class="item-date">${item.createdAt||item.date}</span>
-        ${item.pinned?'<span class="item-pin-badge">📌 고정</span>':''}
-      </div>`;
-    list.appendChild(el);
+    const card=document.createElement('div');
+    card.className='item-card';
+
+    // 직접 편집 가능한 textarea
+    const ta=document.createElement('textarea');
+    ta.className='item-ta';
+    ta.value=item.text;
+    ta.spellcheck=false;
+
+    ta.addEventListener('input',function(){ fit(this); });
+
+    // 포커스 잃으면 자동 저장
+    ta.addEventListener('blur',function(){
+      const v=this.value.trim();
+      if(!v){
+        if(confirm('내용이 없습니다. 이 항목을 삭제할까요?')){
+          BD.items=BD.items.filter(i=>i.id!==item.id);
+          sv();render();toast('🗑️ 삭제됨');
+        } else {
+          this.value=item.text;fit(this);
+        }
+        return;
+      }
+      if(v!==item.text){
+        item.text=v;sv();toast('✅ 수정됨');
+      }
+    });
+
+    const footer=document.createElement('div');
+    footer.className='item-footer';
+
+    const dateSpan=document.createElement('span');
+    dateSpan.className='item-date';
+    dateSpan.textContent=item.createdAt||item.date;
+
+    const delBtn=document.createElement('button');
+    delBtn.className='item-del';
+    delBtn.textContent='×';
+    delBtn.title='삭제';
+    delBtn.onclick=()=>{
+      if(!confirm('삭제할까요?'))return;
+      BD.items=BD.items.filter(i=>i.id!==item.id);
+      sv();render();toast('🗑️ 삭제됨');
+    };
+
+    footer.appendChild(dateSpan);
+    footer.appendChild(delBtn);
+    card.appendChild(ta);
+    card.appendChild(footer);
+    list.appendChild(card);
+
+    // DOM 삽입 후 높이 맞춤
+    fit(ta);
   });
 }
 
 function addItem(){
   const inp=document.getElementById('new-inp');
-  const v=inp.value.trim();if(!v)return;
-  BD.items.push({id:Date.now(),text:v,date:todayStr(),createdAt:nowStr(),pinned:false});
-  inp.value='';sv();render();toast('✅ 추가됨');
+  const v=inp.value.trim();
+  if(!v){toast('내용을 입력하세요');return;}
+  BD.items.push({id:Date.now(),text:v,date:todayStr(),createdAt:nowStr()});
+  inp.value='';
+  inp.style.height='100px';
+  sv();render();
+  toast('✅ 저장됨');
+  document.querySelector('.scroll').scrollTo({top:0,behavior:'smooth'});
 }
 
-function startEdit(id){
-  const item=BD.items.find(i=>i.id===id);if(!item)return;
-  // 해당 카드 찾기
-  const cards=[...document.querySelectorAll('.item-card')];
-  const card=cards.find(c=>c.querySelector('.ia.edit')?.getAttribute('onclick')===`startEdit(${id})`);
-  if(!card)return;
-  const textEl=card.querySelector('.item-text');
-  card.classList.add('editing');
-  const ta=document.createElement('textarea');
-  ta.className='item-edit-inp';ta.value=item.text;ta.rows=2;
-  textEl.replaceWith(ta);ta.focus();ta.select();
-  // 수정 버튼 → 저장
-  const editBtn=card.querySelector('.ia.edit');
-  editBtn.textContent='✅';editBtn.title='저장';
-  const saveBtn=document.createElement('button');
-  saveBtn.className='item-save-btn';saveBtn.textContent='저장';
-  card.querySelector('.item-footer').before(saveBtn);
-  const finish=()=>{
-    const v=ta.value.trim();
-    if(v){item.text=v;sv();}
-    render();toast('✅ 수정됨');
-  };
-  editBtn.onclick=finish;saveBtn.onclick=finish;
-  ta.onkeydown=e=>{if(e.key==='Escape')render();};
-  ta.onblur=()=>setTimeout(()=>{if(card.classList.contains('editing'))finish();},200);
-}
-
-function pinItem(id){
-  const item=BD.items.find(i=>i.id===id);if(!item)return;
-  item.pinned=!item.pinned;sv();render();
-  toast(item.pinned?'📌 고정됨':'📍 고정 해제됨');
-}
-
-function delItem(id){
-  if(!confirm('이 항목을 삭제할까요?'))return;
-  BD.items=BD.items.filter(i=>i.id!==id);sv();render();toast('🗑️ 삭제됨');
-}
+// 새 입력창 자동 높이
+document.getElementById('new-inp').addEventListener('input',function(){
+  this.style.height='0px';
+  this.style.height=Math.max(this.scrollHeight+2,100)+'px';
+});
 
 render();
 </script>
