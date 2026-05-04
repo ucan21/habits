@@ -460,20 +460,59 @@ function renderQuoteModal(){
     list.appendChild(item);
   });
 }
-function addQuote(){
+/* ── 명언 자동 번역 (MyMemory 무료 API) ── */
+async function translateQuote(text){
+  if(!text||text.length<2) return '';
+  const engEl=document.getElementById('q-add-eng');
+  engEl.placeholder='🔄 번역 중...';
+  try{
+    const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair=ko|en';
+    const res=await fetch(url);
+    const data=await res.json();
+    const en=(data.responseData&&data.responseData.translatedText||'').trim();
+    if(en&&en!==text){
+      engEl.value=en;
+      engEl.placeholder='한글 입력 후 자동 번역...';
+      return en;
+    }
+  }catch(e){}
+  engEl.placeholder='한글 입력 후 자동 번역...';
+  return '';
+}
+
+/* 한글 입력창 blur → 자동 번역 실행 */
+(function(){
+  const korEl=document.getElementById('q-add-kor');
+  if(korEl){
+    korEl.addEventListener('blur',function(){
+      const v=this.value.trim();
+      const engEl=document.getElementById('q-add-eng');
+      if(v.length>=2&&!engEl.value.trim()){
+        translateQuote(v);
+      }
+    });
+  }
+})();
+
+async function addQuote(){
   const t=document.getElementById('q-add-kor').value.trim();
-  const e=document.getElementById('q-add-eng').value.trim();
+  let e=document.getElementById('q-add-eng').value.trim();
   const a=document.getElementById('q-add-auth').value.trim();
-  if(!t){alert('한글 명언을 입력하세요');return;}
+  if(!t){toast('한글 명언을 입력하세요');return;}
+  // 영어 없으면 자동 번역 후 추가
+  if(!e){
+    e=await translateQuote(t);
+  }
   QQ.push({t,e:e||t,a:a||'—'});
   saveCustomQuotes(QQ.map(q=>({t:q.t,e:q.e,a:q.a})));
   document.getElementById('q-add-kor').value='';
   document.getElementById('q-add-eng').value='';
   document.getElementById('q-add-auth').value='';
+  document.getElementById('q-add-eng').placeholder='한글 입력 후 자동 번역...';
   renderQuoteModal();
-  // 바로 새 명언 표시
   curQIdx=QQ.length-1;
   displayQuote(curQIdx);
+  toast('✅ 명언 추가됨');
 }
 function deleteQuote(i){
   if(!confirm(`이 명언을 삭제할까요?\n\n"${QQ[i].t}"`))return;
@@ -591,7 +630,7 @@ function deleteQuote(i){
       <div style="background:#1a1a26;border-radius:12px;padding:13px;margin-bottom:14px;">
         <div style="font-size:12px;font-weight:700;color:#ffc020;margin-bottom:10px;letter-spacing:.5px;">+ 새 명언 추가</div>
         <textarea id="q-add-kor" rows="2" placeholder="한글 명언을 입력하세요..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#fff;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <textarea id="q-add-eng" rows="2" placeholder="English translation..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#ffd060;font-size:13px;font-family:'Georgia',serif;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
+        <textarea id="q-add-eng" rows="2" placeholder="한글 입력 후 자동 번역..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#ffd060;font-size:13px;font-family:'Georgia',serif;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
         <input id="q-add-auth" placeholder="출처 (예: 아리스토텔레스)" style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#b0b0c8;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px;display:block;font-family:'Noto Sans KR',sans-serif;">
         <button onclick="addQuote()" style="-webkit-appearance:none;width:100%;background:#ffc020;border:none;color:#0a0a0f;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;display:block;">✦ 추가</button>
       </div>
