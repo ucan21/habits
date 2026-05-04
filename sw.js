@@ -1,15 +1,5 @@
-// SW v20260504113238 — 캐시 완전 비활성화
-self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))));
-  self.clients.claim();
-});
-self.addEventListener('fetch', e => {
-  // 캐시 완전 무시 — 항상 네트워크
-  if(e.request.method === 'GET') {
-    e.respondWith(
-      fetch(e.request, {cache: 'no-store', headers: {'Cache-Control': 'no-cache'}})
-      .catch(() => new Response('offline'))
-    );
-  }
-});
+const C='hd-backup-v2';
+const F=['./', './index.html','./habits.html','./brain.html','./gtask.html','./gratitude.html','./gcal.html','./backup.html','./manifest.json'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F)));self.skipWaiting();});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.map(k=>caches.delete(k)))));self.clients.claim();});
+self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request,{cache:'no-store'}).catch(()=>caches.match(e.request)));});
