@@ -209,12 +209,12 @@ body{
       </div>
 
       <!-- 명언 카드 -->
-      <div class="quote-card" style="position:relative;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <div class="q-label" id="q-label">✦ 오늘의 명언 · 탭하면 다음 ›</div>
+      <div class="quote-card" id="quote-card-wrap" style="position:relative;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+          <div class="q-label" id="q-label">✦ 오늘의 명언 · 탭=다음 · 길게=삭제</div>
           <button id="q-mgr-btn" onclick="openQuoteModal()" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);border-radius:8px;color:#ffc020;font-size:11px;padding:4px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;white-space:nowrap;-webkit-appearance:none;touch-action:manipulation;">관리</button>
         </div>
-        <div onclick="nextQuote()" style="cursor:pointer;touch-action:manipulation;">
+        <div id="quote-body" onclick="nextQuote()" style="cursor:pointer;touch-action:manipulation;">
           <div class="q-text" id="q-text">—</div>
           <div class="q-en" id="q-en" style="color:#ffd060;font-size:13px;font-weight:500;font-style:italic;margin-top:4px;line-height:1.6;word-break:break-word;">—</div>
           <div class="q-author" id="q-author">—</div>
@@ -382,6 +382,22 @@ function displayQuote(idx){
   if(qa) qa.textContent='— '+q.a;
   if(ql) ql.innerHTML='✦ 오늘의 명언 &nbsp;·&nbsp; 탭하면 다음 ›';
 }
+
+/* ── 롱프레스 삭제 ── */
+(function(){
+  const card=document.getElementById('quote-body');
+  if(!card) return;
+  let timer=null;
+  card.addEventListener('touchstart',()=>{
+    timer=setTimeout(()=>{
+      if(confirm(`이 명언을 삭제할까요?\n\n"${QQ[curQIdx].t}"`)){
+        deleteQuote(curQIdx);
+      }
+    },700);
+  },{passive:true});
+  card.addEventListener('touchend',()=>clearTimeout(timer),{passive:true});
+  card.addEventListener('touchmove',()=>clearTimeout(timer),{passive:true});
+})();
 
 function nextQuote(){
   curQIdx=(curQIdx+1)%QQ.length;
