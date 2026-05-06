@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,maximum-scale=1.0,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>백업 & 복원 — Henry</title>
+<title>백업 & 복원</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0a0f;--s1:#12121a;--s2:#1a1a26;--s3:#222232;
+  --bg:#0a0a0f;--s1:#12121a;--s2:#1a1a26;
   --text:#f0f0f8;--text2:#b0b0c8;--text3:#606080;
-  --blue:#4a8fff;--teal:#28c490;--rose:#ff5060;--gold:#ffc020;--green:#34A853;
-  --border:rgba(255,255,255,0.08);--wborder:rgba(255,255,255,0.65);
+  --teal:#28c490;--blue:#4a8fff;--gold:#ffc020;--rose:#ff5060;--green:#34A853;
+  --border:rgba(255,255,255,0.08);
   --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -20,76 +20,84 @@ html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
 .shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
 .hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.back{background:var(--s2);border:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;text-decoration:none;flex-shrink:0;-webkit-appearance:none;}
+.back{background:var(--s2);border:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;text-decoration:none;flex-shrink:0;cursor:pointer;-webkit-appearance:none;}
 .back:active{opacity:.7;}
 .hdr-c{flex:1;text-align:center;}
 .hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--teal);line-height:1;}
 .hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
-.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
-.body{padding:14px 14px 90px;}
-.sec{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.body{padding:14px 14px 100px;}
+.sec{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .sec::after{content:'';flex:1;height:1px;background:var(--border);}
 
+/* 상태 카드 */
+.status-card{border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid;}
+.status-card.ok{background:rgba(40,196,144,.08);border-color:rgba(40,196,144,.3);}
+.status-card.warn{background:rgba(255,80,96,.08);border-color:rgba(255,80,96,.3);}
+.status-card.info{background:rgba(74,143,255,.08);border-color:rgba(74,143,255,.3);}
+.status-icon{font-size:28px;margin-bottom:6px;}
+.status-title{font-size:15px;font-weight:700;margin-bottom:4px;}
+.status-sub{font-size:12px;color:var(--text2);line-height:1.6;}
+
 /* 데이터 현황 */
-.data-card{background:var(--s1);border:1.5px solid var(--wborder);border-radius:14px;padding:14px;margin-bottom:14px;}
+.data-card{background:var(--s1);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;}
 .data-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
-.data-row:last-child{border:none;}
+.data-row:last-child{border:none;padding-bottom:0;}
 .dr-key{font-size:13px;color:var(--text2);}
 .dr-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--teal);}
 
 /* 버튼 */
-.big-btn{display:flex;align-items:center;gap:14px;width:100%;padding:18px 16px;margin-bottom:10px;border:1.5px solid var(--wborder);border-radius:16px;cursor:pointer;touch-action:manipulation;transition:all .15s;background:var(--s1);text-align:left;}
+.big-btn{display:flex;align-items:center;gap:14px;width:100%;padding:17px 16px;margin-bottom:10px;border:1.5px solid;border-radius:16px;cursor:pointer;touch-action:manipulation;background:var(--s1);text-align:left;-webkit-appearance:none;}
 .big-btn:active{transform:scale(.97);}
-.btn-icon{font-size:30px;flex-shrink:0;}
+.btn-icon{font-size:28px;flex-shrink:0;}
 .btn-body{flex:1;}
-.btn-title{font-size:16px;font-weight:700;margin-bottom:3px;}
+.btn-title{font-size:15px;font-weight:700;margin-bottom:3px;}
 .btn-sub{font-size:12px;color:var(--text3);}
-.btn-arr{font-size:20px;color:var(--text3);}
 
-.btn-backup{border-color:rgba(52,168,83,.5);background:linear-gradient(135deg,var(--bg),#0a180a);}
+.btn-backup{border-color:rgba(52,168,83,.4);}
 .btn-backup .btn-title{color:#34A853;}
-.btn-restore{border-color:rgba(74,143,255,.5);background:linear-gradient(135deg,var(--bg),#0a0a28);}
+.btn-restore{border-color:rgba(74,143,255,.4);}
 .btn-restore .btn-title{color:var(--blue);}
-.btn-export{border-color:rgba(255,192,32,.4);background:linear-gradient(135deg,var(--bg),#1a1200);}
+.btn-export{border-color:rgba(255,192,32,.3);}
 .btn-export .btn-title{color:var(--gold);}
-.btn-import{border-color:rgba(255,136,48,.4);background:linear-gradient(135deg,var(--bg),#1a0a00);}
+.btn-import{border-color:rgba(255,136,48,.3);}
 .btn-import .btn-title{color:#ff8830;}
 
-/* 로그인 */
-.google-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:16px;background:#fff;border:none;border-radius:14px;cursor:pointer;touch-action:manipulation;font-size:15px;font-weight:700;color:#3c4043;font-family:'Noto Sans KR',sans-serif;margin-bottom:14px;}
+/* Google 로그인 */
+.google-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:16px;background:#fff;border:none;border-radius:14px;cursor:pointer;touch-action:manipulation;font-size:15px;font-weight:700;color:#3c4043;font-family:'Noto Sans KR',sans-serif;margin-bottom:14px;-webkit-appearance:none;}
 .google-btn:active{transform:scale(.97);background:#f5f5f5;}
-.g-logo{width:22px;height:22px;flex-shrink:0;}
 
-/* 계정 */
-.account-bar{background:var(--s1);border:1.5px solid var(--wborder);border-radius:14px;padding:13px 15px;margin-bottom:14px;display:flex;align-items:center;gap:11px;}
-.acct-av{width:36px;height:36px;border-radius:50%;background:#4285F4;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;}
+/* 계정 바 */
+.acct-bar{background:var(--s1);border:1.5px solid var(--border);border-radius:14px;padding:13px 15px;margin-bottom:14px;display:flex;align-items:center;gap:11px;}
+.acct-av{width:38px;height:38px;border-radius:50%;background:#4285F4;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;}
 .acct-info{flex:1;}
-.acct-name{font-size:14px;font-weight:700;color:#fff;}
-.acct-email{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;}
-.logout-btn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;padding:5px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-.logout-btn:active{color:var(--rose);}
+.acct-name{font-size:14px;font-weight:700;}
+.acct-email{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:1px;}
+.logout-btn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;padding:5px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;-webkit-appearance:none;}
 
 /* 백업 목록 */
-.bk-item{background:var(--s1);border:1.5px solid var(--wborder);border-radius:13px;padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:11px;}
+.bk-item{background:var(--s1);border:1.5px solid var(--border);border-radius:13px;padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:11px;}
 .bk-icon{font-size:22px;flex-shrink:0;}
-.bk-info{flex:1;}
-.bk-name{font-size:13px;font-weight:600;color:#fff;}
+.bk-info{flex:1;min-width:0;}
+.bk-name{font-size:12px;font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .bk-time{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;}
-.bk-restore-btn{background:rgba(52,168,83,.15);border:1px solid rgba(52,168,83,.4);border-radius:9px;color:#34A853;font-size:12px;font-weight:700;padding:7px 14px;cursor:pointer;touch-action:manipulation;font-family:'Noto Sans KR',sans-serif;}
-.bk-restore-btn:active{background:rgba(52,168,83,.3);}
+.bk-size{font-size:10px;color:var(--text3);margin-top:1px;}
+.bk-btn{background:rgba(52,168,83,.15);border:1px solid rgba(52,168,83,.4);border-radius:9px;color:#34A853;font-size:13px;font-weight:700;padding:8px 14px;cursor:pointer;touch-action:manipulation;font-family:'Noto Sans KR',sans-serif;flex-shrink:0;-webkit-appearance:none;}
+.bk-btn:active{background:rgba(52,168,83,.3);}
 
-/* 진행 오버레이 */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+/* 오버레이 */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;}
 .overlay.show{display:flex;}
-.overlay-box{background:var(--s1);border:1.5px solid var(--wborder);border-radius:18px;padding:28px 32px;text-align:center;}
-.overlay-icon{font-size:40px;margin-bottom:10px;}
-.overlay-msg{font-size:15px;font-weight:700;color:#fff;}
-.overlay-sub{font-size:12px;color:var(--text3);margin-top:6px;}
+.ov-box{background:var(--s1);border:1.5px solid var(--border);border-radius:18px;padding:30px 28px;text-align:center;max-width:300px;width:90%;}
+.ov-icon{font-size:44px;margin-bottom:12px;}
+.ov-msg{font-size:16px;font-weight:700;}
+.ov-sub{font-size:12px;color:var(--text2);margin-top:6px;line-height:1.6;}
 
 /* 토스트 */
-.toast{position:fixed;bottom:calc(var(--safe-b)+70px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:#fff;color:#0a0a0f;padding:10px 20px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:301;white-space:nowrap;max-width:300px;text-align:center;}
+.toast{position:fixed;bottom:calc(var(--safe-b)+80px);left:50%;transform:translateX(-50%) translateY(60px);opacity:0;background:#fff;color:#0a0a0f;padding:10px 20px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:400;white-space:nowrap;max-width:90vw;text-align:center;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
+/* 네비 */
 .bnav{flex-shrink:0;background:rgba(10,10,15,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.1);display:flex;padding-bottom:var(--safe-b);}
 .nb{flex:1;background:none;border:none;color:var(--text3);padding:9px 2px 7px;cursor:pointer;font-size:9.5px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;}
 .nb .ni{font-size:21px;}
@@ -101,7 +109,10 @@ input[type=file]{display:none;}
 <div class="shell">
   <div class="hdr">
     <a class="back" href="index.html">←</a>
-    <div class="hdr-c"><div class="hdr-title">☁️ 백업 & 복원</div><div class="hdr-sub">Google Drive 연동</div></div>
+    <div class="hdr-c">
+      <div class="hdr-title">☁️ 백업 & 복원</div>
+      <div class="hdr-sub">Google Drive 연동</div>
+    </div>
     <div style="width:44px;"></div>
   </div>
 
@@ -111,17 +122,23 @@ input[type=file]{display:none;}
       <!-- 데이터 현황 -->
       <div class="sec">📊 현재 데이터</div>
       <div class="data-card" id="data-card">
-        <div class="data-row"><span class="dr-key">✅ 습관 기록일</span><span class="dr-val" id="d-records">—</span></div>
-        <div class="data-row"><span class="dr-key">🙏 감사일기 기록일</span><span class="dr-val" id="d-grat">—</span></div>
-        <div class="data-row"><span class="dr-key">🧠 Brain Dump</span><span class="dr-val" id="d-brain">—</span></div>
-        <div class="data-row"><span class="dr-key">💾 데이터 크기</span><span class="dr-val" id="d-size">—</span></div>
+        <div class="data-row"><span class="dr-key">✅ 습관 기록</span><span class="dr-val" id="d-habits">확인 중...</span></div>
+        <div class="data-row"><span class="dr-key">🙏 감사일기</span><span class="dr-val" id="d-grat">확인 중...</span></div>
+        <div class="data-row"><span class="dr-key">📷 저장된 사진</span><span class="dr-val" id="d-photos">확인 중...</span></div>
+        <div class="data-row"><span class="dr-key">🧠 Brain Dump</span><span class="dr-val" id="d-brain">확인 중...</span></div>
+        <div class="data-row"><span class="dr-key">💾 총 데이터 크기</span><span class="dr-val" id="d-size">확인 중...</span></div>
       </div>
 
       <!-- 로그인 전 -->
       <div id="view-login">
-        <div class="sec">☁️ Google Drive 로그인</div>
+        <div class="sec">☁️ Google 로그인</div>
+        <div class="status-card warn">
+          <div class="status-icon">⚠️</div>
+          <div class="status-title">로그인이 필요합니다</div>
+          <div class="status-sub">Google Drive에 백업하려면 먼저 로그인하세요.<br>앱 삭제 전 반드시 백업하세요!</div>
+        </div>
         <button class="google-btn" onclick="googleLogin()">
-          <svg class="g-logo" viewBox="0 0 24 24">
+          <svg width="22" height="22" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -133,40 +150,55 @@ input[type=file]{display:none;}
 
       <!-- 로그인 후 -->
       <div id="view-main" style="display:none;">
-        <div class="account-bar">
+
+        <!-- 계정 -->
+        <div class="acct-bar">
           <div class="acct-av" id="acct-av">H</div>
           <div class="acct-info">
             <div class="acct-name" id="acct-name">—</div>
             <div class="acct-email" id="acct-email">—</div>
           </div>
-          <button class="logout-btn" onclick="logout()">로그아웃</button>
+          <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+        </div>
+
+        <!-- 마지막 백업 -->
+        <div id="last-backup-info" style="background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:11px 14px;margin-bottom:14px;font-size:12px;color:var(--text2);">
+          ☁️ 마지막 백업: 확인 중...
         </div>
 
         <div class="sec">백업 / 복원</div>
 
         <button class="big-btn btn-backup" onclick="doBackup()">
           <span class="btn-icon">☁️</span>
-          <div class="btn-body"><div class="btn-title">지금 백업하기</div><div class="btn-sub">모든 데이터를 Google Drive에 저장</div></div>
-          <span class="btn-arr">›</span>
+          <div class="btn-body">
+            <div class="btn-title">지금 백업하기</div>
+            <div class="btn-sub">모든 데이터 → Google Drive 저장</div>
+          </div>
         </button>
 
-        <button class="big-btn btn-export" onclick="exportJSON()">
+        <button class="big-btn btn-export" onclick="doExportJSON()">
           <span class="btn-icon">📤</span>
-          <div class="btn-body"><div class="btn-title">JSON 파일 내보내기</div><div class="btn-sub">파일로 직접 저장 (오프라인 백업)</div></div>
-          <span class="btn-arr">↓</span>
+          <div class="btn-body">
+            <div class="btn-title">JSON 파일로 내보내기</div>
+            <div class="btn-sub">핸드폰에 파일 저장 (오프라인 백업)</div>
+          </div>
         </button>
 
         <button class="big-btn btn-import" onclick="document.getElementById('file-inp').click()">
           <span class="btn-icon">📥</span>
-          <div class="btn-body"><div class="btn-title">JSON 파일 가져오기</div><div class="btn-sub">저장된 파일로 복원</div></div>
-          <span class="btn-arr">↑</span>
+          <div class="btn-body">
+            <div class="btn-title">JSON 파일 가져오기</div>
+            <div class="btn-sub">저장된 파일로 복원</div>
+          </div>
         </button>
-        <input type="file" id="file-inp" accept=".json" onchange="importJSON(event)">
+        <input type="file" id="file-inp" accept=".json" onchange="doImportJSON(event)">
 
-        <div class="sec" style="margin-top:8px;">Drive 백업 목록</div>
-        <div id="backup-list"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">목록 불러오는 중...</div></div>
+        <div class="sec" style="margin-top:6px;">Drive 백업 목록</div>
+        <div id="backup-list">
+          <div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">목록 불러오는 중...</div>
+        </div>
+
       </div>
-
     </div>
   </div>
 
@@ -176,300 +208,439 @@ input[type=file]{display:none;}
     <button class="nb" onclick="location.href='gratitude.html'"><span class="ni">🙏</span>감사</button>
     <button class="nb" onclick="location.href='brain.html'"><span class="ni">🧠</span>Brain</button>
     <button class="nb on"><span class="ni">☁️</span>백업</button>
-    <button class="nb" onclick="location.href='gcal.html'"><span class="ni">📅</span>캘린더</button>
   </nav>
 </div>
 
 <div class="overlay" id="overlay">
-  <div class="overlay-box">
-    <div class="overlay-icon" id="ov-icon">☁️</div>
-    <div class="overlay-msg" id="ov-msg">처리 중...</div>
-    <div class="overlay-sub" id="ov-sub">잠시만 기다려주세요</div>
+  <div class="ov-box">
+    <div class="ov-icon" id="ov-icon">☁️</div>
+    <div class="ov-msg" id="ov-msg">처리 중...</div>
+    <div class="ov-sub" id="ov-sub">잠시만 기다려주세요</div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
-/* ══ 설정 ══ */
-const CLIENT_ID = '666312420187-34kaf8l0r0kspe5b0s8ebhospparlbbd.apps.googleusercontent.com';
-const SCOPE = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
-const KEYS = { main:'henry_v9', brain:'henry_brain_v1' };
-const AUTH_KEY = 'henry_gauth_v2';
-const FOLDER_NAME = 'HenryDiaryBackup';
+/* ════════════════════════════════
+   설정
+════════════════════════════════ */
+var CLIENT_ID = '666312420187-34kaf8l0r0kspe5b0s8ebhospparlbbd.apps.googleusercontent.com';
+var SCOPE = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
+var KEY_MAIN = 'henry_v9';
+var KEY_BRAIN = 'henry_brain_v1';
+var KEY_AUTH = 'henry_gauth_v2';
+var KEY_LAST_BACKUP = 'henry_last_backup_time';
+var FOLDER_NAME = 'HenryDiaryBackup';
 
-let accessToken = null;
-let tokenClient = null;
-let folderId = null;
+var accessToken = null;
+var tokenClient = null;
+var folderId = null;
+var currentUser = null;
 
 /* ── 유틸 ── */
-function p2(n){return String(n).padStart(2,'0');}
-function nowStr(){const n=new Date();return`${n.getFullYear()}.${p2(n.getMonth()+1)}.${p2(n.getDate())} ${p2(n.getHours())}:${p2(n.getMinutes())}`;}
-function fmtBytes(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(2)+'MB';}
-let toastT;
-function toast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),dur);}
-function showOv(icon,msg,sub='잠시만 기다려주세요'){document.getElementById('ov-icon').textContent=icon;document.getElementById('ov-msg').textContent=msg;document.getElementById('ov-sub').textContent=sub;document.getElementById('overlay').classList.add('show');}
-function hideOv(){document.getElementById('overlay').classList.remove('show');}
-
-/* ── 데이터 수집/적용 ── */
-function collectData(){
-  const main=JSON.parse(localStorage.getItem(KEYS.main)||'{}');
-  const brain=JSON.parse(localStorage.getItem(KEYS.brain)||'{}');
-  return {ver:'henry-diary-v2', savedAt:new Date().toISOString(), main, brain};
+function p2(n){ return String(n).padStart(2,'0'); }
+function fmtBytes(b){
+  if(!b) return '0B';
+  if(b<1024) return b+'B';
+  if(b<1048576) return (b/1024).toFixed(1)+'KB';
+  return (b/1048576).toFixed(2)+'MB';
 }
+function fmtDate(iso){
+  var d = new Date(iso);
+  return d.getFullYear()+'.'+(d.getMonth()+1)+'.'+p2(d.getDate())+' '+p2(d.getHours())+':'+p2(d.getMinutes());
+}
+var toastTimer = null;
+function toast(msg, dur){
+  dur = dur||2500;
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, dur);
+}
+function showOv(icon, msg, sub){
+  document.getElementById('ov-icon').textContent = icon;
+  document.getElementById('ov-msg').textContent = msg;
+  document.getElementById('ov-sub').textContent = sub||'잠시만 기다려주세요';
+  document.getElementById('overlay').classList.add('show');
+}
+function hideOv(){ document.getElementById('overlay').classList.remove('show'); }
+
+/* ════════════════════════════════
+   데이터 수집 / 적용
+════════════════════════════════ */
+function collectData(){
+  var mainRaw = localStorage.getItem(KEY_MAIN) || '{}';
+  var brainRaw = localStorage.getItem(KEY_BRAIN) || '{}';
+  var main, brain;
+  try { main = JSON.parse(mainRaw); } catch(e){ main = {}; }
+  try { brain = JSON.parse(brainRaw); } catch(e){ brain = {}; }
+  return {
+    ver: 'henry-v3',
+    savedAt: new Date().toISOString(),
+    main: main,
+    brain: brain
+  };
+}
+
 function applyData(data){
-  if(!data){toast('❌ 데이터가 없습니다');return false;}
+  /* 검증 */
+  if(!data){ toast('❌ 데이터가 없습니다'); return false; }
+  if(typeof data !== 'object'){ toast('❌ 데이터 형식 오류'); return false; }
+
+  var restored = false;
   try{
-    // main 데이터 적용
-    if(data.main && Object.keys(data.main).length>0){
-      localStorage.setItem(KEYS.main, JSON.stringify(data.main));
+    /* main 복원 — 비어있어도 저장 */
+    if(data.main !== undefined && data.main !== null){
+      localStorage.setItem(KEY_MAIN, JSON.stringify(data.main));
+      restored = true;
     }
-    // brain 데이터 적용
-    if(data.brain && Object.keys(data.brain).length>0){
-      localStorage.setItem(KEYS.brain, JSON.stringify(data.brain));
+    /* brain 복원 — 비어있어도 저장 */
+    if(data.brain !== undefined && data.brain !== null){
+      localStorage.setItem(KEY_BRAIN, JSON.stringify(data.brain));
+      restored = true;
     }
+    if(!restored){ toast('❌ 복원할 데이터가 없습니다'); return false; }
     updateUI();
     return true;
-  }catch(e){toast('❌ 복원 실패: '+e.message);return false;}
+  } catch(e){
+    toast('❌ 복원 실패: '+e.message);
+    return false;
+  }
 }
 
-/* ── 현황 업데이트 ── */
 function updateUI(){
   try{
-    const main=JSON.parse(localStorage.getItem(KEYS.main)||'{}');
-    const brain=JSON.parse(localStorage.getItem(KEYS.brain)||'{}');
-    const recs=Object.keys(main.records||{}).filter(d=>Object.values(main.records[d]||{}).some(v=>v));
-    document.getElementById('d-records').textContent=recs.length+'일';
-    const grats=Object.keys(main.grat||{}).filter(d=>!d.endsWith('_photos')&&(main.grat[d]||[]).some(x=>x&&x.trim()));
-    document.getElementById('d-grat').textContent=grats.length+'일';
-    document.getElementById('d-brain').textContent=(brain.items||[]).length+'개';
-    const sz=(localStorage.getItem(KEYS.main)||'').length+(localStorage.getItem(KEYS.brain)||'').length;
-    document.getElementById('d-size').textContent=fmtBytes(sz);
-  }catch(e){}
+    var main = JSON.parse(localStorage.getItem(KEY_MAIN)||'{}');
+    var brain = JSON.parse(localStorage.getItem(KEY_BRAIN)||'{}');
+
+    /* 습관 기록일 */
+    var records = main.records || {};
+    var recDays = Object.keys(records).filter(function(d){
+      var r = records[d];
+      return r && Object.values(r).some(function(v){ return v; });
+    });
+    document.getElementById('d-habits').textContent = recDays.length + '일';
+
+    /* 감사일기 */
+    var grat = main.grat || {};
+    var gratDays = Object.keys(grat).filter(function(k){
+      if(k.indexOf('_photos')>-1) return false;
+      var arr = grat[k];
+      return Array.isArray(arr) && arr.some(function(x){ return x && x.trim(); });
+    });
+    document.getElementById('d-grat').textContent = gratDays.length + '일';
+
+    /* 사진 */
+    var photoKeys = Object.keys(grat).filter(function(k){ return k.indexOf('_photos')>-1; });
+    var photoCount = 0;
+    photoKeys.forEach(function(k){ photoCount += (grat[k]||[]).length; });
+    document.getElementById('d-photos').textContent = photoCount + '장';
+
+    /* Brain */
+    var items = (brain.items||[]).length;
+    document.getElementById('d-brain').textContent = items + '개';
+
+    /* 크기 */
+    var sz = (localStorage.getItem(KEY_MAIN)||'').length + (localStorage.getItem(KEY_BRAIN)||'').length;
+    document.getElementById('d-size').textContent = fmtBytes(sz);
+
+    /* 마지막 백업 */
+    var lastT = localStorage.getItem(KEY_LAST_BACKUP);
+    var el = document.getElementById('last-backup-info');
+    if(el){
+      if(lastT){
+        el.textContent = '☁️ 마지막 백업: ' + fmtDate(new Date(parseInt(lastT)).toISOString());
+        el.style.color = 'var(--teal)';
+      } else {
+        el.textContent = '⚠️ 아직 백업이 없습니다 — 지금 백업하세요!';
+        el.style.color = 'var(--rose)';
+      }
+    }
+  } catch(e){ console.error('updateUI error:', e); }
 }
 
-/* ── Google 로그인 ── */
-window.onload=function(){
+/* ════════════════════════════════
+   Google 인증
+════════════════════════════════ */
+window.onload = function(){
   updateUI();
-  const saved=JSON.parse(localStorage.getItem(AUTH_KEY)||'{}');
-  if(saved.token && saved.user && Date.now()-saved.loginAt < 3500000){
-    accessToken=saved.token;
-    showMain(saved.user);
-    loadList();
+
+  /* 저장된 토큰 복원 */
+  try{
+    var saved = JSON.parse(localStorage.getItem(KEY_AUTH)||'{}');
+    if(saved.token && saved.user && (Date.now()-saved.loginAt) < 3500000){
+      accessToken = saved.token;
+      currentUser = saved.user;
+      showMainView(saved.user);
+      loadBackupList();
+    }
+  } catch(e){}
+
+  /* GIS 초기화 */
+  if(typeof google !== 'undefined'){
+    initGIS();
+  } else {
+    var s = document.querySelector('script[src*="gsi"]');
+    if(s) s.addEventListener('load', initGIS);
   }
-  if(typeof google!=='undefined') initGIS();
-  else document.querySelector('script[src*="gsi"]').addEventListener('load',initGIS);
 };
 
 function initGIS(){
   try{
-    tokenClient=google.accounts.oauth2.initTokenClient({
-      client_id:CLIENT_ID, scope:SCOPE,
-      callback:async(resp)=>{
-        if(resp.error){toast('❌ 로그인 실패: '+resp.error);return;}
-        accessToken=resp.access_token;
-        const user=await fetchUser();
-        localStorage.setItem(AUTH_KEY,JSON.stringify({token:accessToken,user,loginAt:Date.now()}));
-        showMain(user);
-        loadList();
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: SCOPE,
+      callback: function(resp){
+        if(resp.error){ toast('❌ 로그인 실패: '+resp.error); return; }
+        accessToken = resp.access_token;
+        fetchUserInfo(function(user){
+          currentUser = user;
+          localStorage.setItem(KEY_AUTH, JSON.stringify({
+            token: accessToken,
+            user: user,
+            loginAt: Date.now()
+          }));
+          showMainView(user);
+          loadBackupList();
+        });
       }
     });
-  }catch(e){console.error('GIS init:',e);}
+  } catch(e){ console.error('GIS init error:', e); }
 }
 
 function googleLogin(){
-  if(!tokenClient){toast('⏳ 초기화 중... 잠시 후 다시 시도');return;}
+  if(!tokenClient){ toast('⏳ 초기화 중... 잠시 후 다시 시도'); return; }
   tokenClient.requestAccessToken({prompt:'select_account'});
 }
 
-function logout(){
-  if(accessToken) try{google.accounts.oauth2.revoke(accessToken,()=>{});}catch(e){}
-  accessToken=null; folderId=null;
-  localStorage.removeItem(AUTH_KEY);
-  document.getElementById('view-login').style.display='block';
-  document.getElementById('view-main').style.display='none';
+function doLogout(){
+  if(accessToken){
+    try{ google.accounts.oauth2.revoke(accessToken, function(){}); } catch(e){}
+  }
+  accessToken = null; folderId = null; currentUser = null;
+  localStorage.removeItem(KEY_AUTH);
+  document.getElementById('view-login').style.display = 'block';
+  document.getElementById('view-main').style.display = 'none';
   toast('👋 로그아웃됨');
 }
 
-function showMain(user){
-  document.getElementById('view-login').style.display='none';
-  document.getElementById('view-main').style.display='block';
+function showMainView(user){
+  document.getElementById('view-login').style.display = 'none';
+  document.getElementById('view-main').style.display = 'block';
   if(user){
-    document.getElementById('acct-av').textContent=(user.name||user.email||'H')[0].toUpperCase();
-    document.getElementById('acct-name').textContent=user.name||'—';
-    document.getElementById('acct-email').textContent=user.email||'—';
+    var name = user.name || user.email || 'Henry';
+    document.getElementById('acct-av').textContent = name[0].toUpperCase();
+    document.getElementById('acct-name').textContent = name;
+    document.getElementById('acct-email').textContent = user.email || '';
   }
+  updateUI();
 }
 
-async function fetchUser(){
-  const r=await fetch('https://www.googleapis.com/oauth2/v2/userinfo',{headers:{Authorization:'Bearer '+accessToken}});
-  return r.json();
+function fetchUserInfo(cb){
+  fetch('https://www.googleapis.com/oauth2/v2/userinfo',{
+    headers:{Authorization:'Bearer '+accessToken}
+  }).then(function(r){ return r.json(); }).then(cb).catch(function(){ cb({}); });
 }
 
-/* ── Drive API ── */
-async function api(url,method='GET',body=null,ct='application/json'){
-  const headers={Authorization:'Bearer '+accessToken};
-  if(body && ct) headers['Content-Type']=ct;
-  const opts={method,headers};
-  if(body) opts.body=typeof body==='string'?body:JSON.stringify(body);
-  const r=await fetch(url,opts);
-  if(r.status===401){toast('🔑 세션 만료 — 다시 로그인');logout();throw new Error('401');}
-  if(r.status===204||!r.headers.get('content-type')) return null;
-  const text=await r.text();
-  try{return JSON.parse(text);}catch(e){return text;}
-}
-
-/* ── 폴더 확인/생성 ── */
-async function getOrCreateFolder(){
-  if(folderId) return folderId;
-  // 폴더 검색
-  const q=encodeURIComponent(`name='${FOLDER_NAME}' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
-  const res=await api(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)&spaces=drive`);
-  if(res&&res.files&&res.files.length>0){
-    folderId=res.files[0].id;
-    return folderId;
-  }
-  // 폴더 생성
-  const created=await api('https://www.googleapis.com/drive/v3/files','POST',{
-    name:FOLDER_NAME,
-    mimeType:'application/vnd.google-apps.folder'
+/* ════════════════════════════════
+   Drive API
+════════════════════════════════ */
+function driveGET(url){
+  return fetch(url, {
+    headers:{Authorization:'Bearer '+accessToken}
+  }).then(function(r){
+    if(r.status===401){ toast('🔑 세션 만료 — 다시 로그인'); doLogout(); throw new Error('401'); }
+    return r.json();
   });
-  folderId=created.id;
-  return folderId;
 }
 
-/* ── 백업 ── */
-async function doBackup(){
-  if(!accessToken){toast('❌ 먼저 로그인하세요');return;}
-  showOv('☁️','Google Drive에 백업 중...','데이터를 업로드하고 있습니다');
-  try{
-    const folder=await getOrCreateFolder();
-    const data=collectData();
-    const json=JSON.stringify(data,null,2);
-    const name=`henry-diary-${new Date().toISOString().slice(0,10)}-${Date.now()}.json`;
-
-    // 단순 multipart 업로드
-    const boundary='----HenryBoundary'+Date.now();
-    const meta=JSON.stringify({name,parents:[folder]});
-    const body=[
-      `--${boundary}`,
-      'Content-Type: application/json; charset=UTF-8',
-      '',meta,'',
-      `--${boundary}`,
-      'Content-Type: application/json; charset=UTF-8',
-      '',json,'',
-      `--${boundary}--`
-    ].join('\r\n');
-
-    const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{
-      method:'POST',
-      headers:{
-        Authorization:'Bearer '+accessToken,
-        'Content-Type':`multipart/related; boundary=${boundary}`
-      },
-      body
+function getOrCreateFolder(){
+  if(folderId) return Promise.resolve(folderId);
+  var q = encodeURIComponent("name='" + FOLDER_NAME + "' and mimeType='application/vnd.google-apps.folder' and trashed=false");
+  return driveGET('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id,name)&spaces=drive')
+    .then(function(res){
+      if(res.files && res.files.length > 0){
+        folderId = res.files[0].id;
+        return folderId;
+      }
+      /* 폴더 생성 */
+      return fetch('https://www.googleapis.com/drive/v3/files',{
+        method:'POST',
+        headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+        body:JSON.stringify({name:FOLDER_NAME,mimeType:'application/vnd.google-apps.folder'})
+      }).then(function(r){ return r.json(); }).then(function(f){
+        folderId = f.id;
+        return folderId;
+      });
     });
-    if(!r.ok) throw new Error(`업로드 실패: ${r.status}`);
-    const result=await r.json();
-    console.log('백업 파일 ID:', result.id);
-    hideOv();
-    toast('✅ 백업 완료! 파일: '+name, 3000);
-    loadList();
-  }catch(e){
+}
+
+/* ════════════════════════════════
+   백업
+════════════════════════════════ */
+function doBackup(){
+  if(!accessToken){ toast('❌ 먼저 로그인하세요'); return; }
+  showOv('☁️','Google Drive에 백업 중...','데이터를 업로드하고 있습니다');
+
+  getOrCreateFolder().then(function(folder){
+    var data = collectData();
+    var json = JSON.stringify(data, null, 2);
+    var now = new Date();
+    var name = 'henry-diary-'+now.getFullYear()+p2(now.getMonth()+1)+p2(now.getDate())+'-'+now.getTime()+'.json';
+    var boundary = 'HenryBoundary'+Date.now();
+    var meta = JSON.stringify({name:name, parents:[folder]});
+    var body = '--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+meta+'\r\n\r\n'
+              +'--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+json+'\r\n\r\n'
+              +'--'+boundary+'--';
+
+    return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{
+      method:'POST',
+      headers:{Authorization:'Bearer '+accessToken,'Content-Type':'multipart/related; boundary='+boundary},
+      body:body
+    }).then(function(r){
+      if(!r.ok) throw new Error('업로드 실패 HTTP '+r.status);
+      return r.json();
+    }).then(function(result){
+      localStorage.setItem(KEY_LAST_BACKUP, Date.now().toString());
+      hideOv();
+      updateUI();
+      toast('✅ 백업 완료! ('+name+')', 3000);
+      loadBackupList();
+    });
+  }).catch(function(e){
     hideOv();
     toast('❌ 백업 실패: '+e.message);
     console.error(e);
-  }
+  });
 }
 
-/* ── 파일 목록 ── */
-async function loadList(){
-  const container=document.getElementById('backup-list');
-  try{
-    const folder=await getOrCreateFolder();
-    const q=encodeURIComponent(`'${folder}' in parents and trashed=false`);
-    const res=await api(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,size,modifiedTime)&orderBy=modifiedTime+desc&pageSize=20`);
-    const files=(res&&res.files)||[];
-    if(!files.length){
-      container.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">☁️ 백업 파일이 없습니다<br>위 버튼으로 첫 백업을 만들어보세요</div>';
+/* ════════════════════════════════
+   백업 목록 로드
+════════════════════════════════ */
+function loadBackupList(){
+  var container = document.getElementById('backup-list');
+  container.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text3);font-size:13px;">목록 불러오는 중...</div>';
+
+  getOrCreateFolder().then(function(folder){
+    var q = encodeURIComponent("'"+folder+"' in parents and trashed=false");
+    return driveGET('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id,name,size,modifiedTime)&orderBy=modifiedTime+desc&pageSize=20');
+  }).then(function(res){
+    var files = (res && res.files) || [];
+    container.innerHTML = '';
+
+    if(files.length === 0){
+      container.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">☁️ 백업 파일이 없습니다<br>위 버튼으로 첫 백업을 만드세요</div>';
       return;
     }
-    container.innerHTML='';
-    files.forEach(f=>{
-      const mod=new Date(f.modifiedTime);
-      const modStr=`${mod.getFullYear()}.${p2(mod.getMonth()+1)}.${p2(mod.getDate())} ${p2(mod.getHours())}:${p2(mod.getMinutes())}`;
-      const sz=f.size?fmtBytes(parseInt(f.size)):'—';
-      const item=document.createElement('div');
-      item.className='bk-item';
-      item.innerHTML=`<span class="bk-icon">📁</span>
-        <div class="bk-info">
-          <div class="bk-name">${f.name}</div>
-          <div class="bk-time">📅 ${modStr} · 💾 ${sz}</div>
-        </div>
-        <button class="bk-restore-btn" onclick="restoreFile('${f.id}','${f.name}')">복원</button>`;
+
+    files.forEach(function(f){
+      var sz = fmtBytes(parseInt(f.size||0));
+      var dt = fmtDate(f.modifiedTime);
+      var item = document.createElement('div');
+      item.className = 'bk-item';
+      item.innerHTML = '<span class="bk-icon">📁</span>'
+        +'<div class="bk-info"><div class="bk-name">'+f.name+'</div>'
+        +'<div class="bk-time">📅 '+dt+'</div>'
+        +'<div class="bk-size">💾 '+sz+'</div></div>';
+      var btn = document.createElement('button');
+      btn.className = 'bk-btn';
+      btn.textContent = '복원';
+      btn.onclick = (function(fid, fname){ return function(){ doRestore(fid, fname); }; })(f.id, f.name);
+      item.appendChild(btn);
       container.appendChild(item);
     });
-  }catch(e){
-    container.innerHTML='<div style="text-align:center;padding:20px;color:var(--rose);font-size:13px;">⚠️ 목록 불러오기 실패<br>'+e.message+'</div>';
-  }
+  }).catch(function(e){
+    container.innerHTML = '<div style="text-align:center;padding:16px;color:var(--rose);font-size:13px;">⚠️ 목록 불러오기 실패<br>'+e.message+'</div>';
+  });
 }
 
-/* ── 복원 ── */
-async function restoreFile(fileId, fileName){
-  if(!confirm(`📁 ${fileName}\n\n이 백업으로 복원할까요?\n현재 데이터가 덮어씌워집니다.`)) return;
-  showOv('🔄','복원 중...','Drive에서 데이터를 가져오고 있습니다');
-  try{
-    // 파일 내용 다운로드
-    const r=await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,{
-      headers:{Authorization:'Bearer '+accessToken}
-    });
-    if(!r.ok) throw new Error(`다운로드 실패: ${r.status}`);
-    const text=await r.text();
-    const data=JSON.parse(text);
-    console.log('복원 데이터:', Object.keys(data));
+/* ════════════════════════════════
+   복원 (핵심 기능)
+════════════════════════════════ */
+function doRestore(fileId, fileName){
+  if(!confirm('📁 '+fileName+'\n\n이 백업으로 복원할까요?\n현재 데이터가 덮어씌워집니다.')) return;
+  showOv('🔄','복원 중...','Drive에서 데이터를 가져오는 중입니다');
 
-    const ok=applyData(data);
+  /* 파일 내용 직접 다운로드 */
+  fetch('https://www.googleapis.com/drive/v3/files/'+fileId+'?alt=media',{
+    headers:{Authorization:'Bearer '+accessToken}
+  })
+  .then(function(r){
+    if(!r.ok) throw new Error('다운로드 실패 HTTP '+r.status);
+    return r.text();
+  })
+  .then(function(text){
+    var data;
+    try{ data = JSON.parse(text); }
+    catch(e){ throw new Error('JSON 파싱 실패: '+e.message); }
+
+    /* 데이터 확인 */
+    console.log('복원 데이터 키:', Object.keys(data));
+    console.log('main 키 수:', data.main ? Object.keys(data.main).length : 0);
+    console.log('brain items:', data.brain && data.brain.items ? data.brain.items.length : 0);
+
+    var ok = applyData(data);
     hideOv();
+
     if(ok){
-      toast('✅ 복원 완료! 홈으로 이동합니다...', 2000);
-      setTimeout(()=>{location.href='index.html';}, 2000);
+      /* 성공 화면 */
+      document.getElementById('view-main').innerHTML =
+        '<div style="text-align:center;padding:50px 20px;">'
+        +'<div style="font-size:64px;margin-bottom:16px;">✅</div>'
+        +'<div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:10px;">복원 완료!</div>'
+        +'<div style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px;">'
+        +'데이터가 성공적으로 복원됐습니다.<br>홈 화면으로 이동합니다...</div>'
+        +'<div style="font-size:12px;color:var(--text3);">'+fileName+'</div>'
+        +'</div>';
+      setTimeout(function(){ location.href = 'index.html'; }, 2500);
     }
-  }catch(e){
+  })
+  .catch(function(e){
     hideOv();
-    toast('❌ 복원 실패: '+e.message);
-    console.error(e);
-  }
+    console.error('복원 오류:', e);
+    toast('❌ 복원 실패: '+e.message, 4000);
+  });
 }
 
-/* ── JSON 내보내기/가져오기 ── */
-function exportJSON(){
-  const data=collectData();
-  const json=JSON.stringify(data,null,2);
-  const blob=new Blob([json],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download=`henry-diary-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();URL.revokeObjectURL(url);
-  toast('📤 파일 저장됨');
+/* ════════════════════════════════
+   JSON 내보내기 / 가져오기
+════════════════════════════════ */
+function doExportJSON(){
+  var data = collectData();
+  var json = JSON.stringify(data, null, 2);
+  var blob = new Blob([json], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'henry-diary-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📤 파일 저장됨 — 다운로드 폴더 확인');
 }
 
-function importJSON(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
+function doImportJSON(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
     try{
-      const data=JSON.parse(ev.target.result);
-      if(!confirm(`📁 ${file.name}\n\n이 파일로 복원할까요?`))return;
-      const ok=applyData(data);
+      var data = JSON.parse(ev.target.result);
+      if(!confirm('📁 '+file.name+'\n\n이 파일로 복원할까요?\n현재 데이터가 덮어씌워집니다.')) return;
+      var ok = applyData(data);
       if(ok){
-        toast('✅ 복원 완료! 홈으로 이동합니다...', 2000);
-        setTimeout(()=>{location.href='index.html';},2000);
+        toast('✅ 복원 완료!', 2000);
+        setTimeout(function(){ location.href = 'index.html'; }, 2000);
       }
-    }catch(err){toast('❌ 파일 형식 오류');}
+    } catch(err){ toast('❌ 파일 형식 오류: '+err.message); }
   };
   reader.readAsText(file);
-  e.target.value='';
+  e.target.value = '';
 }
+
+/* 초기화 */
+updateUI();
 </script>
 </body>
 </html>
