@@ -197,19 +197,16 @@ body{
       <!-- 명언 -->
       <!-- 명언 카드 -->
       <div class="quote-card" style="position:relative;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">
-            <button id="tab-life" onclick="switchQTab('life')" style="background:rgba(255,255,255,.18);border:none;border-radius:16px;color:#fff;font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">🌟 인생</button>
-            <button id="tab-invest" onclick="switchQTab('invest')" style="background:rgba(255,255,255,.06);border:none;border-radius:16px;color:rgba(255,255,255,.4);font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">📈 투자</button>
-            <span style="flex:1;"></span>
-            <button onclick="openQuoteModal()" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);border-radius:7px;color:#ffc020;font-size:11px;padding:3px 9px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">관리</button>
-          </div>
-          <div class="q-label" id="q-label" style="margin-bottom:2px;">✦ 탭=다음 · 길게=삭제</div>
-          <button id="q-mgr-btn" onclick="openQuoteModal()" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);border-radius:8px;color:#ffc020;font-size:11px;padding:4px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:700;white-space:nowrap;-webkit-appearance:none;touch-action:manipulation;">관리</button>
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+          <button id="tab-life" onclick="switchQTab('life')" style="background:rgba(255,255,255,.18);border:none;border-radius:14px;color:#fff;font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">🌟 인생</button>
+          <button id="tab-invest" onclick="switchQTab('invest')" style="background:rgba(255,255,255,.06);border:none;border-radius:14px;color:rgba(255,255,255,.4);font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">📈 투자</button>
+          <span style="flex:1;"></span>
+          <button onclick="openQuoteModal()" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);border-radius:7px;color:#ffc020;font-size:11px;padding:3px 9px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">관리</button>
         </div>
+        <div class="q-label" id="q-label" style="margin-bottom:3px;">✦ 탭=다음 · 길게=삭제</div>
         <div id="quote-body" onclick="nextQuote()" style="cursor:pointer;touch-action:manipulation;">
           <div class="q-text" id="q-text">—</div>
-          <div class="q-en" id="q-en" style="color:#ffd060;font-size:15px;font-weight:500;font-style:italic;margin-top:8px;line-height:1.7;word-break:break-word;">—</div>
+          <div class="q-en" id="q-en" style="color:#ffd060;font-size:13px;font-weight:500;font-style:italic;margin-top:4px;line-height:1.6;word-break:break-word;">—</div>
           <div class="q-author" id="q-author">—</div>
         </div>
       </div>
@@ -425,118 +422,92 @@ function showQuote(){
   displayQuote(curQIdx);
 }
 
-/* ── 명언 탭 전환 ── */
-let curQTab = 'life';
-function switchQTab(tab) {
-  curQTab = tab;
-  var tL = document.getElementById('tab-life');
-  var tI = document.getElementById('tab-invest');
-  if (tab === 'life') {
-    QQ.length = 0;
-    QQ_LIFE.forEach(function(q){QQ.push(q);});
-    tL.style.background = 'rgba(255,255,255,.2)';
-    tL.style.color = '#fff';
-    tI.style.background = 'rgba(255,255,255,.06)';
-    tI.style.color = 'rgba(255,255,255,.4)';
+var QQ_TAB='life';
+function switchQTab(tab){
+  QQ_TAB=tab;
+  var el_l=document.getElementById('tab-life');
+  var el_i=document.getElementById('tab-invest');
+  if(tab==='life'){
+    QQ.length=0; for(var i=0;i<QQ_LIFE.length;i++) QQ.push(QQ_LIFE[i]);
+    el_l.style.background='rgba(255,255,255,.2)'; el_l.style.color='#fff';
+    el_i.style.background='rgba(255,255,255,.06)'; el_i.style.color='rgba(255,255,255,.4)';
   } else {
-    QQ.length = 0;
-    QQ_INVEST.forEach(function(q){QQ.push(q);});
-    tI.style.background = 'rgba(255,192,32,.25)';
-    tI.style.color = '#ffc020';
-    tL.style.background = 'rgba(255,255,255,.06)';
-    tL.style.color = 'rgba(255,255,255,.4)';
+    QQ.length=0; for(var i=0;i<QQ_INVEST.length;i++) QQ.push(QQ_INVEST[i]);
+    el_i.style.background='rgba(255,192,32,.25)'; el_i.style.color='#ffc020';
+    el_l.style.background='rgba(255,255,255,.06)'; el_l.style.color='rgba(255,255,255,.4)';
   }
-  curQIdx = 0;
-  try { localStorage.setItem('henry_qtab', tab); } catch(e) {}
+  curQIdx=0;
+  try{localStorage.setItem('henry_qtab',tab);}catch(x){}
   displayQuote(0);
 }
-// 마지막 탭 복원
 (function(){
-  var t = localStorage.getItem('henry_qtab');
-  if (t === 'invest') { setTimeout(function(){ switchQTab('invest'); }, 100); }
+  try{var t=localStorage.getItem('henry_qtab');if(t==='invest')setTimeout(function(){switchQTab('invest');},120);}catch(x){}
 })();
 
-/* ── 롱프레스 삭제 ── */
+/* 롱프레스 삭제 */
 (function(){
-  var body = document.getElementById('quote-body');
-  if (!body) return;
-  var tm = null;
-  body.addEventListener('touchstart', function(){
-    tm = setTimeout(function(){
-      if (!QQ[curQIdx]) return;
-      if (confirm('이 명언을 삭제할까요?')) { deleteQuote(curQIdx); }
-    }, 700);
-  }, {passive:true});
-  body.addEventListener('touchend', function(){ clearTimeout(tm); }, {passive:true});
-  body.addEventListener('touchmove', function(){ clearTimeout(tm); }, {passive:true});
+  var body=document.getElementById('quote-body');
+  if(!body)return;
+  var tm=null;
+  body.addEventListener('touchstart',function(){
+    tm=setTimeout(function(){
+      if(QQ[curQIdx]&&confirm('이 명언을 삭제할까요?')){delQuote(curQIdx);}
+    },700);
+  },{passive:true});
+  body.addEventListener('touchend',function(){clearTimeout(tm);},{passive:true});
+  body.addEventListener('touchmove',function(){clearTimeout(tm);},{passive:true});
 })();
 
-/* ── 명언 관리 ── */
-var Q_KEY = 'henry_quotes_v1';
-function loadCustomQuotes(){ try{ var r=localStorage.getItem(Q_KEY); if(r)return JSON.parse(r); }catch(e){} return []; }
-function saveCustomQuotes(arr){ try{ localStorage.setItem(Q_KEY,JSON.stringify(arr)); }catch(e){} }
-(function(){
-  var custom = loadCustomQuotes();
-  custom.forEach(function(q){ QQ_LIFE.push(q); });
-  if (curQTab === 'life') { QQ.length=0; QQ_LIFE.forEach(function(q){QQ.push(q);}); }
-})();
-function openQuoteModal(){ document.getElementById('quote-modal').style.display='block'; renderQuoteModal(); }
-function closeQuoteModal(){ document.getElementById('quote-modal').style.display='none'; }
-function renderQuoteModal(){
-  var list = document.getElementById('quote-list-modal');
-  var cnt = document.getElementById('q-count');
-  if (cnt) cnt.textContent = QQ.length;
-  list.innerHTML = '';
-  QQ.forEach(function(q, i){
-    var d = document.createElement('div');
-    d.style.cssText = 'background:#1a1a26;border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start;';
-    var del = document.createElement('button');
-    del.textContent = '삭제';
-    del.style.cssText = 'background:rgba(255,80,96,.15);border:1px solid rgba(255,80,96,.3);border-radius:7px;color:#ff5060;font-size:12px;padding:4px 10px;cursor:pointer;flex-shrink:0;-webkit-appearance:none;';
-    del.onclick = (function(idx){ return function(){ deleteQuote(idx); }; })(i);
-    var info = document.createElement('div');
-    info.style.flex = '1';
-    info.innerHTML = '<div style="font-size:13px;color:#f0f0f8;line-height:1.5;margin-bottom:3px;">'+(i+1)+'. '+q.t+'</div><div style="font-size:11px;color:#ffd060;font-style:italic;">'+q.e+'</div><div style="font-size:11px;color:#606080;margin-top:2px;">— '+q.a+'</div>';
-    d.appendChild(info);
-    d.appendChild(del);
-    list.appendChild(d);
-  });
-}
-async function addQuote(){
-  var t = (document.getElementById('q-add-kor').value||'').trim();
-  var e = (document.getElementById('q-add-eng').value||'').trim();
-  var a = (document.getElementById('q-add-auth').value||'').trim();
-  if (!t){ alert('한글 명언을 입력하세요'); return; }
-  if (!e){
-    try{
-      var r = await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(t)+'&langpair=ko|en');
-      var data = await r.json();
-      e = (data.responseData&&data.responseData.translatedText||'').trim();
-    }catch(ex){ e = ''; }
+/* 명언 관리 */
+var QCKEY='henry_quotes_v1';
+function loadCQ(){try{var r=localStorage.getItem(QCKEY);if(r)return JSON.parse(r);}catch(x){}return[];}
+function saveCQ(arr){try{localStorage.setItem(QCKEY,JSON.stringify(arr));}catch(x){}}
+(function(){var cq=loadCQ();for(var i=0;i<cq.length;i++)QQ_LIFE.push(cq[i]);if(QQ_TAB==='life'){QQ.length=0;for(var i=0;i<QQ_LIFE.length;i++)QQ.push(QQ_LIFE[i]);}})();
+function openQuoteModal(){document.getElementById('quote-modal').style.display='block';renderQModal();}
+function closeQuoteModal(){document.getElementById('quote-modal').style.display='none';}
+function renderQModal(){
+  var el=document.getElementById('qlist');
+  var cnt=document.getElementById('qcnt');
+  if(cnt)cnt.textContent=QQ.length;
+  if(!el)return;
+  el.innerHTML='';
+  for(var i=0;i<QQ.length;i++){
+    (function(idx,q){
+      var d=document.createElement('div');
+      d.style.cssText='background:#1a1a26;border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start;';
+      var info=document.createElement('div');info.style.flex='1';
+      info.innerHTML='<div style="font-size:13px;color:#f0f0f8;line-height:1.5;margin-bottom:3px;">'+(idx+1)+'. '+q.t+'</div><div style="font-size:11px;color:#ffd060;font-style:italic;">'+q.e+'</div><div style="font-size:11px;color:#606080;margin-top:2px;">— '+q.a+'</div>';
+      var btn=document.createElement('button');
+      btn.textContent='삭제';
+      btn.style.cssText='background:rgba(255,80,96,.15);border:1px solid rgba(255,80,96,.3);border-radius:7px;color:#ff5060;font-size:12px;padding:4px 10px;cursor:pointer;flex-shrink:0;-webkit-appearance:none;';
+      btn.onclick=function(){delQuote(idx);};
+      d.appendChild(info);d.appendChild(btn);el.appendChild(d);
+    })(i,QQ[i]);
   }
-  var newQ = {t:t, e:e||t, a:a||'—'};
-  QQ_LIFE.push(newQ);
-  if (curQTab==='life'){ QQ.push(newQ); }
-  var custom = loadCustomQuotes();
-  custom.push(newQ);
-  saveCustomQuotes(custom);
-  document.getElementById('q-add-kor').value = '';
-  document.getElementById('q-add-eng').value = '';
-  document.getElementById('q-add-auth').value = '';
-  renderQuoteModal();
-  curQIdx = QQ.length - 1;
-  displayQuote(curQIdx);
 }
-function deleteQuote(i){
-  if (i < 0 || i >= QQ.length) return;
-  var msg = QQ[i].t.slice(0,30);
-  if (!confirm('삭제할까요?')) return;
-  QQ.splice(i, 1);
-  if (curQTab==='life'){ QQ_LIFE.length=0; QQ.forEach(function(q){QQ_LIFE.push(q);}); }
-  else { QQ_INVEST.length=0; QQ.forEach(function(q){QQ_INVEST.push(q);}); }
-  if (curQIdx >= QQ.length) curQIdx = Math.max(0, QQ.length-1);
-  if (QQ.length > 0) displayQuote(curQIdx);
-  renderQuoteModal();
+function addQuote(){
+  var t=(document.getElementById('qakor').value||'').trim();
+  var e=(document.getElementById('qaeng').value||'').trim();
+  var a=(document.getElementById('qaauth').value||'').trim();
+  if(!t){alert('한글 명언을 입력하세요');return;}
+  var q={t:t,e:e||t,a:a||'—'};
+  QQ_LIFE.push(q);
+  if(QQ_TAB==='life'){QQ.push(q);}
+  var cq=loadCQ();cq.push(q);saveCQ(cq);
+  document.getElementById('qakor').value='';
+  document.getElementById('qaeng').value='';
+  document.getElementById('qaauth').value='';
+  renderQModal();curQIdx=QQ.length-1;displayQuote(curQIdx);
+}
+function delQuote(i){
+  if(i<0||i>=QQ.length)return;
+  if(!confirm('삭제할까요?'))return;
+  QQ.splice(i,1);
+  if(QQ_TAB==='life'){QQ_LIFE.length=0;for(var j=0;j<QQ.length;j++)QQ_LIFE.push(QQ[j]);}
+  else{QQ_INVEST.length=0;for(var j=0;j<QQ.length;j++)QQ_INVEST.push(QQ[j]);}
+  if(curQIdx>=QQ.length)curQIdx=Math.max(0,QQ.length-1);
+  if(QQ.length>0)displayQuote(curQIdx);
+  renderQModal();
 }
 
 showQuote();
@@ -773,21 +744,21 @@ function deleteQuote(i){
   <div style="min-height:100%;padding:16px 14px;box-sizing:border-box;">
     <div style="max-width:440px;margin:20px auto;background:#12121a;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div style="font-size:20px;font-weight:700;color:#ffc020;">✦ 명언 관리</div>
-        <button onclick="closeQuoteModal()" style="-webkit-appearance:none;background:rgba(255,255,255,.12);border:none;color:#fff;width:34px;height:34px;border-radius:9px;font-size:20px;cursor:pointer;touch-action:manipulation;">×</button>
+        <div style="font-size:18px;font-weight:700;color:#ffc020;">✦ 명언 관리</div>
+        <button onclick="closeQuoteModal()" style="-webkit-appearance:none;background:rgba(255,255,255,.12);border:none;color:#fff;width:34px;height:34px;border-radius:9px;font-size:20px;cursor:pointer;line-height:1;">×</button>
       </div>
       <div style="background:#1a1a26;border-radius:12px;padding:13px;margin-bottom:14px;">
         <div style="font-size:12px;font-weight:700;color:#ffc020;margin-bottom:10px;">+ 새 명언 추가</div>
-        <textarea id="q-add-kor" rows="2" placeholder="한글 명언..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#fff;font-size:14px;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <textarea id="q-add-eng" rows="2" placeholder="영어 번역 (비워두면 자동번역)..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#ffd060;font-size:13px;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <input id="q-add-auth" placeholder="출처" style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#b0b0c8;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px;display:block;">
+        <textarea id="qakor" rows="2" placeholder="한글 명언..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#fff;font-size:14px;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
+        <textarea id="qaeng" rows="2" placeholder="English translation..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#ffd060;font-size:13px;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
+        <input id="qaauth" placeholder="출처" style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#b0b0c8;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px;display:block;">
         <button onclick="addQuote()" style="-webkit-appearance:none;width:100%;background:#ffc020;border:none;color:#0a0a0f;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;display:block;">✦ 추가</button>
       </div>
-      <div style="font-size:11px;color:#606080;margin-bottom:10px;">명언 (<span id="q-count">0</span>개)</div>
-      <div id="quote-list-modal"></div>
+      <div style="font-size:11px;color:#606080;margin-bottom:10px;">명언 (<span id="qcnt">0</span>개)</div>
+      <div id="qlist"></div>
     </div>
   </div>
 </div>
-<div class="toast" id="toast"></div>
+
 </body>
 </html>
