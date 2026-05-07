@@ -148,6 +148,16 @@ input[type=file]{display:none;}
         </button>
       </div>
 
+      <!-- Drive 찾는 방법 안내 -->
+      <div style="background:rgba(74,143,255,.08);border:1px solid rgba(74,143,255,.25);border-radius:12px;padding:12px 14px;margin-bottom:14px;">
+        <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:6px;">📍 Drive에서 백업 파일 찾는 법</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;">
+          drive.google.com → 검색창에 <b style="color:#fff;">HenryDiary</b> 입력<br>
+          또는 내 드라이브 루트에서 확인<br>
+          JSON 파일은 핸드폰 <b style="color:#fff;">파일 앱 → 다운로드</b> 폴더에도 저장됩니다
+        </div>
+      </div>
+
       <!-- 로그인 후 -->
       <div id="view-main" style="display:none;">
 
@@ -226,7 +236,7 @@ input[type=file]{display:none;}
    설정
 ════════════════════════════════ */
 var CLIENT_ID = '666312420187-34kaf8l0r0kspe5b0s8ebhospparlbbd.apps.googleusercontent.com';
-var SCOPE = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
+var SCOPE = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
 var KEY_MAIN = 'henry_v9';
 var KEY_BRAIN = 'henry_brain_v1';
 var KEY_AUTH = 'henry_gauth_v2';
@@ -484,35 +494,55 @@ function doBackup(){
   if(!accessToken){ toast('❌ 먼저 로그인하세요'); return; }
   showOv('☁️','Google Drive에 백업 중...','데이터를 업로드하고 있습니다');
 
-  getOrCreateFolder().then(function(folder){
-    var data = collectData();
-    var json = JSON.stringify(data, null, 2);
-    var now = new Date();
-    var name = 'henry-diary-'+now.getFullYear()+p2(now.getMonth()+1)+p2(now.getDate())+'-'+now.getTime()+'.json';
-    var boundary = 'HenryBoundary'+Date.now();
-    var meta = JSON.stringify({name:name, parents:[folder]});
-    var body = '--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+meta+'\r\n\r\n'
-              +'--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+json+'\r\n\r\n'
-              +'--'+boundary+'--';
+  var data = collectData();
+  var json = JSON.stringify(data, null, 2);
+  var now = new Date();
+  var name = 'HenryDiary_'+now.getFullYear()+p2(now.getMonth()+1)+p2(now.getDate())+'_'+p2(now.getHours())+p2(now.getMinutes())+'.json';
 
-    return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{
-      method:'POST',
-      headers:{Authorization:'Bearer '+accessToken,'Content-Type':'multipart/related; boundary='+boundary},
-      body:body
-    }).then(function(r){
-      if(!r.ok) throw new Error('업로드 실패 HTTP '+r.status);
-      return r.json();
-    }).then(function(result){
-      localStorage.setItem(KEY_LAST_BACKUP, Date.now().toString());
-      hideOv();
-      updateUI();
-      toast('✅ 백업 완료! ('+name+')', 3000);
-      loadBackupList();
-    });
+  /* 단순 방식: 폴더 없이 Drive 루트에 직접 업로드 */
+  var boundary = 'Boundary'+Date.now();
+  var meta = JSON.stringify({name:name}); /* parents 없음 = 루트에 저장 */
+  var body = '--'+boundary+'
+Content-Type: application/json; charset=UTF-8
+
+'
+            +meta+'
+
+'
+            +'--'+boundary+'
+Content-Type: application/json; charset=UTF-8
+
+'
+            +json+'
+
+'
+            +'--'+boundary+'--';
+
+  fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{
+    method:'POST',
+    headers:{
+      Authorization:'Bearer '+accessToken,
+      'Content-Type':'multipart/related; boundary='+boundary
+    },
+    body:body
+  }).then(function(r){
+    if(!r.ok) return r.text().then(function(t){ throw new Error('HTTP '+r.status+': '+t); });
+    return r.json();
+  }).then(function(result){
+    console.log('백업 성공! 파일ID:', result.id, '파일명:', result.name);
+    localStorage.setItem(KEY_LAST_BACKUP, Date.now().toString());
+    hideOv();
+    updateUI();
+    loadBackupList();
+    /* 동시에 JSON도 자동 다운로드 */
+    autoDownloadJSON(json, name);
+    toast('✅ Drive 백업 완료! 파일: '+name, 4000);
   }).catch(function(e){
     hideOv();
-    toast('❌ 백업 실패: '+e.message);
-    console.error(e);
+    console.error('백업 실패:', e);
+    toast('❌ Drive 백업 실패: '+e.message+' — JSON 파일로 저장합니다', 3000);
+    /* Drive 실패 시 JSON 파일로 자동 저장 */
+    setTimeout(function(){ autoDownloadJSON(json, name); }, 1000);
   });
 }
 
@@ -523,10 +553,11 @@ function loadBackupList(){
   var container = document.getElementById('backup-list');
   container.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text3);font-size:13px;">목록 불러오는 중...</div>';
 
-  getOrCreateFolder().then(function(folder){
-    var q = encodeURIComponent("'"+folder+"' in parents and trashed=false");
-    return driveGET('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id,name,size,modifiedTime)&orderBy=modifiedTime+desc&pageSize=20');
-  }).then(function(res){
+  /* Drive 전체에서 HenryDiary 파일 검색 */
+  var q = encodeURIComponent("name contains 'HenryDiary' and trashed=false");
+  Promise.resolve(
+    driveGET('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id,name,size,modifiedTime)&orderBy=modifiedTime+desc&pageSize=30')
+  ).then(function(res){
     var files = (res && res.files) || [];
     container.innerHTML = '';
 
@@ -553,6 +584,7 @@ function loadBackupList(){
     });
   }).catch(function(e){
     container.innerHTML = '<div style="text-align:center;padding:16px;color:var(--rose);font-size:13px;">⚠️ 목록 불러오기 실패<br>'+e.message+'</div>';
+    console.error('목록 로드 실패:', e);
   });
 }
 
@@ -607,6 +639,22 @@ function doRestore(fileId, fileName){
 /* ════════════════════════════════
    JSON 내보내기 / 가져오기
 ════════════════════════════════ */
+/* ── 자동 JSON 다운로드 ── */
+function autoDownloadJSON(json, name){
+  try{
+    var blob = new Blob([json], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('📱 JSON 파일도 저장됨 — 다운로드 폴더 확인', 3000);
+  } catch(e){ console.log('자동 다운로드 실패:', e); }
+}
+
 function doExportJSON(){
   var data = collectData();
   var json = JSON.stringify(data, null, 2);
