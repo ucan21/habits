@@ -158,31 +158,47 @@ if('serviceWorker' in navigator){
       <!-- 복원 버튼 -->
       <div class="sec">복원 (불러오기)</div>
 
+      <!-- 복원 방법 안내 — 버튼 위에 크게 표시 -->
+      <div style="background:rgba(74,143,255,.1);border:2px solid rgba(74,143,255,.4);border-radius:14px;padding:16px;margin-bottom:12px;">
+        <div style="font-size:14px;font-weight:700;color:var(--blue);margin-bottom:12px;">📍 백업 파일 위치</div>
+        <div style="background:#0a0a0f;border-radius:10px;padding:12px;margin-bottom:10px;">
+          <div style="font-size:12px;color:var(--text3);margin-bottom:4px;">파일명</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;">HenryDiary_날짜_시간.json</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">예) HenryDiary_20260507_1816.json</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;background:#0a0a0f;border-radius:10px;padding:11px 12px;">
+            <span style="font-size:20px;">📱</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">파일 앱에 있는 경우</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px;">파일 앱 → <b style="color:#fff;">다운로드</b> 폴더</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#0a0a0f;border-radius:10px;padding:11px 12px;">
+            <span style="font-size:20px;">💬</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">카카오톡에 보낸 경우</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px;">카카오톡 → 나에게 보내기 → 파일 탭</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#0a0a0f;border-radius:10px;padding:11px 12px;">
+            <span style="font-size:20px;">📧</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">이메일로 보낸 경우</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px;">메일 앱 → 첨부파일 다운로드 후 선택</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <button class="big-btn btn-load" onclick="document.getElementById('file-inp').click()">
         <span class="btn-icon">📥</span>
         <div class="btn-body">
-          <div class="btn-title">JSON 파일로 복원</div>
-          <div class="btn-sub">저장한 백업 파일을 선택하면<br>모든 데이터가 복원됩니다</div>
+          <div class="btn-title">백업 파일 선택해서 복원</div>
+          <div class="btn-sub">위 위치에서 HenryDiary_*.json 파일 선택</div>
         </div>
       </button>
       <input type="file" id="file-inp" accept=".json" onchange="doLoad(event)">
-
-      <!-- 복원 방법 안내 -->
-      <div class="guide-box blue">
-        <div class="guide-title" style="color:var(--blue);">🔄 복원 방법</div>
-        <div class="guide-step">
-          <div class="step-num blue">1</div>
-          <div class="step-txt">위 버튼 탭</div>
-        </div>
-        <div class="guide-step">
-          <div class="step-num blue">2</div>
-          <div class="step-txt"><b>파일 앱 → 다운로드</b>에서<br>백업 파일 선택</div>
-        </div>
-        <div class="guide-step">
-          <div class="step-num blue">3</div>
-          <div class="step-txt">✅ 복원 완료 → 자동으로 홈 이동</div>
-        </div>
-      </div>
 
       <!-- 중요 안내 -->
       <div class="guide-box gold">
