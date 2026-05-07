@@ -101,6 +101,13 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .nb.nb-home{color:var(--blue);}
 .nb.nb-home .ni{filter:drop-shadow(0 0 5px var(--blue));}
 </style>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/habits/sw.js', {scope:'/habits/'})
+    .then(function(r){ console.log('SW registered:', r.scope); })
+    .catch(function(e){ console.log('SW error:', e); });
+}
+</script>
 </head>
 <body>
 <div class="shell">

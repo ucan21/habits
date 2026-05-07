@@ -86,6 +86,13 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .nb.on{color:var(--teal);}
 input[type=file]{display:none;}
 </style>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/habits/sw.js', {scope:'/habits/'})
+    .then(function(r){ console.log('SW registered:', r.scope); })
+    .catch(function(e){ console.log('SW error:', e); });
+}
+</script>
 </head>
 <body>
 <div class="shell">
