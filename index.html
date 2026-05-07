@@ -211,7 +211,12 @@ if('serviceWorker' in navigator){
           <button onclick="openQuoteModal()" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);border-radius:7px;color:#ffc020;font-size:11px;padding:3px 9px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">관리</button>
         </div>
         <div class="q-label" id="q-label" style="margin-bottom:3px;display:none;"></div>
-        <div id="quote-body" style="touch-action:pan-y;">
+        <div id="quote-body" style="position:relative;">
+          <!-- 좌/우 탭 영역 -->
+          <div style="position:absolute;inset:0;display:flex;z-index:10;">
+            <div onclick="prevQuote()" style="flex:1;cursor:pointer;touch-action:manipulation;"></div>
+            <div onclick="nextQuote()" style="flex:1;cursor:pointer;touch-action:manipulation;"></div>
+          </div>
           <div class="q-text" id="q-text">—</div>
           <div class="q-en" id="q-en" style="color:#ffd060;font-size:13px;font-weight:500;font-style:italic;margin-top:4px;line-height:1.6;word-break:break-word;">—</div>
           <div class="q-author" id="q-author">—</div>
@@ -457,41 +462,18 @@ function switchQTab(tab){
   try{var t=localStorage.getItem('henry_qtab');if(t==='invest')setTimeout(function(){switchQTab('invest');},120);}catch(x){}
 })();
 
-/* 명언 카드 — 좌우 스와이프 + 롱프레스 삭제 */
+/* 명언 카드 — 롱프레스 삭제 */
 (function(){
   var body=document.getElementById('quote-body');
   if(!body)return;
-  var sx=0,sy=0,st=0,tm=null;
-  var MIN_SWIPE=40, MAX_VERT=60, MAX_TIME=400;
-
+  var tm=null;
   body.addEventListener('touchstart',function(e){
-    sx=e.touches[0].clientX;
-    sy=e.touches[0].clientY;
-    st=Date.now();
-    /* 롱프레스 타이머 */
     tm=setTimeout(function(){
       if(QQ[curQIdx]&&confirm('이 명언을 삭제할까요?')){delQuote(curQIdx);}
     },700);
   },{passive:true});
-
-  body.addEventListener('touchmove',function(e){
-    clearTimeout(tm); /* 움직이면 롱프레스 취소 */
-  },{passive:true});
-
-  body.addEventListener('touchend',function(e){
-    clearTimeout(tm);
-    var dx=e.changedTouches[0].clientX - sx;
-    var dy=Math.abs(e.changedTouches[0].clientY - sy);
-    var dt=Date.now()-st;
-    if(dt>MAX_TIME||Math.abs(dx)<MIN_SWIPE||dy>MAX_VERT) return;
-    if(dx < 0){
-      /* 왼쪽 스와이프 → 다음 명언 */
-      nextQuote();
-    } else {
-      /* 오른쪽 스와이프 → 이전 명언 */
-      prevQuote();
-    }
-  },{passive:true});
+  body.addEventListener('touchmove',function(){clearTimeout(tm);},{passive:true});
+  body.addEventListener('touchend',function(){clearTimeout(tm);},{passive:true});
 })();
 
 /* 명언 관리 */
