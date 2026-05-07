@@ -2,763 +2,525 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f0f0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Henry Diary">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-title" content="콜라주">
+<meta name="description" content="사진을 분할하여 콜라주를 만드세요">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="app-version" content="20260504113238">
-<title>Henry Diary</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>📸 사진 콜라주</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0a0a0f; --s1:#12121a; --s2:#1a1a26; --s3:#222232;
-  --text:#f0f0f8; --text2:#b0b0c8; --text3:#606080;
-  --blue:#4a8fff; --teal:#28c490; --gold:#ffc020;
-  --violet:#9060ff; --orange:#ff8830; --green:#30c060;
-  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.16);
-  --safe-t:env(safe-area-inset-top,0px);
-  --safe-b:env(safe-area-inset-bottom,0px);
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;}
-body{
-  background:var(--bg);color:var(--text);
-  font-family:'Noto Sans KR',sans-serif;
-  -webkit-font-smoothing:antialiased;
-}
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #f0f0f0;
+    --text2: #888;
+    --accent: #e8c96d;
+    --accent-dim: rgba(232,201,109,0.15);
+    --danger: #e05c5c;
+    --radius: 12px;
+    --gap: 3px;
+  }
 
-/* ── SHELL ── */
-.shell{
-  display:flex;flex-direction:column;
-  width:100%;max-width:480px;margin:0 auto;
-  height:100dvh;height:100vh;overflow:hidden;
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-/* ── HEADER ── */
-.hdr{
-  flex-shrink:0;
-  /* 상태바 아래 충분한 여백으로 잘림 방지 */
-  padding-top:calc(var(--safe-t) + 18px);
-  padding-bottom:14px;
-  padding-left:16px;
-  padding-right:16px;
-  text-align:center;
-  background:var(--bg);
-  border-bottom:1px solid var(--border);
-}
-.hdr-logo{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:44px;
-  letter-spacing:6px;
-  line-height:1;
-  color:#ffffff;
-  text-shadow:0 0 30px rgba(255,255,255,0.18);
-}
-.hdr-sub{
-  font-size:11px;letter-spacing:3px;color:#ffffff;
-  font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:6px;
-  font-weight:700;opacity:1;
-}
-/* 날짜 표시 */
-.hdr-date{
-  font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);
-  margin-top:6px;letter-spacing:1px;
-}
+  html, body {
+    height: 100%; width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    overflow: hidden;
+  }
 
-/* ── SCROLL ── */
-.scroll{
-  flex:1;overflow-y:auto;overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
-}
-.scroll::-webkit-scrollbar{width:2px;}
-.scroll::-webkit-scrollbar-thumb{background:var(--s3);}
+  .app {
+    display: flex; flex-direction: column;
+    height: 100%; height: 100dvh;
+    max-width: 430px; margin: 0 auto;
+    position: relative;
+  }
 
-/* ── CONTENT ── */
-.content{padding:14px 14px 16px;}
+  /* Header */
+  .header {
+    padding: 52px 20px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .header h1 {
+    font-size: 20px; font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .header h1 span { color: var(--accent); }
 
-/* ── QUOTE ── */
-.quote-card{
-  background:linear-gradient(135deg,#12121a,#1a1a2e);
-  border:2px solid rgba(255,255,255,0.75);
-  border-radius:14px;padding:10px 13px;margin-bottom:12px;
-  position:relative;overflow:hidden;
-  cursor:pointer;touch-action:manipulation;
-  transition:transform .12s,border-color .2s;
-  -webkit-appearance:none;appearance:none;
-  display:block;width:100%;text-align:left;
-  font-family:inherit;
-}
-.quote-card:active{transform:scale(.98);border-color:rgba(255,208,96,.8);}
-.quote-card::before{
-  content:'"';font-family:'Bebas Neue',sans-serif;font-size:50px;
-  color:rgba(74,143,255,0.06);position:absolute;top:-5px;left:6px;
-  line-height:1;pointer-events:none;
-}
-.q-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#ffffff;font-family:'DM Mono',monospace;font-weight:700;margin-bottom:6px;opacity:.85;}
-.q-text{font-size:16px;font-weight:600;color:#ffffff;line-height:1.7;word-break:keep-all;font-family:'Nanum Myeongjo','Georgia',serif;letter-spacing:.2px;}
-.q-en{font-size:15px;font-weight:500;color:#ffd060!important;line-height:1.7;margin-top:8px;font-family:'Georgia','Times New Roman',serif;font-style:italic;word-break:break-word;}
-.q-author{font-size:10px;color:rgba(255,255,255,0.55);margin-top:5px;font-family:'DM Mono',monospace;text-align:right;}
+  .save-btn {
+    background: var(--accent);
+    color: #0f0f0f;
+    border: none; border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 13px; font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    transition: opacity 0.2s, transform 0.1s;
+    -webkit-appearance: none;
+  }
+  .save-btn:active { opacity: 0.8; transform: scale(0.97); }
+  .save-btn svg { width: 14px; height: 14px; }
 
-/* ── CARD BUTTONS (메인 콘텐츠 카드) ── */
-.nav-btn{
-  display:flex;align-items:center;gap:14px;
-  width:100%;padding:17px 16px;margin-bottom:10px;
-  border-radius:16px;cursor:pointer;text-decoration:none;
-  transition:all .15s;touch-action:manipulation;
-  position:relative;overflow:hidden;
-  border:1px solid var(--border);
-  /* JS 클릭으로 이동 */
-}
-.nav-btn:active{transform:scale(.97);}
-.nav-icon{font-size:28px;flex-shrink:0;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
-.nb .ni{font-size:21px;transition:transform .18s;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
-.nav-body{flex:1;text-align:left;}
-.nav-title{
-  font-family:'Bebas Neue',sans-serif;font-size:22px;
-  letter-spacing:2px;line-height:1;margin-bottom:3px;
-}
-.nav-sub{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
-.nav-arr{font-size:20px;color:var(--text3);flex-shrink:0;}
-.score-pill{
-  position:absolute;top:50%;right:46px;transform:translateY(-50%);
-  background:rgba(40,196,144,.15);border:1px solid rgba(40,196,144,.3);
-  border-radius:20px;padding:3px 10px;
-  font-family:'DM Mono',monospace;font-size:11px;color:var(--teal);font-weight:700;
-}
+  /* Mode selector */
+  .mode-bar {
+    padding: 0 16px 12px;
+    display: flex; gap: 8px;
+    flex-shrink: 0;
+  }
+  .mode-chip {
+    flex: 1;
+    border: 1px solid var(--border2);
+    border-radius: 30px;
+    background: var(--surface);
+    color: var(--text2);
+    font-size: 13px; font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    padding: 9px 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.18s;
+    -webkit-appearance: none;
+  }
+  .mode-chip.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .mode-chip:active { transform: scale(0.95); }
 
-.btn-habit  {border-color:rgba(255,255,255,0.75); background:linear-gradient(135deg,#12121a,#0d2018);}
-.btn-habit  .nav-title{color:var(--teal);}
-.btn-brain  {border-color:rgba(255,255,255,0.75);  background:linear-gradient(135deg,#12121a,#0d1e12);}
-.btn-brain  .nav-title{color:var(--green);}
-.btn-gtask2{border-color:rgba(255,255,255,0.75);background:linear-gradient(135deg,#12121a,#0d1a36);}
-.btn-gtask2 .nav-title{color:#4a8fff;}
-.btn-gratitude{border-color:rgba(255,255,255,0.75);background:linear-gradient(135deg,#12121a,#1e1000);}
-.btn-gratitude .nav-title{color:var(--orange);}
-.btn-gcal   {border-color:rgba(255,255,255,0.75); background:linear-gradient(135deg,#12121a,#0a1428);}
-.btn-gcal   .nav-title{color:var(--blue);}
-.btn-backup2{border-color:rgba(255,255,255,0.75); background:linear-gradient(135deg,#12121a,#0a2818);}
-.btn-backup2 .nav-title{color:var(--teal);}
+  /* Canvas area */
+  .canvas-wrap {
+    flex: 1;
+    padding: 0 12px;
+    min-height: 0;
+    display: flex; align-items: stretch;
+  }
 
-/* ── BOTTOM NAV ── */
-.bnav{
-  flex-shrink:0;
-  background:rgba(10,10,15,0.97);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-top:1px solid var(--border2);
-  display:flex;
-  padding-bottom:var(--safe-b);
-}
-.nb{
-  flex:1;background:none;border:none;color:var(--text3);
-  padding:9px 2px 7px;
-  cursor:pointer;font-size:9.5px;
-  font-family:'Noto Sans KR',sans-serif;font-weight:500;
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  transition:color .18s;touch-action:manipulation;
-  text-decoration:none;
-}
-.nb .ni{font-size:22px;transition:transform .18s,filter .18s;}
-.nb:active .ni{transform:scale(1.2);}
-/* active page highlight */
-.nb.current{color:var(--blue);}
-.toast{position:fixed;bottom:calc(var(--safe-b)+70px);left:50%;transform:translateX(-50%) translateY(50px);opacity:0;background:#fff;color:#0a0a0f;padding:9px 18px;border-radius:22px;font-size:13px;font-weight:700;transition:all .28s;z-index:301;white-space:nowrap;}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-.nb.current .ni{filter:drop-shadow(0 0 6px var(--blue));}
+  .collage-canvas {
+    width: 100%; border-radius: var(--radius);
+    overflow: hidden;
+    display: grid;
+    gap: var(--gap);
+    background: #111;
+    position: relative;
+  }
 
-/* color per button */
-.nb-habit   {--nc:var(--teal);}
-.nb-brain   {--nc:var(--green);}
-.nb-gtask2{--nc:#4a8fff;}
-.nb-grat    {--nc:var(--orange);}
-.nb-gcal    {--nc:var(--blue);}
-.nb:active{color:var(--nc, var(--blue));}
+  /* Cell */
+  .cell {
+    position: relative;
+    background: var(--surface2);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    min-height: 0; min-width: 0;
+    -webkit-user-select: none; user-select: none;
+  }
+
+  .cell img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .cell-placeholder {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    color: var(--text2);
+    pointer-events: none;
+    transition: color 0.2s;
+  }
+  .cell-placeholder svg { width: 28px; height: 28px; opacity: 0.5; }
+  .cell-placeholder span { font-size: 11px; font-weight: 500; }
+
+  .cell:active .cell-placeholder { color: var(--accent); }
+
+  /* Caption overlay */
+  .caption-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.72));
+    padding: 20px 8px 8px;
+    display: none;
+    z-index: 2;
+  }
+  .caption-overlay.visible { display: block; }
+
+  .caption-input {
+    width: 100%;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    padding: 5px 8px;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .caption-input::placeholder { color: rgba(255,255,255,0.45); }
+
+  /* Remove button */
+  .remove-btn {
+    position: absolute; top: 6px; right: 6px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.65);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; font-size: 14px; line-height: 1;
+    cursor: pointer; display: none;
+    align-items: center; justify-content: center;
+    z-index: 3;
+    -webkit-appearance: none;
+  }
+  .remove-btn.show { display: flex; }
+
+  /* Bottom toolbar */
+  .toolbar {
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    display: flex; gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .tool-btn {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    color: var(--text2);
+    font-size: 12px; font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    padding: 10px 6px;
+    cursor: pointer;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    -webkit-appearance: none;
+    transition: all 0.15s;
+  }
+  .tool-btn svg { width: 20px; height: 20px; }
+  .tool-btn:active { background: var(--surface2); transform: scale(0.96); }
+  .tool-btn.danger { color: var(--danger); border-color: rgba(224,92,92,0.3); }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+    background: rgba(232,201,109,0.95);
+    color: #0f0f0f;
+    font-size: 13px; font-weight: 700;
+    padding: 10px 20px; border-radius: 30px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+
+  /* Saving overlay */
+  .saving-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 14px;
+    z-index: 200;
+  }
+  .saving-overlay.show { display: flex; }
+  .saving-overlay p { color: var(--accent); font-size: 15px; font-weight: 500; }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--accent-dim);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Caption edit mode hint */
+  .edit-hint {
+    position: absolute; top: 6px; left: 6px;
+    background: rgba(232,201,109,0.9);
+    color: #0f0f0f; font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border-radius: 8px;
+    display: none; z-index: 3;
+  }
+  .edit-hint.show { display: block; }
 </style>
 </head>
 <body>
-<div class="shell">
+<div class="app">
 
-  <!-- HEADER -->
-  <div class="hdr">
-    <div class="hdr-logo">Henry's Diary</div>
-    <div class="hdr-sub">매일의 기록이 삶을 만든다</div>
-    <div class="hdr-date" id="hdr-date">—</div>
+  <!-- Header -->
+  <div class="header">
+    <h1>📸 사진 <span>콜라주</span></h1>
+    <button class="save-btn" onclick="saveCollage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      저장
+    </button>
   </div>
 
-  <!-- SCROLL CONTENT -->
-  <div class="scroll">
-    <div class="content">
-
-      <!-- 명언 -->
-      <!-- 명언 카드 -->
-      <div class="quote-card" style="position:relative;">
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
-          <button id="tab-life" onclick="switchQTab('life')" style="background:rgba(255,255,255,.18);border:none;border-radius:14px;color:#fff;font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">🌟 인생</button>
-          <button id="tab-invest" onclick="switchQTab('invest')" style="background:rgba(255,255,255,.06);border:none;border-radius:14px;color:rgba(255,255,255,.4);font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">📈 투자</button>
-          <span style="flex:1;"></span>
-          <button onclick="openQuoteModal()" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);border-radius:7px;color:#ffc020;font-size:11px;padding:3px 9px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">관리</button>
-        </div>
-        <div class="q-label" id="q-label" style="margin-bottom:3px;">✦ 탭=다음 · 길게=삭제</div>
-        <div id="quote-body" onclick="nextQuote()" style="cursor:pointer;touch-action:manipulation;">
-          <div class="q-text" id="q-text">—</div>
-          <div class="q-en" id="q-en" style="color:#ffd060;font-size:13px;font-weight:500;font-style:italic;margin-top:4px;line-height:1.6;word-break:break-word;">—</div>
-          <div class="q-author" id="q-author">—</div>
-        </div>
-      </div>
-
-      <!-- 카드 버튼들 — onclick으로 이동 (← 화살표 불필요) -->
-      <div class="nav-btn btn-habit" onclick="go('habits.html')">
-        <span class="nav-icon">✅</span>
-        <div class="nav-body">
-          <div class="nav-title">HENRY'S HABITS</div>
-          <div class="nav-sub">오늘의 습관 체크 · 점수 확인</div>
-        </div>
-        <span class="score-pill" id="score-badge">0점</span>
-        <span class="nav-arr">›</span>
-      </div>
-
-      <div class="nav-btn btn-gratitude" onclick="go('gratitude.html')">
-        <span class="nav-icon">🙏</span>
-        <div class="nav-body">
-          <div class="nav-title">GRATITUDE JOURNAL</div>
-          <div class="nav-sub">오늘의 다섯 가지 감사 일기</div>
-        </div>
-        <span class="nav-arr">›</span>
-      </div>
-
-      <div class="nav-btn btn-brain" onclick="go('brain.html')">
-        <span class="nav-icon">🧠</span>
-        <div class="nav-body">
-          <div class="nav-title">BRAIN DUMP</div>
-          <div class="nav-sub">아이디어 · 생각 · 메모 자유 기록</div>
-        </div>
-        <span class="nav-arr">›</span>
-      </div>
-
-      <div class="nav-btn btn-gtask2" onclick="window.open('https://tasks.google.com','_blank')">
-        <span class="nav-icon">☑️</span>
-        <div class="nav-body">
-          <div class="nav-title">GOOGLE TASKS</div>
-          <div class="nav-sub">탭하면 Google Tasks 바로 열림</div>
-        </div>
-        <span class="nav-arr">↗</span>
-      </div>
-
-      <div class="nav-btn btn-gcal" onclick="go('gcal.html')">
-        <span class="nav-icon">📅</span>
-        <div class="nav-body">
-          <div class="nav-title">GOOGLE CALENDAR</div>
-          <div class="nav-sub">Google 캘린더 일정 연동</div>
-        </div>
-        <span class="nav-arr">›</span>
-      </div>
-
-      <div class="nav-btn btn-backup2" onclick="go('backup.html')">
-        <span class="nav-icon">☁️</span>
-        <div class="nav-body">
-          <div class="nav-title">BACKUP & RESTORE</div>
-          <div class="nav-sub">Google Drive 백업 · 복원</div>
-        </div>
-        <span class="nav-arr">›</span>
-      </div>
-
-
-    </div>
+  <!-- Mode chips -->
+  <div class="mode-bar">
+    <button class="mode-chip active" data-n="2" onclick="setMode(2)">2장</button>
+    <button class="mode-chip" data-n="3" onclick="setMode(3)">3장</button>
+    <button class="mode-chip" data-n="4" onclick="setMode(4)">4장</button>
+    <button class="mode-chip" data-n="5" onclick="setMode(5)">5장</button>
   </div>
 
-  <!-- BOTTOM NAV -->
-  <nav class="bnav">
-    <button class="nb current" onclick="go('index.html')">
-      <span class="ni">🏠</span>홈
+  <!-- Collage canvas -->
+  <div class="canvas-wrap">
+    <div class="collage-canvas" id="canvas"></div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <button class="tool-btn" onclick="toggleCaptions()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      </svg>
+      설명 편집
     </button>
-    <button class="nb nb-habit" onclick="go('habits.html')">
-      <span class="ni">✅</span>습관
+    <button class="tool-btn" onclick="setBg()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
+      </svg>
+      배경색
     </button>
-    <button class="nb nb-grat" onclick="go('gratitude.html')">
-      <span class="ni">🙏</span>감사
+    <button class="tool-btn danger" onclick="resetAll()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+      </svg>
+      초기화
     </button>
-    <button class="nb nb-brain" onclick="go('brain.html')">
-      <span class="ni">🧠</span>Brain
-    </button>
-    <button class="nb nb-gtask2" onclick="window.open('https://tasks.google.com','_blank')">
-      <span class="ni">☑️</span>Tasks
-    </button>
-    <button class="nb" onclick="go('backup.html')">
-      <span class="ni">☁️</span>백업
-    </button>
-  </nav>
-
-</div>
-
-<script>
-/* 페이지 이동 — window.location으로 확실하게 */
-function go(url){ window.location.href = url; }
-
-/* 날짜 표시 */
-(function(){
-  const n = new Date();
-  const dows = ['일','월','화','수','목','금','토'];
-  const p = v => String(v).padStart(2,'0');
-  document.getElementById('hdr-date').textContent =
-    `${n.getFullYear()}.${p(n.getMonth()+1)}.${p(n.getDate())} (${dows[n.getDay()]})`;
-})();
-
-/* 명언 */
-const QQ_LIFE=[
-  {t:"완벽하게 하는 것보다 지금 당장 하는 것이 낫다.",e:"Done is better than perfect.",a:"셰릴 샌드버그"},
-  {t:"단순하게 살아라. 복잡한 것들이 스스로 풀릴 것이다.",e:"Simplify your life. The complex things will sort themselves out.",a:"스티브 잡스"},
-  {t:"인생은 가까이서 보면 비극이지만, 멀리서 보면 희극이다.",e:"Life is a tragedy when seen in close-up, but a comedy in long-shot.",a:"찰리 채플린"},
-  {t:"우리는 우리가 반복적으로 하는 것이다. 탁월함은 행동이 아니라 습관이다.",e:"We are what we repeatedly do. Excellence is not an act but a habit.",a:"아리스토텔레스"},
-  {t:"남과 비교를 멈출 때 진정한 자신이 시작된다.",e:"Stop comparing yourself to others — that is where your real self begins.",a:"키르케고르"},
-  {t:"배는 항구에 있을 때 가장 안전하다. 그러나 그것이 배의 목적은 아니다.",e:"A ship in harbor is safe, but that is not what ships are for.",a:"존 A. 세드"},
-  {t:"넘어지는 것이 실패가 아니다. 넘어진 채로 있는 것이 실패다.",e:"Falling is not failure. Failure is staying where you fell.",a:"소크라테스"},
-  {t:"나무를 심기 가장 좋은 날은 20년 전이었고, 두 번째로 좋은 날은 오늘이다.",e:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"중국 속담"},
-  {t:"어제의 나보다 나은 오늘의 나로 살아라.",e:"Be a better version of yourself than you were yesterday.",a:"공자"},
-  {t:"오늘 만나는 모든 사람은 당신이 모르는 싸움을 하고 있다. 친절하라, 항상.",e:"Everyone you meet is fighting a battle you know nothing about. Be kind, always.",a:"로빈 윌리엄스"},
-  {t:"남에게 대접받고자 하는 대로 남을 대접하라.",e:"Do unto others as you would have them do unto you.",a:"황금률"},
-  {t:"사랑은 상대방이 있는 그대로 존재할 수 있도록 하는 것이다.",e:"Love is giving someone the freedom to be themselves.",a:"짐 모리슨"},
-  {t:"변화는 처음엔 두렵고, 중간엔 혼란스럽고, 끝에는 아름답다.",e:"Change is hard at first, messy in the middle, and gorgeous at the end.",a:"로빈 샤르마"},
-  {t:"원하는 것을 얻으려면 먼저 지금 가진 것에 감사해야 한다.",e:"Gratitude turns what we have into enough.",a:"멜로디 비티"},
-  {t:"나는 내 운명의 주인이요, 내 영혼의 선장이다.",e:"I am the master of my fate, I am the captain of my soul.",a:"윌리엄 어니스트 헨리"},
-  {t:"우리는 별의 먼지로 이루어져 있고, 우주는 우리를 통해 스스로를 이해하려 한다.",e:"We are a way for the universe to know itself.",a:"칼 세이건"},
-  {t:"자아를 비우면 그 빈자리에 우주의 거대한 에너지가 채워진다.",e:"Empty yourself, and let the vast energy of the universe fill that space.",a:"선(禪) 지혜"},
-  {t:"삶은 더 잘 사는 법을 배우는 것이 아니라 덜 흔들리는 기준을 세우는 일이다.",e:"Life is not about learning to live better, but about building a standard that keeps you steady.",a:"헨리"},
-  {t:"나 자신이 나의 가장 좋은 친구가 되어야 한다.",e:"You yourself must be your own best friend.",a:"헨리"},
-  {t:"자신의 인생을 타인의 시선으로부터 독립시키는 것, 그것이 진정한 자유다.",e:"Freeing your life from the gaze of others — that is true freedom.",a:"헨리"},
-  {t:"당신이 저지를 수 있는 최악의 행동은 목표를 빗맞히는 게 아니라 목표를 쏘지 않는 것이다.",e:"The worst thing you can do is not to miss the target, but to never take the shot.",a:"헨리"},
-  {t:"그들은 때가 되기를 기다리지 않는다. 지금 바로 일어나서 행동한다.",e:"They don't wait for the right moment. They rise and act right now.",a:"헨리"},
-  {t:"당신이 할 거라고 말하는 일 말고, 지금 당신이 하는 일이 당신이다.",e:"You are not what you say you will do — you are what you do right now.",a:"융(Jung)"},
-  {t:"운명은 의지를 가진 자는 앞에서 인도하고, 주저하는 자는 질질 끌고 간다.",e:"Fate leads the willing and drags the reluctant.",a:"세네카"},
-  {t:"자신에게 명령하지 못하는 사람은 언제까지나 남에게 명령받는 종과 마찬가지다.",e:"He who cannot command himself will forever remain a servant to others.",a:"괴테"},
-  {t:"남의 시선보다 나의 시선을 의식하세요.",e:"Be more aware of your own eyes than the eyes of others.",a:"헨리"}
-];
-const QQ_INVEST=[
-  {t:"주식시장은 조급한 사람에게서 인내심 있는 사람에게로 돈을 이전시키는 장치다.",e:"The stock market is a device for transferring money from the impatient to the patient.",a:"Warren Buffett"},
-  {t:"투자의 제1원칙은 돈을 잃지 않는 것이다. 제2원칙은 제1원칙을 잊지 않는 것이다.",e:"Rule No.1: Never lose money. Rule No.2: Never forget Rule No.1.",a:"Warren Buffett"},
-  {t:"시장을 예측하는 것보다 시장에 얼마나 오래 머무느냐가 더 중요하다.",e:"Time in the market beats timing the market.",a:"Peter Lynch"},
-  {t:"주식시장을 예측하려 하지 마라. 주식시장은 신도 예측할 수 없다.",e:"Do not try to predict the stock market. Even God cannot predict it.",a:"Benjamin Graham"},
-  {t:"시장이 공포에 떨 때 탐욕스럽게, 시장이 탐욕스러울 때 두려워하라.",e:"Be fearful when others are greedy, and greedy when others are fearful.",a:"Warren Buffett"},
-  {t:"10년을 보유할 자신이 없다면 단 10분도 그 주식을 가지고 있지 마라.",e:"If you aren't willing to own a stock for 10 years, don't even think about owning it for 10 minutes.",a:"Warren Buffett"},
-  {t:"강세장은 비관론 속에서 태어나고, 회의론 속에서 성장하며, 낙관론 속에서 성숙하고, 행복감 속에서 죽는다.",e:"Bull markets are born on pessimism, grow on skepticism, mature on optimism, and die on euphoria.",a:"John Templeton"},
-  {t:"부자가 되는 방법은 간단하다. 좋은 주식을 사서 앉아 있으면 된다.",e:"The way to get rich is simple. Buy good stocks and sit on them.",a:"찰리 멍거"},
-  {t:"모든 아이디어를 역방향으로 뒤집어 보라. 실패하는 방법을 먼저 생각하면 성공이 보인다.",e:"Invert, always invert. Think about how to fail first, and success will reveal itself.",a:"찰리 멍거"},
-  {t:"자신의 능력 범위 안에서만 투자하라. 범위의 크기는 중요하지 않다. 경계를 아는 것이 중요하다.",e:"Invest within your circle of competence. The size doesn't matter as much as knowing where the edge is.",a:"찰리 멍거"},
-  {t:"복리는 세상에서 가장 위대한 수학적 발견이다. 이해하는 자만이 그것을 번다.",e:"Compound interest is the greatest mathematical discovery in the world. Only those who understand it earn from it.",a:"찰리 멍거"},
-  {t:"그냥 계속 사라. 시장 타이밍을 맞히는 것보다 꾸준히 매수하는 것이 장기적으로 압도적으로 낫다.",e:"Just keep buying. Consistently investing beats timing the market in the long run by a wide margin.",a:"닉 마기울리"},
-  {t:"시장 고점에 투자하는 것을 두려워하지 마라. 역사적으로 고점 매수도 장기 보유 시 수익을 냈다.",e:"Don't fear investing at market highs. Historically, even peak buyers have profited through long-term holding.",a:"닉 마기울리"}
-];
-let QQ=[...QQ_LIFE];
-
-/* ══ 1시간마다 명언 업데이트 ══ */
-/* ── 명언 인덱스 ── */
-/* 마지막 탭한 명언 인덱스 — localStorage 유지 */
-let curQIdx=(()=>{
-  const saved=localStorage.getItem('henry_qidx');
-  if(saved!==null) return parseInt(saved)||0;
-  const n=new Date();
-  return (n.getFullYear()*8760+n.getMonth()*730+n.getDate()*24+n.getHours())%QQ.length;
-})();
-
-function displayQuote(idx){
-  const q=QQ[idx];
-  const ql=document.getElementById('q-label');
-  const qt=document.getElementById('q-text');
-  const qe=document.getElementById('q-en');
-  const qa=document.getElementById('q-author');
-  if(qt) qt.textContent=q.t;
-  if(qe) qe.textContent=q.e;
-  if(qa) qa.textContent='— '+q.a;
-  if(ql) ql.innerHTML='✦ 오늘의 명언 &nbsp;·&nbsp; 탭하면 다음 ›';
-}
-
-function nextQuote(){
-  curQIdx=(curQIdx+1)%QQ.length;
-  // localStorage에 저장
-  try{localStorage.setItem('henry_qidx',curQIdx);}catch(e){}
-  // 진동 — Android
-  if(navigator.vibrate) navigator.vibrate(40);
-  // iOS 햅틱 — AudioContext 짧은 클릭음 (무음에 가까운 틱)
-  try{
-    const ac=new(window.AudioContext||window.webkitAudioContext)();
-    const osc=ac.createOscillator();
-    const gain=ac.createGain();
-    osc.connect(gain);gain.connect(ac.destination);
-    osc.type='sine';osc.frequency.value=880;
-    gain.gain.setValueAtTime(0.15,ac.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.06);
-    osc.start(ac.currentTime);osc.stop(ac.currentTime+0.06);
-  }catch(e){}
-  // 카드 흔들림 애니메이션
-  const card=document.querySelector('.quote-card');
-  if(card){
-    card.style.transform='scale(0.97)';
-    card.style.transition='transform 0.08s';
-    setTimeout(()=>{card.style.transform='scale(1)';card.style.transition='transform 0.15s';},80);
-  }
-  displayQuote(curQIdx);
-}
-
-function showQuote(){
-  const n=new Date();
-  const h=n.getHours();
-  // 오후 11시~새벽 6시 → 취침 메시지
-  if(h>=23||h<6){
-    const ql=document.getElementById('q-label');
-    const qt=document.getElementById('q-text');
-    const qe=document.getElementById('q-en');
-    const qa=document.getElementById('q-author');
-    if(ql) ql.textContent='🌙 취침 시간';
-    if(qt) qt.textContent='충분한 수면이 내일의 에너지를 만듭니다. 편안한 밤 되세요.';
-    if(qe) qe.textContent="A good night's sleep is the foundation of tomorrow's success.";
-    if(qa) qa.textContent="— Henry's Diary";
-    setTimeout(showQuote, 30*60*1000);
-    return;
-  }
-  displayQuote(curQIdx);
-}
-
-var QQ_TAB='life';
-function switchQTab(tab){
-  QQ_TAB=tab;
-  var el_l=document.getElementById('tab-life');
-  var el_i=document.getElementById('tab-invest');
-  if(tab==='life'){
-    QQ.length=0; for(var i=0;i<QQ_LIFE.length;i++) QQ.push(QQ_LIFE[i]);
-    el_l.style.background='rgba(255,255,255,.2)'; el_l.style.color='#fff';
-    el_i.style.background='rgba(255,255,255,.06)'; el_i.style.color='rgba(255,255,255,.4)';
-  } else {
-    QQ.length=0; for(var i=0;i<QQ_INVEST.length;i++) QQ.push(QQ_INVEST[i]);
-    el_i.style.background='rgba(255,192,32,.25)'; el_i.style.color='#ffc020';
-    el_l.style.background='rgba(255,255,255,.06)'; el_l.style.color='rgba(255,255,255,.4)';
-  }
-  curQIdx=0;
-  try{localStorage.setItem('henry_qtab',tab);}catch(x){}
-  displayQuote(0);
-}
-(function(){
-  try{var t=localStorage.getItem('henry_qtab');if(t==='invest')setTimeout(function(){switchQTab('invest');},120);}catch(x){}
-})();
-
-/* 롱프레스 삭제 */
-(function(){
-  var body=document.getElementById('quote-body');
-  if(!body)return;
-  var tm=null;
-  body.addEventListener('touchstart',function(){
-    tm=setTimeout(function(){
-      if(QQ[curQIdx]&&confirm('이 명언을 삭제할까요?')){delQuote(curQIdx);}
-    },700);
-  },{passive:true});
-  body.addEventListener('touchend',function(){clearTimeout(tm);},{passive:true});
-  body.addEventListener('touchmove',function(){clearTimeout(tm);},{passive:true});
-})();
-
-/* 명언 관리 */
-var QCKEY='henry_quotes_v1';
-function loadCQ(){try{var r=localStorage.getItem(QCKEY);if(r)return JSON.parse(r);}catch(x){}return[];}
-function saveCQ(arr){try{localStorage.setItem(QCKEY,JSON.stringify(arr));}catch(x){}}
-(function(){var cq=loadCQ();for(var i=0;i<cq.length;i++)QQ_LIFE.push(cq[i]);if(QQ_TAB==='life'){QQ.length=0;for(var i=0;i<QQ_LIFE.length;i++)QQ.push(QQ_LIFE[i]);}})();
-function openQuoteModal(){document.getElementById('quote-modal').style.display='block';renderQModal();}
-function closeQuoteModal(){document.getElementById('quote-modal').style.display='none';}
-function renderQModal(){
-  var el=document.getElementById('qlist');
-  var cnt=document.getElementById('qcnt');
-  if(cnt)cnt.textContent=QQ.length;
-  if(!el)return;
-  el.innerHTML='';
-  for(var i=0;i<QQ.length;i++){
-    (function(idx,q){
-      var d=document.createElement('div');
-      d.style.cssText='background:#1a1a26;border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start;';
-      var info=document.createElement('div');info.style.flex='1';
-      info.innerHTML='<div style="font-size:13px;color:#f0f0f8;line-height:1.5;margin-bottom:3px;">'+(idx+1)+'. '+q.t+'</div><div style="font-size:11px;color:#ffd060;font-style:italic;">'+q.e+'</div><div style="font-size:11px;color:#606080;margin-top:2px;">— '+q.a+'</div>';
-      var btn=document.createElement('button');
-      btn.textContent='삭제';
-      btn.style.cssText='background:rgba(255,80,96,.15);border:1px solid rgba(255,80,96,.3);border-radius:7px;color:#ff5060;font-size:12px;padding:4px 10px;cursor:pointer;flex-shrink:0;-webkit-appearance:none;';
-      btn.onclick=function(){delQuote(idx);};
-      d.appendChild(info);d.appendChild(btn);el.appendChild(d);
-    })(i,QQ[i]);
-  }
-}
-function addQuote(){
-  var t=(document.getElementById('qakor').value||'').trim();
-  var e=(document.getElementById('qaeng').value||'').trim();
-  var a=(document.getElementById('qaauth').value||'').trim();
-  if(!t){alert('한글 명언을 입력하세요');return;}
-  var q={t:t,e:e||t,a:a||'—'};
-  QQ_LIFE.push(q);
-  if(QQ_TAB==='life'){QQ.push(q);}
-  var cq=loadCQ();cq.push(q);saveCQ(cq);
-  document.getElementById('qakor').value='';
-  document.getElementById('qaeng').value='';
-  document.getElementById('qaauth').value='';
-  renderQModal();curQIdx=QQ.length-1;displayQuote(curQIdx);
-}
-function delQuote(i){
-  if(i<0||i>=QQ.length)return;
-  if(!confirm('삭제할까요?'))return;
-  QQ.splice(i,1);
-  if(QQ_TAB==='life'){QQ_LIFE.length=0;for(var j=0;j<QQ.length;j++)QQ_LIFE.push(QQ[j]);}
-  else{QQ_INVEST.length=0;for(var j=0;j<QQ.length;j++)QQ_INVEST.push(QQ[j]);}
-  if(curQIdx>=QQ.length)curQIdx=Math.max(0,QQ.length-1);
-  if(QQ.length>0)displayQuote(curQIdx);
-  renderQModal();
-}
-
-showQuote();
-
-/* ── 명언 관리 ── */
-const Q_KEY='henry_quotes_v1';
-function loadCustomQuotes(){
-  try{const r=localStorage.getItem(Q_KEY);if(r)return JSON.parse(r);}catch(e){}return null;
-}
-function saveCustomQuotes(arr){try{localStorage.setItem(Q_KEY,JSON.stringify(arr));}catch(e){}}
-
-// 커스텀 명언이 있으면 QQ 교체
-(function(){
-  const custom=loadCustomQuotes();
-  if(custom&&custom.length>0){
-    QQ.length=0;
-    custom.forEach(q=>QQ.push(q));
-  }
-})();
-
-function openQuoteModal(){
-  document.getElementById('quote-modal').style.display='block';
-  renderQuoteModal();
-}
-function closeQuoteModal(){
-  document.getElementById('quote-modal').style.display='none';
-}
-function renderQuoteModal(){
-  const list=document.getElementById('quote-list-modal');
-  const cnt=document.getElementById('q-count');
-  if(cnt) cnt.textContent=QQ.length;
-  list.innerHTML='';
-  QQ.forEach((q,i)=>{
-    const item=document.createElement('div');
-    item.style.cssText='background:#1a1a26;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;margin-bottom:8px;';
-    item.innerHTML=`
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
-        <div style="flex:1;">
-          <div style="font-size:13px;color:#f0f0f8;line-height:1.5;margin-bottom:4px;">${i+1}. ${q.t}</div>
-          <div style="font-size:11px;color:#ff8830;font-style:italic;margin-bottom:3px;">${q.e}</div>
-          <div style="font-size:11px;color:#606080;font-family:'DM Mono',monospace;">— ${q.a}</div>
-        </div>
-        <button onclick="deleteQuote(${i})" style="background:rgba(255,80,96,.15);border:1px solid rgba(255,80,96,.3);border-radius:7px;color:#ff5060;font-size:13px;padding:4px 10px;cursor:pointer;flex-shrink:0;touch-action:manipulation;">삭제</button>
-      </div>`;
-    list.appendChild(item);
-  });
-}
-/* ── 명언 자동 번역 (MyMemory 무료 API) ── */
-async function translateQuote(text){
-  if(!text||text.length<2) return '';
-  const engEl=document.getElementById('q-add-eng');
-  engEl.placeholder='🔄 번역 중...';
-  try{
-    const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair=ko|en';
-    const res=await fetch(url);
-    const data=await res.json();
-    const en=(data.responseData&&data.responseData.translatedText||'').trim();
-    if(en&&en!==text){
-      engEl.value=en;
-      engEl.placeholder='한글 입력 후 자동 번역...';
-      return en;
-    }
-  }catch(e){}
-  engEl.placeholder='한글 입력 후 자동 번역...';
-  return '';
-}
-
-/* 한글 입력창 blur → 자동 번역 실행 */
-(function(){
-  const korEl=document.getElementById('q-add-kor');
-  if(korEl){
-    korEl.addEventListener('blur',function(){
-      const v=this.value.trim();
-      const engEl=document.getElementById('q-add-eng');
-      if(v.length>=2&&!engEl.value.trim()){
-        translateQuote(v);
-      }
-    });
-  }
-})();
-
-async function addQuote(){
-  const t=document.getElementById('q-add-kor').value.trim();
-  let e=document.getElementById('q-add-eng').value.trim();
-  const a=document.getElementById('q-add-auth').value.trim();
-  if(!t){toast('한글 명언을 입력하세요');return;}
-  // 영어 없으면 자동 번역 후 추가
-  if(!e){
-    e=await translateQuote(t);
-  }
-  QQ.push({t,e:e||t,a:a||'—'});
-  saveCustomQuotes(QQ.map(q=>({t:q.t,e:q.e,a:q.a})));
-  document.getElementById('q-add-kor').value='';
-  document.getElementById('q-add-eng').value='';
-  document.getElementById('q-add-auth').value='';
-  document.getElementById('q-add-eng').placeholder='한글 입력 후 자동 번역...';
-  renderQuoteModal();
-  curQIdx=QQ.length-1;
-  displayQuote(curQIdx);
-  toast('✅ 명언 추가됨');
-}
-function deleteQuote(i){
-  if(!confirm(`이 명언을 삭제할까요?\n\n"${QQ[i].t}"`))return;
-  QQ.splice(i,1);
-  saveCustomQuotes(QQ.map(q=>({t:q.t,e:q.e,a:q.a})));
-  if(curQIdx>=QQ.length) curQIdx=0;
-  displayQuote(curQIdx);
-  renderQuoteModal();
-}
-
-
-/* 오늘 습관 점수 뱃지 */
-(function(){
-  try{
-    const d=JSON.parse(localStorage.getItem('henry_v9')||'{}');
-    const n=new Date();
-    const tk=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
-    const habits=d.habits||[];
-    const rec=(d.records||{})[tk]||{};
-    const grat=((d.grat||{})[tk]||[]);
-    if(habits.length){
-      const anyChk=habits.some(h=>rec[h.id]);
-      if(!anyChk){document.getElementById('score-badge').textContent='0점';}
-      else{
-        const allChk=habits.every(h=>rec[h.id]);
-        if(allChk){document.getElementById('score-badge').textContent='100점';}
-        else{
-          const w=100/habits.length;
-          let sc=0;
-          habits.forEach(h=>{if(rec[h.id])sc+=w;});
-          document.getElementById('score-badge').textContent=Math.round(sc)+'점';
-        }
-      }
-    }
-  }catch(e){}
-})();
-</script>
-<script>
-/* ══ SWIPE NAVIGATION ══ */
-(function(){
-  const path=location.pathname.split('/').pop()||'index.html';
-  const PAGES=['index.html','habits.html','gratitude.html','brain.html','gcal.html'];
-  const NAMES=['🏠 홈','✅ 습관','🙏 감사','🧠 Brain','📅 캘린더'];
-  const curIdx=PAGES.indexOf(path);
-  let sx=0,sy=0,st=0;
-  const MIN_DIST=55,MAX_VERT=90,MAX_TIME=500;
-
-  /* 스와이프 힌트 */
-  const hint=document.createElement('div');
-  hint.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.72);color:#fff;padding:11px 22px;border-radius:26px;font-size:14px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .18s;z-index:9999;white-space:nowrap;';
-  document.body.appendChild(hint);
-  let ht;
-  function showHint(msg){hint.textContent=msg;hint.style.opacity='1';clearTimeout(ht);ht=setTimeout(()=>hint.style.opacity='0',700);}
-
-  /* 페이지 이동 */
-  function go(dir){
-    if(curIdx<0)return;
-    const ni=curIdx-dir; /* 왼쪽=+1인덱스, 오른쪽=-1인덱스 */
-    if(ni<0||ni>=PAGES.length)return;
-    const shell=document.querySelector('.shell');
-    if(shell){
-      shell.style.transition='transform .2s ease,opacity .2s ease';
-      shell.style.transform='translateX('+(dir>0?'-':'')+'80px)';
-      shell.style.opacity='0';
-    }
-    setTimeout(()=>{window.location.href=PAGES[ni];},180);
-  }
-
-  document.addEventListener('touchstart',e=>{
-    const sa=document.querySelector('.scroll,.scroll-area');
-    if(sa&&sa.scrollTop>4&&sa.contains(e.target))return;
-    sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();
-  },{passive:true});
-
-  document.addEventListener('touchend',e=>{
-    if(!sx)return;
-    const dx=e.changedTouches[0].clientX-sx;
-    const dy=Math.abs(e.changedTouches[0].clientY-sy);
-    const dt=Date.now()-st;sx=0;
-    if(dt>MAX_TIME||Math.abs(dx)<MIN_DIST||dy>MAX_VERT)return;
-    if(dx<0){
-      /* 왼쪽 → 다음 */
-      const ni=curIdx+1;
-      if(ni>=PAGES.length){showHint('📅 마지막 페이지');return;}
-      showHint(NAMES[ni]+' →');setTimeout(()=>go(-1),160);
-    } else {
-      /* 오른쪽 → 이전 */
-      const ni=curIdx-1;
-      if(ni<0){showHint('← 첫 페이지');return;}
-      showHint('← '+NAMES[ni]);setTimeout(()=>go(1),160);
-    }
-  },{passive:true});
-
-  /* 진입 애니메이션 */
-  const shell=document.querySelector('.shell');
-  if(shell){
-    shell.style.opacity='0';shell.style.transform='translateY(5px)';shell.style.transition='none';
-    requestAnimationFrame(()=>{
-      shell.style.transition='transform .2s ease,opacity .2s ease';
-      shell.style.transform='translateY(0)';shell.style.opacity='1';
-    });
-  }
-})();
-</script>
-
-<!-- 명언 관리 모달 -->
-<div id="quote-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;overflow-y:auto;-webkit-overflow-scrolling:touch;">
-  <div style="min-height:100%;padding:16px 14px;box-sizing:border-box;">
-    <div style="max-width:440px;margin:20px auto;background:#12121a;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#ffc020;">✦ 명언 관리</div>
-        <button onclick="closeQuoteModal()" style="-webkit-appearance:none;background:rgba(255,255,255,.12);border:none;color:#fff;width:34px;height:34px;border-radius:9px;font-size:20px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;">×</button>
-      </div>
-      <!-- 추가 폼 -->
-      <div style="background:#1a1a26;border-radius:12px;padding:13px;margin-bottom:14px;">
-        <div style="font-size:12px;font-weight:700;color:#ffc020;margin-bottom:10px;letter-spacing:.5px;">+ 새 명언 추가</div>
-        <textarea id="q-add-kor" rows="2" placeholder="한글 명언을 입력하세요..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#fff;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <textarea id="q-add-eng" rows="2" placeholder="한글 입력 후 자동 번역..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#ffd060;font-size:13px;font-family:'Georgia',serif;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <input id="q-add-auth" placeholder="출처 (예: 아리스토텔레스)" style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#b0b0c8;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px;display:block;font-family:'Noto Sans KR',sans-serif;">
-        <button onclick="addQuote()" style="-webkit-appearance:none;width:100%;background:#ffc020;border:none;color:#0a0a0f;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;display:block;">✦ 추가</button>
-      </div>
-      <!-- 목록 -->
-      <div style="font-size:11px;color:#606080;letter-spacing:.5px;margin-bottom:10px;">전체 명언 (<span id="q-count">0</span>개)</div>
-      <div id="quote-list-modal"></div>
-    </div>
   </div>
 </div>
 
-<!-- 토스트 -->
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-
-<div id="quote-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;overflow-y:auto;-webkit-overflow-scrolling:touch;">
-  <div style="min-height:100%;padding:16px 14px;box-sizing:border-box;">
-    <div style="max-width:440px;margin:20px auto;background:#12121a;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div style="font-size:18px;font-weight:700;color:#ffc020;">✦ 명언 관리</div>
-        <button onclick="closeQuoteModal()" style="-webkit-appearance:none;background:rgba(255,255,255,.12);border:none;color:#fff;width:34px;height:34px;border-radius:9px;font-size:20px;cursor:pointer;line-height:1;">×</button>
-      </div>
-      <div style="background:#1a1a26;border-radius:12px;padding:13px;margin-bottom:14px;">
-        <div style="font-size:12px;font-weight:700;color:#ffc020;margin-bottom:10px;">+ 새 명언 추가</div>
-        <textarea id="qakor" rows="2" placeholder="한글 명언..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#fff;font-size:14px;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <textarea id="qaeng" rows="2" placeholder="English translation..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#ffd060;font-size:13px;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <input id="qaauth" placeholder="출처" style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#b0b0c8;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px;display:block;">
-        <button onclick="addQuote()" style="-webkit-appearance:none;width:100%;background:#ffc020;border:none;color:#0a0a0f;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;display:block;">✦ 추가</button>
-      </div>
-      <div style="font-size:11px;color:#606080;margin-bottom:10px;">명언 (<span id="qcnt">0</span>개)</div>
-      <div id="qlist"></div>
-    </div>
-  </div>
+<!-- Saving overlay -->
+<div class="saving-overlay" id="savingOverlay">
+  <div class="spinner"></div>
+  <p>이미지 저장 중...</p>
 </div>
 
+<!-- Hidden file input -->
+<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="onFile(event)">
+
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+let mode = 2;
+let pendingIdx = -1;
+let captionMode = false;
+let bgColors = ['#111111','#ffffff','#1a1a2e','#2d1b1b','#1b2d1b'];
+let bgIdx = 0;
+
+const canvas = document.getElementById('canvas');
+
+const gridStyles = {
+  2: () => { canvas.style.gridTemplateColumns='1fr 1fr'; canvas.style.gridTemplateRows='1fr'; canvas.style.gridTemplateAreas=''; },
+  3: () => { canvas.style.gridTemplateColumns='1fr 1fr 1fr'; canvas.style.gridTemplateRows='1fr'; canvas.style.gridTemplateAreas=''; },
+  4: () => { canvas.style.gridTemplateColumns='1fr 1fr'; canvas.style.gridTemplateRows='1fr 1fr'; canvas.style.gridTemplateAreas=''; },
+  5: () => {
+    canvas.style.gridTemplateColumns='1fr 1fr 1fr';
+    canvas.style.gridTemplateRows='1fr 1fr';
+    canvas.style.gridTemplateAreas='"a a b" "c d e"';
+  }
+};
+
+const areaNames = ['a','b','c','d','e'];
+
+function buildGrid() {
+  canvas.innerHTML = '';
+  gridStyles[mode]();
+
+  for (let i = 0; i < mode; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.idx = i;
+    if (mode === 5) cell.style.gridArea = areaNames[i];
+
+    cell.innerHTML = `
+      <div class="cell-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+        <span>탭하여 추가</span>
+      </div>
+      <button class="remove-btn" onclick="removePhoto(${i},event)">✕</button>
+      <div class="edit-hint">편집중</div>
+      <div class="caption-overlay">
+        <input class="caption-input" type="text" placeholder="설명을 입력하세요..." enterkeyhint="done" onkeydown="if(event.key==='Enter')this.blur()">
+      </div>
+    `;
+    cell.addEventListener('click', () => cellClick(i, cell));
+    canvas.appendChild(cell);
+  }
+}
+
+function cellClick(idx, cell) {
+  if (captionMode) {
+    const inp = cell.querySelector('.caption-input');
+    if (inp) { inp.focus(); return; }
+  }
+  const img = cell.querySelector('img');
+  if (img) {
+    // toggle remove button
+    const rb = cell.querySelector('.remove-btn');
+    const showing = rb.classList.contains('show');
+    document.querySelectorAll('.remove-btn').forEach(b => b.classList.remove('show'));
+    if (!showing) rb.classList.add('show');
+  } else {
+    pendingIdx = idx;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileInput').click();
+  }
+}
+
+function onFile(e) {
+  const file = e.target.files[0];
+  if (!file || pendingIdx < 0) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const cell = canvas.querySelectorAll('.cell')[pendingIdx];
+    const ph = cell.querySelector('.cell-placeholder');
+    let img = cell.querySelector('img');
+    if (!img) { img = document.createElement('img'); cell.insertBefore(img, ph); }
+    img.src = ev.target.result;
+    ph.style.display = 'none';
+    const cap = cell.querySelector('.caption-overlay');
+    if (captionMode) cap.classList.add('visible');
+    cell.querySelector('.remove-btn').classList.remove('show');
+  };
+  reader.readAsDataURL(file);
+  pendingIdx = -1;
+}
+
+function removePhoto(idx, e) {
+  e.stopPropagation();
+  const cell = canvas.querySelectorAll('.cell')[idx];
+  const img = cell.querySelector('img');
+  if (img) img.remove();
+  cell.querySelector('.cell-placeholder').style.display = '';
+  cell.querySelector('.caption-overlay').classList.remove('visible');
+  cell.querySelector('.caption-input').value = '';
+  cell.querySelector('.remove-btn').classList.remove('show');
+}
+
+function setMode(n) {
+  mode = n;
+  document.querySelectorAll('.mode-chip').forEach(c => c.classList.toggle('active', parseInt(c.dataset.n) === n));
+  buildGrid();
+  captionMode = false;
+}
+
+function toggleCaptions() {
+  captionMode = !captionMode;
+  canvas.querySelectorAll('.cell').forEach(cell => {
+    const hasImg = !!cell.querySelector('img');
+    const cap = cell.querySelector('.caption-overlay');
+    const hint = cell.querySelector('.edit-hint');
+    if (hasImg) {
+      cap.classList.toggle('visible', captionMode);
+      hint.classList.toggle('show', captionMode);
+    }
+  });
+  showToast(captionMode ? '✏️ 설명 편집 모드' : '✅ 편집 완료');
+}
+
+function setBg() {
+  bgIdx = (bgIdx + 1) % bgColors.length;
+  canvas.style.background = bgColors[bgIdx];
+  const labels = ['검정','흰색','다크블루','다크레드','다크그린'];
+  showToast('배경: ' + labels[bgIdx]);
+}
+
+function resetAll() {
+  if (!confirm('모든 사진을 초기화할까요?')) return;
+  captionMode = false;
+  buildGrid();
+  showToast('🔄 초기화 완료');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+async function saveCollage() {
+  const hasPic = !!canvas.querySelector('img');
+  if (!hasPic) { showToast('⚠️ 먼저 사진을 추가하세요'); return; }
+
+  // Hide remove buttons before capture
+  document.querySelectorAll('.remove-btn').forEach(b => b.classList.remove('show'));
+  document.querySelectorAll('.edit-hint').forEach(h => h.classList.remove('show'));
+
+  document.getElementById('savingOverlay').classList.add('show');
+
+  await new Promise(r => setTimeout(r, 100));
+
+  try {
+    const cvs = await html2canvas(canvas, {
+      useCORS: true, scale: 3,
+      backgroundColor: canvas.style.background || '#111111',
+      logging: false
+    });
+
+    const blob = await new Promise(r => cvs.toBlob(r, 'image/jpeg', 0.95));
+    const url = URL.createObjectURL(blob);
+
+    // Try native share first (mobile)
+    if (navigator.share && navigator.canShare({ files: [new File([blob], 'collage.jpg', {type:'image/jpeg'})] })) {
+      await navigator.share({
+        files: [new File([blob], 'collage.jpg', {type:'image/jpeg'})],
+        title: '사진 콜라주'
+      });
+    } else {
+      const a = document.createElement('a');
+      a.href = url; a.download = 'collage.jpg'; a.click();
+    }
+    showToast('🎉 저장 완료!');
+  } catch(err) {
+    if (err.name !== 'AbortError') showToast('저장 실패. 다시 시도하세요.');
+  } finally {
+    document.getElementById('savingOverlay').classList.remove('show');
+  }
+}
+
+// Hide remove btns on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.cell')) {
+    document.querySelectorAll('.remove-btn').forEach(b => b.classList.remove('show'));
+  }
+});
+
+// Service worker registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+buildGrid();
+</script>
 </body>
 </html>
