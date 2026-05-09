@@ -28,7 +28,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 .scroll::-webkit-scrollbar{width:2px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--s3);}
-.body{padding:14px 14px 90px;}
+.body{padding:14px 14px 20px;}
 .sec{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:500;}
 .sec::after{content:'';flex:1;height:1px;background:var(--border);}
 /* DATE NAV */
@@ -143,12 +143,33 @@ if('serviceWorker' in navigator){
 <body>
 <canvas id="coinCanvas"></canvas>
 <div class="shell">
-  <div class="hdr">
-    <a class="back" href="index.html">←</a>
-    <div class="hdr-c">
-      <div class="hdr-title">🙏 Today's Gratitude Journal</div>
-      <div class="hdr-sub">오늘의 다섯 가지 감사</div>
-    </div>
+  <!-- 상단 탭바 -->
+  <nav style="flex-shrink:0;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.1);display:flex;padding-top:calc(var(--safe-t)+2px);">
+    <button onclick="location.href='index.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:8px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;">
+      <span style="font-size:20px;line-height:1;">🏠</span>
+      홈
+    </button>
+    <button onclick="location.href='habits.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:8px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;">
+      <span style="font-size:20px;line-height:1;">✅</span>
+      습관
+    </button>
+    <button onclick="location.href='gratitude.html'" style="flex:1;background:rgba(255,255,255,.15);border:none;border-bottom:2px solid #fff;color:#fff;padding:8px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;">
+      <span style="font-size:20px;line-height:1;">🙏</span>
+      감사
+    </button>
+    <button onclick="location.href='brain.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:8px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;">
+      <span style="font-size:20px;line-height:1;">🧠</span>
+      Brain
+    </button>
+    <button onclick="location.href='gtask.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:8px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;">
+      <span style="font-size:20px;line-height:1;">☑️</span>
+      Tasks
+    </button>
+    <button onclick="location.href='backup.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:8px 2px 7px;cursor:pointer;font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:2px;touch-action:manipulation;">
+      <span style="font-size:20px;line-height:1;">💾</span>
+      백업
+    </button>
+  </nav>
     <a href="index.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.12);border:none;color:#fff;width:54px;height:54px;border-radius:14px;text-decoration:none;flex-shrink:0;touch-action:manipulation;gap:2px;-webkit-tap-highlight-color:transparent;">
         <span style="font-size:24px;line-height:1;">🏠</span>
         <span style="font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:700;opacity:.7;">홈</span>
@@ -204,28 +225,6 @@ if('serviceWorker' in navigator){
   <div class="save-btn-wrap">
     <button class="save-btn" id="save-btn" onclick="saveGrat()">🙏 저장</button>
   </div>
-  <nav class="bnav">
-    <button class="nb" style="color:var(--blue);" onclick="window.location.href='index.html'">
-      <span class="ni">🏠</span>홈
-    </button>
-    <button class="nb" onclick="window.location.href='habits.html'">
-      <span class="ni">✅</span>습관
-    </button>
-    <button class="nb on" onclick="window.location.href='gratitude.html'">
-      <span class="ni">🙏</span>감사
-    </button>
-    <button class="nb" onclick="window.location.href='brain.html'">
-      <span class="ni">🧠</span>Brain
-    </button>
-    <button class="nb" onclick="window.location.href='gtask.html'">
-      <span class="ni">☑️</span>Tasks
-    </button>
-    <button class="nb" onclick="window.location.href='gcal.html'">
-      <span class="ni">📅</span>캘린더
-    </button>
-    <button class="nb" onclick="window.location.href=\'backup.html\'"><span class="ni">☁️</span>백업
-    </button>
-  </nav>
 </div>
 </div>
 <div class="photo-viewer" id="photo-viewer">
