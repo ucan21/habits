@@ -321,50 +321,36 @@ function go(url){ window.location.href = url; }
 })();
 
 /* 명언 */
-const QQ_LIFE=[
-  {t:"완벽하게 하는 것보다 지금 당장 하는 것이 낫다.",e:"Done is better than perfect.",a:"셰릴 샌드버그"},
-  {t:"단순하게 살아라. 복잡한 것들이 스스로 풀릴 것이다.",e:"Simplify your life. The complex things will sort themselves out.",a:"스티브 잡스"},
-  {t:"인생은 가까이서 보면 비극이지만, 멀리서 보면 희극이다.",e:"Life is a tragedy when seen in close-up, but a comedy in long-shot.",a:"찰리 채플린"},
-  {t:"우리는 우리가 반복적으로 하는 것이다. 탁월함은 행동이 아니라 습관이다.",e:"We are what we repeatedly do. Excellence is not an act but a habit.",a:"아리스토텔레스"},
-  {t:"남과 비교를 멈출 때 진정한 자신이 시작된다.",e:"Stop comparing yourself to others — that is where your real self begins.",a:"키르케고르"},
-  {t:"배는 항구에 있을 때 가장 안전하다. 그러나 그것이 배의 목적은 아니다.",e:"A ship in harbor is safe, but that is not what ships are for.",a:"존 A. 세드"},
-  {t:"넘어지는 것이 실패가 아니다. 넘어진 채로 있는 것이 실패다.",e:"Falling is not failure. Failure is staying where you fell.",a:"소크라테스"},
-  {t:"나무를 심기 가장 좋은 날은 20년 전이었고, 두 번째로 좋은 날은 오늘이다.",e:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"중국 속담"},
-  {t:"어제의 나보다 나은 오늘의 나로 살아라.",e:"Be a better version of yourself than you were yesterday.",a:"공자"},
-  {t:"오늘 만나는 모든 사람은 당신이 모르는 싸움을 하고 있다. 친절하라, 항상.",e:"Everyone you meet is fighting a battle you know nothing about. Be kind, always.",a:"로빈 윌리엄스"},
-  {t:"남에게 대접받고자 하는 대로 남을 대접하라.",e:"Do unto others as you would have them do unto you.",a:"황금률"},
-  {t:"사랑은 상대방이 있는 그대로 존재할 수 있도록 하는 것이다.",e:"Love is giving someone the freedom to be themselves.",a:"짐 모리슨"},
-  {t:"변화는 처음엔 두렵고, 중간엔 혼란스럽고, 끝에는 아름답다.",e:"Change is hard at first, messy in the middle, and gorgeous at the end.",a:"로빈 샤르마"},
-  {t:"원하는 것을 얻으려면 먼저 지금 가진 것에 감사해야 한다.",e:"Gratitude turns what we have into enough.",a:"멜로디 비티"},
-  {t:"나는 내 운명의 주인이요, 내 영혼의 선장이다.",e:"I am the master of my fate, I am the captain of my soul.",a:"윌리엄 어니스트 헨리"},
-  {t:"우리는 별의 먼지로 이루어져 있고, 우주는 우리를 통해 스스로를 이해하려 한다.",e:"We are a way for the universe to know itself.",a:"칼 세이건"},
-  {t:"자아를 비우면 그 빈자리에 우주의 거대한 에너지가 채워진다.",e:"Empty yourself, and let the vast energy of the universe fill that space.",a:"선(禪) 지혜"},
-  {t:"삶은 더 잘 사는 법을 배우는 것이 아니라 덜 흔들리는 기준을 세우는 일이다.",e:"Life is not about learning to live better, but about building a standard that keeps you steady.",a:"헨리"},
-  {t:"나 자신이 나의 가장 좋은 친구가 되어야 한다.",e:"You yourself must be your own best friend.",a:"헨리"},
-  {t:"자신의 인생을 타인의 시선으로부터 독립시키는 것, 그것이 진정한 자유다.",e:"Freeing your life from the gaze of others — that is true freedom.",a:"헨리"},
-  {t:"당신이 저지를 수 있는 최악의 행동은 목표를 빗맞히는 게 아니라 목표를 쏘지 않는 것이다.",e:"The worst thing you can do is not to miss the target, but to never take the shot.",a:"헨리"},
-  {t:"그들은 때가 되기를 기다리지 않는다. 지금 바로 일어나서 행동한다.",e:"They don't wait for the right moment. They rise and act right now.",a:"헨리"}
+/* ── 기본 명언 (fallback) ── */
+var _LIFE_DEFAULT=[
+  {t:"완벽하게 하는 것보다 지금 당장 하는 것이 낫다.",e:"Done is better than perfect.",a:"셰릴 샌드버그"},{t:"단순하게 살아라. 복잡한 것들이 스스로 풀릴 것이다.",e:"Simplify your life. The complex things will sort themselves out.",a:"스티브 잡스"},{t:"인생은 가까이서 보면 비극이지만, 멀리서 보면 희극이다.",e:"Life is a tragedy when seen in close-up, but a comedy in long-shot.",a:"찰리 채플린"},{t:"우리는 우리가 반복적으로 하는 것이다. 탁월함은 행동이 아니라 습관이다.",e:"We are what we repeatedly do. Excellence is not an act but a habit.",a:"아리스토텔레스"},{t:"남과 비교를 멈출 때 진정한 자신이 시작된다.",e:"Stop comparing yourself to others — that is where your real self begins.",a:"키르케고르"},{t:"배는 항구에 있을 때 가장 안전하다. 그러나 그것이 배의 목적은 아니다.",e:"A ship in harbor is safe, but that is not what ships are for.",a:"존 A. 세드"},{t:"넘어지는 것이 실패가 아니다. 넘어진 채로 있는 것이 실패다.",e:"Falling is not failure. Failure is staying where you fell.",a:"소크라테스"},{t:"나무를 심기 가장 좋은 날은 20년 전이었고, 두 번째로 좋은 날은 오늘이다.",e:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"중국 속담"},{t:"어제의 나보다 나은 오늘의 나로 살아라.",e:"Be a better version of yourself than you were yesterday.",a:"공자"},{t:"오늘 만나는 모든 사람은 당신이 모르는 싸움을 하고 있다. 친절하라, 항상.",e:"Everyone you meet is fighting a battle you know nothing about. Be kind, always.",a:"로빈 윌리엄스"},{t:"남에게 대접받고자 하는 대로 남을 대접하라.",e:"Do unto others as you would have them do unto you.",a:"황금률"},{t:"사랑은 상대방이 있는 그대로 존재할 수 있도록 하는 것이다.",e:"Love is giving someone the freedom to be themselves.",a:"짐 모리슨"},{t:"변화는 처음엔 두렵고, 중간엔 혼란스럽고, 끝에는 아름답다.",e:"Change is hard at first, messy in the middle, and gorgeous at the end.",a:"로빈 샤르마"},{t:"원하는 것을 얻으려면 먼저 지금 가진 것에 감사해야 한다.",e:"Gratitude turns what we have into enough.",a:"멜로디 비티"},{t:"나는 내 운명의 주인이요, 내 영혼의 선장이다.",e:"I am the master of my fate, I am the captain of my soul.",a:"윌리엄 어니스트 헨리"},{t:"우리는 별의 먼지로 이루어져 있고, 우주는 우리를 통해 스스로를 이해하려 한다.",e:"We are a way for the universe to know itself.",a:"칼 세이건"},{t:"자아를 비우면 그 빈자리에 우주의 거대한 에너지가 채워진다.",e:"Empty yourself, and let the vast energy of the universe fill that space.",a:"선(禪) 지혜"},{t:"삶은 더 잘 사는 법을 배우는 것이 아니라 덜 흔들리는 기준을 세우는 일이다.",e:"Life is not about learning to live better, but about building a standard that keeps you steady.",a:"헨리"},{t:"나 자신이 나의 가장 좋은 친구가 되어야 한다.",e:"You yourself must be your own best friend.",a:"헨리"},{t:"자신의 인생을 타인의 시선으로부터 독립시키는 것, 그것이 진정한 자유다.",e:"Freeing your life from the gaze of others — that is true freedom.",a:"헨리"},{t:"당신이 저지를 수 있는 최악의 행동은 목표를 빗맞히는 게 아니라 목표를 쏘지 않는 것이다.",e:"The worst thing you can do is not to miss the target, but to never take the shot.",a:"헨리"},{t:"그들은 때가 되기를 기다리지 않는다. 지금 바로 일어나서 행동한다.",e:"They don't wait for the right moment. They rise and act right now.",a:"헨리"}
 ];
-const QQ_INVEST=[
-  {t:"주식시장을 예측하려 하지 마라. 주식시장은 신도 예측할 수 없다.",e:"Do not try to predict the stock market. Even God cannot predict it.",a:"Benjamin Graham"},
-  {t:"자신의 능력 범위 안에서만 투자하라. 범위의 크기는 중요하지 않다. 경계를 아는 것이 중요하다.",e:"Invest within your circle of competence. The size doesn't matter as much as knowing where the edge is.",a:"찰리 멍거"},
-  {t:"복리는 세상에서 가장 위대한 수학적 발견이다. 이해하는 자만이 그것을 번다.",e:"Compound interest is the greatest mathematical discovery in the world. Only those who understand it earn from it.",a:"찰리 멍거"},
-  {t:"그냥 계속 사라. 시장 타이밍을 맞히는 것보다 꾸준히 매수하는 것이 장기적으로 압도적으로 낫다.",e:"Just keep buying. Consistently investing beats timing the market in the long run by a wide margin.",a:"닉 마기울리"},
-  {t:"시장 고점에 투자하는 것을 두려워하지 마라. 역사적으로 고점 매수도 장기 보유 시 수익을 냈다.",e:"Don't fear investing at market highs. Historically, even peak buyers have profited through long-term holding.",a:"닉 마기울리"},
-  {t:"당신이 할 거라고 말하는 일 말고, 지금 당신이 하는 일이 당신이다.",e:"You are not what you say you will do — you are what you do right now.",a:"융(Jung)"},
-  {t:"운명은 의지를 가진 자는 앞에서 인도하고, 주저하는 자는 질질 끌고 간다.",e:"Fate leads the willing and drags the reluctant.",a:"세네카"},
-  {t:"자신에게 명령하지 못하는 사람은 언제까지나 남에게 명령받는 종과 마찬가지다.",e:"He who cannot command himself will forever remain a servant to others.",a:"괴테"},
-  {t:"남의 시선보다 나의 시선을 의식하세요.",e:"Be more aware of your own eyes than the eyes of others.",a:"헨리"},
-  {t:"주식시장은 조급한 사람에게서 인내심 있는 사람에게로 돈을 이전시키는 장치다.",e:"The stock market is a device for transferring money from the impatient to the patient.",a:"Warren Buffett"},
-  {t:"투자의 제1원칙은 돈을 잃지 않는 것이다. 제2원칙은 제1원칙을 잊지 않는 것이다.",e:"Rule No.1: Never lose money. Rule No.2: Never forget Rule No.1.",a:"Warren Buffett"},
-  {t:"시장을 예측하는 것보다 시장에 얼마나 오래 머무느냐가 더 중요하다.",e:"Time in the market beats timing the market.",a:"Peter Lynch"},
-  {t:"시장이 공포에 떨 때 탐욕스럽게, 시장이 탐욕스러울 때 두려워하라.",e:"Be fearful when others are greedy, and greedy when others are fearful.",a:"Warren Buffett"},
-  {t:"10년을 보유할 자신이 없다면 단 10분도 그 주식을 가지고 있지 마라.",e:"If you aren't willing to own a stock for 10 years, don't even think about owning it for 10 minutes.",a:"Warren Buffett"},
-  {t:"강세장은 비관론 속에서 태어나고, 회의론 속에서 성장하며, 낙관론 속에서 성숙하고, 행복감 속에서 죽는다.",e:"Bull markets are born on pessimism, grow on skepticism, mature on optimism, and die on euphoria.",a:"John Templeton"},
-  {t:"부자가 되는 방법은 간단하다. 좋은 주식을 사서 앉아 있으면 된다.",e:"The way to get rich is simple. Buy good stocks and sit on them.",a:"찰리 멍거"},
-  {t:"모든 아이디어를 역방향으로 뒤집어 보라. 실패하는 방법을 먼저 생각하면 성공이 보인다.",e:"Invert, always invert. Think about how to fail first, and success will reveal itself.",a:"찰리 멍거"}
+var _INVEST_DEFAULT=[
+  {t:"주식시장을 예측하려 하지 마라. 주식시장은 신도 예측할 수 없다.",e:"Do not try to predict the stock market. Even God cannot predict it.",a:"Benjamin Graham"},{t:"자신의 능력 범위 안에서만 투자하라. 범위의 크기는 중요하지 않다. 경계를 아는 것이 중요하다.",e:"Invest within your circle of competence. The size doesn't matter as much as knowing where the edge is.",a:"찰리 멍거"},{t:"복리는 세상에서 가장 위대한 수학적 발견이다. 이해하는 자만이 그것을 번다.",e:"Compound interest is the greatest mathematical discovery in the world. Only those who understand it earn from it.",a:"찰리 멍거"},{t:"그냥 계속 사라. 시장 타이밍을 맞히는 것보다 꾸준히 매수하는 것이 장기적으로 압도적으로 낫다.",e:"Just keep buying. Consistently investing beats timing the market in the long run by a wide margin.",a:"닉 마기울리"},{t:"시장 고점에 투자하는 것을 두려워하지 마라. 역사적으로 고점 매수도 장기 보유 시 수익을 냈다.",e:"Don't fear investing at market highs. Historically, even peak buyers have profited through long-term holding.",a:"닉 마기울리"},{t:"당신이 할 거라고 말하는 일 말고, 지금 당신이 하는 일이 당신이다.",e:"You are not what you say you will do — you are what you do right now.",a:"융(Jung)"},{t:"운명은 의지를 가진 자는 앞에서 인도하고, 주저하는 자는 질질 끌고 간다.",e:"Fate leads the willing and drags the reluctant.",a:"세네카"},{t:"자신에게 명령하지 못하는 사람은 언제까지나 남에게 명령받는 종과 마찬가지다.",e:"He who cannot command himself will forever remain a servant to others.",a:"괴테"},{t:"남의 시선보다 나의 시선을 의식하세요.",e:"Be more aware of your own eyes than the eyes of others.",a:"헨리"},{t:"주식시장은 조급한 사람에게서 인내심 있는 사람에게로 돈을 이전시키는 장치다.",e:"The stock market is a device for transferring money from the impatient to the patient.",a:"Warren Buffett"},{t:"투자의 제1원칙은 돈을 잃지 않는 것이다. 제2원칙은 제1원칙을 잊지 않는 것이다.",e:"Rule No.1: Never lose money. Rule No.2: Never forget Rule No.1.",a:"Warren Buffett"},{t:"시장을 예측하는 것보다 시장에 얼마나 오래 머무느냐가 더 중요하다.",e:"Time in the market beats timing the market.",a:"Peter Lynch"},{t:"시장이 공포에 떨 때 탐욕스럽게, 시장이 탐욕스러울 때 두려워하라.",e:"Be fearful when others are greedy, and greedy when others are fearful.",a:"Warren Buffett"},{t:"10년을 보유할 자신이 없다면 단 10분도 그 주식을 가지고 있지 마라.",e:"If you aren't willing to own a stock for 10 years, don't even think about owning it for 10 minutes.",a:"Warren Buffett"},{t:"강세장은 비관론 속에서 태어나고, 회의론 속에서 성장하며, 낙관론 속에서 성숙하고, 행복감 속에서 죽는다.",e:"Bull markets are born on pessimism, grow on skepticism, mature on optimism, and die on euphoria.",a:"John Templeton"},{t:"부자가 되는 방법은 간단하다. 좋은 주식을 사서 앉아 있으면 된다.",e:"The way to get rich is simple. Buy good stocks and sit on them.",a:"찰리 멍거"},{t:"모든 아이디어를 역방향으로 뒤집어 보라. 실패하는 방법을 먼저 생각하면 성공이 보인다.",e:"Invert, always invert. Think about how to fail first, and success will reveal itself.",a:"찰리 멍거"}
 ];
-let QQ=[...QQ_LIFE];
+
+/* ── localStorage에서 로드 (우선순위 최고) ── */
+var QQ_LIFE, QQ_INVEST, QQ;
+(function(){
+  var saved = null;
+  var keys = ['henry_quotes_final','henry_quotes_v3','henry_quotes_v2'];
+  for(var k=0;k<keys.length;k++){
+    try{
+      var r=localStorage.getItem(keys[k]);
+      if(r){ saved=JSON.parse(r); break; }
+    }catch(x){}
+  }
+  if(saved && saved.life && saved.life.length>0){
+    /* 저장된 데이터가 있으면 그것을 사용 */
+    QQ_LIFE   = saved.life;
+    QQ_INVEST = saved.invest||[];
+  } else {
+    /* 처음 실행: 코드 기본값 사용 */
+    QQ_LIFE   = _LIFE_DEFAULT.map(function(q){return {t:q.t,e:q.e,a:q.a};});
+    QQ_INVEST = _INVEST_DEFAULT.map(function(q){return {t:q.t,e:q.e,a:q.a};});
+  }
+  QQ = QQ_LIFE.slice();
+})();
 
 /* ══ 1시간마다 명언 업데이트 ══ */
 /* ── 명언 인덱스 ── */
@@ -441,325 +427,238 @@ function showQuote(){
 }
 
 /* ════════════════════════════════
-   명언 탭 & 관리 v3
+   명언 탭 & 관리 v4 (단순화)
 ════════════════════════════════ */
 var QQ_TAB = 'life';
-var QCKEY  = 'henry_quotes_final';
-var LIFE_BASE   = 22;
-var INVEST_BASE = 17;
+var QKEY = 'henry_quotes_final';
 
-/* ── 저장/로드 ── */
-function loadCQ(){
-  /* 최신→구버전 순으로 검색해서 데이터 마이그레이션 */
-  var keys=['henry_quotes_final','henry_quotes_v3','henry_quotes_v2','henry_quotes_v1'];
-  for(var k=0;k<keys.length;k++){
-    try{
-      var r=localStorage.getItem(keys[k]);
-      if(!r) continue;
-      var parsed=JSON.parse(r);
-      if(Array.isArray(parsed)){
-        /* 구버전 배열 → 객체 변환 */
-        var obj={life:[],invest:[]};
-        parsed.forEach(function(q){
-          if(q._tab==='invest') obj.invest.push(q);
-          else obj.life.push(q);
-        });
-        return obj;
-      }
-      if(parsed&&(parsed.life||parsed.invest)) return parsed;
-    }catch(x){}
-  }
-  return {life:[],invest:[]};
-}
-function saveCQ(obj){
-  try{ localStorage.setItem(QCKEY, JSON.stringify(obj)); }catch(x){}
-}
-
-/* ── 앱 시작 시 명언 로드 ── */
-(function(){
-  var cq = loadCQ();
-  /* 저장된 전체 배열이 있으면 코드 배열 대체 */
-  if(cq.life && cq.life.length > 0){
-    QQ_LIFE.length = 0;
-    cq.life.forEach(function(q){ QQ_LIFE.push(q); });
-  } else {
-    /* 첫 실행: 코드 배열 유지, 커스텀만 추가 */
-    (cq.life||[]).forEach(function(q){ QQ_LIFE.push(q); });
-  }
-  if(cq.invest && cq.invest.length > 0){
-    QQ_INVEST.length = 0;
-    cq.invest.forEach(function(q){ QQ_INVEST.push(q); });
-  } else {
-    (cq.invest||[]).forEach(function(q){ QQ_INVEST.push(q); });
-  }
-  /* QQ 초기화 */
-  QQ.length = 0;
-  QQ_LIFE.forEach(function(q){ QQ.push(q); });
-})();
-
-/* ── 전체 저장 + QQ 동기화 ── */
+/* ── 저장 (단순) ── */
 function _saveAll(){
-  var cq = {
-    life:   QQ_LIFE.map(function(q){return {t:q.t,e:q.e,a:q.a};}),
-    invest: QQ_INVEST.map(function(q){return {t:q.t,e:q.e,a:q.a};})
-  };
-  saveCQ(cq);
-  /* QQ 즉시 동기화 */
-  QQ.length = 0;
-  var src = (QQ_TAB==='invest') ? QQ_INVEST : QQ_LIFE;
-  src.forEach(function(q){ QQ.push(q); });
+  try{
+    localStorage.setItem(QKEY, JSON.stringify({
+      life:   QQ_LIFE,
+      invest: QQ_INVEST
+    }));
+  }catch(x){ alert('저장 실패: '+x.message); }
 }
 
 /* ── 탭 전환 ── */
 function switchQTab(tab){
   QQ_TAB = tab;
-  var tL = document.getElementById('tab-life');
-  var tI = document.getElementById('tab-invest');
-  if(tab === 'life'){
-    QQ.length=0; QQ_LIFE.forEach(function(q){QQ.push(q);});
+  var tL=document.getElementById('tab-life');
+  var tI=document.getElementById('tab-invest');
+  if(tab==='life'){
+    QQ = QQ_LIFE.slice();
     if(tL){tL.style.background='rgba(255,255,255,.2)';tL.style.color='#fff';}
     if(tI){tI.style.background='rgba(255,255,255,.06)';tI.style.color='rgba(255,255,255,.4)';}
   }else{
-    QQ.length=0; QQ_INVEST.forEach(function(q){QQ.push(q);});
+    QQ = QQ_INVEST.slice();
     if(tI){tI.style.background='rgba(255,192,32,.25)';tI.style.color='#ffc020';}
     if(tL){tL.style.background='rgba(255,255,255,.06)';tL.style.color='rgba(255,255,255,.4)';}
   }
-  curQIdx = 0;
-  try{localStorage.setItem('henry_qtab', tab);}catch(x){}
+  curQIdx=0;
+  try{localStorage.setItem('henry_qtab',tab);}catch(x){}
   displayQuote(0);
 }
 (function(){
-  try{
-    var t = localStorage.getItem('henry_qtab');
-    if(t === 'invest') setTimeout(function(){switchQTab('invest');}, 120);
-  }catch(x){}
+  try{var t=localStorage.getItem('henry_qtab');if(t==='invest')setTimeout(function(){switchQTab('invest');},150);}catch(x){}
 })();
 
-/* ── 롱프레스 → 모달 열기 ── */
+/* ── 롱프레스 → 모달 ── */
 (function(){
-  var body = document.getElementById('quote-body');
-  if(!body) return;
-  var tm = null;
-  body.addEventListener('touchstart', function(){
-    tm = setTimeout(function(){openQuoteModal();}, 800);
-  }, {passive:true});
-  body.addEventListener('touchmove',  function(){clearTimeout(tm);}, {passive:true});
-  body.addEventListener('touchend',   function(){clearTimeout(tm);}, {passive:true});
+  var body=document.getElementById('quote-body');
+  if(!body)return;
+  var tm=null;
+  body.addEventListener('touchstart',function(){tm=setTimeout(openQuoteModal,800);},{passive:true});
+  body.addEventListener('touchmove', function(){clearTimeout(tm);},{passive:true});
+  body.addEventListener('touchend',  function(){clearTimeout(tm);},{passive:true});
 })();
 
 /* ── 모달 열기/닫기 ── */
 function openQuoteModal(){
-  var el = document.getElementById('quote-modal');
-  if(el) el.style.display = 'block';
+  var el=document.getElementById('quote-modal');
+  if(el)el.style.display='block';
   renderQModal();
 }
 function closeQuoteModal(){
-  var el = document.getElementById('quote-modal');
-  if(el) el.style.display = 'none';
+  var el=document.getElementById('quote-modal');
+  if(el)el.style.display='none';
 }
 
-/* ── 모달 렌더링 ── */
+/* ── 렌더링 ── */
 function renderQModal(){
-  var isLife = (QQ_TAB === 'life');
-  var tabName  = isLife ? '🌟 인생명언' : '📈 투자명언';
+  var isLife=(QQ_TAB==='life');
+  var arr = isLife ? QQ_LIFE : QQ_INVEST;
   var destName = isLife ? '투자' : '인생';
 
-  var tnEl = document.getElementById('modal-tab-name');
-  var ahEl = document.getElementById('add-tab-hint');
-  if(tnEl) tnEl.textContent = tabName;
-  if(ahEl) ahEl.textContent = tabName;
+  var tnEl=document.getElementById('modal-tab-name');
+  var ahEl=document.getElementById('add-tab-hint');
+  if(tnEl)tnEl.textContent=(isLife?'🌟 인생명언':'📈 투자명언');
+  if(ahEl)ahEl.textContent=(isLife?'🌟 인생명언':'📈 투자명언');
 
-  var cnt = document.getElementById('qcnt');
-  if(cnt) cnt.textContent = QQ.length;
+  var cnt=document.getElementById('qcnt');
+  if(cnt)cnt.textContent=arr.length;
 
-  var list = document.getElementById('qlist');
-  if(!list) return;
-  list.innerHTML = '';
+  var list=document.getElementById('qlist');
+  if(!list)return;
+  list.innerHTML='';
 
-  if(QQ.length === 0){
-    list.innerHTML = '<div style="text-align:center;padding:20px;color:#606080;font-size:13px;">명언이 없습니다<br>위에서 추가해보세요</div>';
+  if(arr.length===0){
+    list.innerHTML='<div style="text-align:center;padding:20px;color:#606080;font-size:13px;">명언이 없습니다</div>';
     return;
   }
 
-  QQ.forEach(function(q, i){
-    var card = document.createElement('div');
-    card.style.cssText = 'background:#222232;border-radius:10px;padding:11px 12px;margin-bottom:10px;';
-    card.id = 'qcard-'+i;
+  arr.forEach(function(q,i){
+    var card=document.createElement('div');
+    card.id='qcard-'+i;
+    card.style.cssText='background:#222232;border-radius:10px;padding:11px 12px;margin-bottom:10px;';
 
-    /* 번호 */
-    var numEl = document.createElement('div');
-    numEl.style.cssText = 'font-size:11px;color:#ffc020;font-weight:700;margin-bottom:6px;';
-    numEl.textContent = (i+1) + '번';
+    var num=document.createElement('div');
+    num.style.cssText='font-size:11px;color:#ffc020;font-weight:700;margin-bottom:6px;';
+    num.textContent=(i+1)+'번';
 
-    /* 한글 textarea */
-    var taKor = document.createElement('textarea');
-    taKor.value = q.t;
-    taKor.rows = 2;
-    taKor.style.cssText = 'width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;color:#f0f0f8;font-size:13px;outline:none;resize:none;box-sizing:border-box;margin-bottom:5px;display:block;font-family:inherit;line-height:1.55;';
-    taKor.id = 'qt-'+i;
+    var taT=document.createElement('textarea');
+    taT.id='qt-'+i; taT.rows=2; taT.value=q.t;
+    taT.style.cssText='width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 10px;color:#f0f0f8;font-size:13px;outline:none;resize:none;box-sizing:border-box;margin-bottom:5px;display:block;font-family:inherit;line-height:1.55;';
 
-    /* 영어 textarea */
-    var taEng = document.createElement('textarea');
-    taEng.value = q.e;
-    taEng.rows = 2;
-    taEng.style.cssText = 'width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;color:#ffd060;font-size:12px;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:5px;display:block;font-family:inherit;line-height:1.55;';
-    taEng.id = 'qe-'+i;
+    var taE=document.createElement('textarea');
+    taE.id='qe-'+i; taE.rows=2; taE.value=q.e;
+    taE.style.cssText='width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 10px;color:#ffd060;font-size:12px;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:5px;display:block;font-family:inherit;line-height:1.55;';
 
-    /* 출처 input */
-    var inpAuth = document.createElement('input');
-    inpAuth.value = q.a;
-    inpAuth.placeholder = '출처';
-    inpAuth.style.cssText = 'width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:7px 10px;color:#b0b0c8;font-size:12px;outline:none;box-sizing:border-box;margin-bottom:8px;display:block;font-family:inherit;';
-    inpAuth.id = 'qa-'+i;
+    var inA=document.createElement('input');
+    inA.id='qa-'+i; inA.value=q.a; inA.placeholder='출처';
+    inA.style.cssText='width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:7px 10px;color:#b0b0c8;font-size:12px;outline:none;box-sizing:border-box;margin-bottom:8px;display:block;font-family:inherit;';
 
-    /* 자동 높이 */
-    [taKor, taEng].forEach(function(ta){
-      ta.addEventListener('input', function(){
-        this.style.height='0'; this.style.height=this.scrollHeight+'px';
-      });
-    });
+    var btnRow=document.createElement('div');
+    btnRow.style.cssText='display:flex;gap:5px;';
 
-    /* 버튼 행: 💾저장 | ↔️이동 | 🗑️삭제 */
-    var btnRow = document.createElement('div');
-    btnRow.style.cssText = 'display:flex;gap:5px;';
+    var sBtn=document.createElement('button');
+    sBtn.textContent='💾 저장';
+    sBtn.style.cssText='flex:2;background:rgba(40,196,144,.2);border:1px solid rgba(40,196,144,.4);border-radius:8px;color:#28c490;font-size:13px;font-weight:700;padding:9px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;';
+    sBtn.onclick=(function(idx){return function(){saveQ(idx);};})(i);
 
-    /* 💾 저장 */
-    var sBtn = document.createElement('button');
-    sBtn.innerHTML = '💾 저장';
-    sBtn.style.cssText = 'flex:2;background:rgba(40,196,144,.18);border:1px solid rgba(40,196,144,.35);border-radius:8px;color:#28c490;font-size:12px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;font-weight:700;';
-    sBtn.onclick = (function(idx){ return function(){ saveQ(idx); }; })(i);
+    var mBtn=document.createElement('button');
+    mBtn.textContent='↔️ '+destName;
+    mBtn.style.cssText='flex:2;background:rgba(74,143,255,.2);border:1px solid rgba(74,143,255,.4);border-radius:8px;color:#4a8fff;font-size:12px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;';
+    mBtn.onclick=(function(idx){return function(){moveQ(idx);};})(i);
 
-    /* ↔️ 탭 이동 */
-    var mBtn = document.createElement('button');
-    mBtn.innerHTML = '↔️ '+destName;
-    mBtn.style.cssText = 'flex:2;background:rgba(74,143,255,.18);border:1px solid rgba(74,143,255,.35);border-radius:8px;color:#4a8fff;font-size:12px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;';
-    mBtn.onclick = (function(idx){ return function(){ moveQ(idx); }; })(i);
-
-    /* 🗑️ 삭제 */
-    var dBtn = document.createElement('button');
-    dBtn.innerHTML = '🗑️';
-    dBtn.style.cssText = 'flex:1;background:rgba(255,80,96,.18);border:1px solid rgba(255,80,96,.35);border-radius:8px;color:#ff5060;font-size:14px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;';
-    dBtn.onclick = (function(idx){ return function(){ delQ(idx); }; })(i);
+    var dBtn=document.createElement('button');
+    dBtn.textContent='🗑️';
+    dBtn.style.cssText='flex:1;background:rgba(255,80,96,.2);border:1px solid rgba(255,80,96,.4);border-radius:8px;color:#ff5060;font-size:14px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;';
+    dBtn.onclick=(function(idx){return function(){delQ(idx);};})(i);
 
     btnRow.appendChild(sBtn);
     btnRow.appendChild(mBtn);
     btnRow.appendChild(dBtn);
-
-    card.appendChild(numEl);
-    card.appendChild(taKor);
-    card.appendChild(taEng);
-    card.appendChild(inpAuth);
+    card.appendChild(num);
+    card.appendChild(taT);
+    card.appendChild(taE);
+    card.appendChild(inA);
     card.appendChild(btnRow);
     list.appendChild(card);
-
-    /* textarea 높이 초기 조절 */
-    setTimeout(function(){
-      [taKor,taEng].forEach(function(ta){ta.style.height='0';ta.style.height=ta.scrollHeight+'px';});
-    }, 0);
   });
 }
 
-/* ── 💾 저장 (인라인 수정) ── */
+/* ── 💾 저장 ── */
 function saveQ(i){
-  var taKor  = document.getElementById('qt-'+i);
-  var taEng  = document.getElementById('qe-'+i);
-  var inpAuth= document.getElementById('qa-'+i);
-  if(!taKor) return;
-  var newT = taKor.value.trim();
-  var newE = taEng ? taEng.value.trim() : '';
-  var newA = inpAuth ? inpAuth.value.trim() : '';
-  if(!newT){ alert('명언 내용을 입력하세요'); return; }
+  var arr = (QQ_TAB==='life') ? QQ_LIFE : QQ_INVEST;
+  var taT=document.getElementById('qt-'+i);
+  var taE=document.getElementById('qe-'+i);
+  var inA=document.getElementById('qa-'+i);
+  if(!taT||!arr[i])return;
+  var newT=taT.value.trim();
+  var newE=taE?taE.value.trim():'';
+  var newA=inA?inA.value.trim():'';
+  if(!newT){alert('내용을 입력하세요');return;}
 
-  /* 데이터 업데이트 */
-  QQ[i].t = newT;
-  QQ[i].e = newE || newT;
-  QQ[i].a = newA || '—';
+  /* 배열 직접 수정 */
+  arr[i].t=newT;
+  arr[i].e=newE||newT;
+  arr[i].a=newA||'—';
 
-  /* 원본 배열 동기화 */
-  if(QQ_TAB==='life'){QQ_LIFE.length=0; QQ.forEach(function(x){QQ_LIFE.push(x);});}
-  else{QQ_INVEST.length=0; QQ.forEach(function(x){QQ_INVEST.push(x);});}
+  /* QQ도 동기화 */
+  QQ = arr.slice();
 
   /* 저장 */
   _saveAll();
 
-  /* 화면 즉시 반영 — 수정한 명언으로 이동 */
-  curQIdx = i;
-  var qt = document.getElementById('q-text');
-  var qe = document.getElementById('q-en');
-  var qa = document.getElementById('q-author');
-  if(qt) qt.textContent = newT;
-  if(qe) qe.textContent = newE || newT;
-  if(qa) qa.textContent = '— ' + (newA || '—');
+  /* 홈화면 명언 즉시 반영 */
+  var qt=document.getElementById('q-text');
+  var qe=document.getElementById('q-en');
+  var qa=document.getElementById('q-author');
+  /* 현재 보이는 명언이 수정된 명언이면 즉시 반영 */
+  if(qt) qt.textContent=arr[i].t;
+  if(qe) qe.textContent=arr[i].e;
+  if(qa) qa.textContent='— '+arr[i].a;
+  curQIdx=i;
 
-  /* 저장 완료 표시 */
-  var card = document.getElementById('qcard-'+i);
+  /* 완료 표시 */
+  var card=document.getElementById('qcard-'+i);
   if(card){
-    var flash = document.createElement('div');
-    flash.textContent = '✅ 저장됨 — 화면에 반영됐습니다';
-    flash.style.cssText = 'text-align:center;color:#28c490;font-size:12px;font-weight:700;padding:6px;background:rgba(40,196,144,.1);border-radius:6px;margin-top:4px;';
-    card.appendChild(flash);
-    setTimeout(function(){ if(flash.parentNode) flash.parentNode.removeChild(flash); }, 2000);
+    var ok=document.createElement('div');
+    ok.textContent='✅ 저장됨';
+    ok.style.cssText='text-align:center;color:#28c490;font-size:13px;font-weight:700;padding:6px;';
+    card.appendChild(ok);
+    setTimeout(function(){if(ok.parentNode)ok.parentNode.removeChild(ok);},2000);
   }
 }
 
 /* ── 🗑️ 삭제 ── */
 function delQ(i){
-  var q = QQ[i]; if(!q) return;
-  var preview = q.t.length>25 ? q.t.slice(0,25)+'...' : q.t;
-  if(!confirm((i+1)+'번 명언을 삭제할까요?\n"'+preview+'"')) return;
-  QQ.splice(i, 1);
-  if(QQ_TAB==='life'){QQ_LIFE.length=0; QQ.forEach(function(x){QQ_LIFE.push(x);});}
-  else{QQ_INVEST.length=0; QQ.forEach(function(x){QQ_INVEST.push(x);});}
+  var arr=(QQ_TAB==='life')?QQ_LIFE:QQ_INVEST;
+  if(!arr[i])return;
+  var p=arr[i].t.length>20?arr[i].t.slice(0,20)+'...':arr[i].t;
+  if(!confirm((i+1)+'번 삭제?
+"'+p+'"'))return;
+  arr.splice(i,1);
+  QQ=arr.slice();
   _saveAll();
-  if(curQIdx >= QQ.length) curQIdx = Math.max(0, QQ.length-1);
-  if(QQ.length > 0) displayQuote(curQIdx);
+  if(curQIdx>=QQ.length)curQIdx=Math.max(0,QQ.length-1);
+  if(QQ.length>0)displayQuote(curQIdx);
   renderQModal();
 }
 
 /* ── ↔️ 탭 이동 ── */
 function moveQ(i){
-  var q = QQ[i]; if(!q) return;
-  var destName = QQ_TAB==='life' ? '📈 투자명언' : '🌟 인생명언';
-  var preview = q.t.length>20 ? q.t.slice(0,20)+'...' : q.t;
-  if(!confirm((i+1)+'번을 '+destName+' 탭으로 이동할까요?\n"'+preview+'"')) return;
-  QQ.splice(i, 1);
-  if(QQ_TAB==='life'){
-    QQ_LIFE.length=0; QQ.forEach(function(x){QQ_LIFE.push(x);});
-    QQ_INVEST.push(q);
-  }else{
-    QQ_INVEST.length=0; QQ.forEach(function(x){QQ_INVEST.push(x);});
-    QQ_LIFE.push(q);
-  }
+  var srcArr=(QQ_TAB==='life')?QQ_LIFE:QQ_INVEST;
+  var dstArr=(QQ_TAB==='life')?QQ_INVEST:QQ_LIFE;
+  var destName=(QQ_TAB==='life')?'📈 투자명언':'🌟 인생명언';
+  if(!srcArr[i])return;
+  var q=srcArr[i];
+  var p=q.t.length>20?q.t.slice(0,20)+'...':q.t;
+  if(!confirm((i+1)+'번을 '+destName+'으로 이동?
+"'+p+'"'))return;
+  srcArr.splice(i,1);
+  dstArr.push(q);
+  QQ=srcArr.slice();
   _saveAll();
-  if(curQIdx >= QQ.length) curQIdx = Math.max(0, QQ.length-1);
-  if(QQ.length > 0) displayQuote(curQIdx);
+  if(curQIdx>=QQ.length)curQIdx=Math.max(0,QQ.length-1);
+  if(QQ.length>0)displayQuote(curQIdx);
   renderQModal();
-  alert('✅ '+destName+' 탭으로 이동됐습니다!');
 }
 
 /* ── ➕ 추가 ── */
 async function addQuote(){
-  var t = (document.getElementById('qakor').value||'').trim();
-  var e = (document.getElementById('qaeng').value||'').trim();
-  var a = (document.getElementById('qaauth').value||'').trim();
-  if(!t){ alert('한글 명언을 입력하세요'); return; }
+  var isLife=(QQ_TAB==='life');
+  var arr=isLife?QQ_LIFE:QQ_INVEST;
+  var t=(document.getElementById('qakor').value||'').trim();
+  var e=(document.getElementById('qaeng').value||'').trim();
+  var a=(document.getElementById('qaauth').value||'').trim();
+  if(!t){alert('명언을 입력하세요');return;}
   if(!e){
     try{
-      var btn = document.querySelector('#quote-modal button[onclick]');
-      var r = await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(t)+'&langpair=ko|en');
-      var data = await r.json();
-      e = (data.responseData && data.responseData.translatedText||'').trim();
-    }catch(x){ e=''; }
+      var r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(t)+'&langpair=ko|en');
+      var d=await r.json();
+      e=(d.responseData&&d.responseData.translatedText||'').trim();
+    }catch(x){e='';}
   }
-  var q = {t:t, e:e||t, a:a||'—'};
-  QQ.push(q);
-  if(QQ_TAB==='life') QQ_LIFE.push(q);
-  else QQ_INVEST.push(q);
+  arr.push({t:t,e:e||t,a:a||'—'});
+  QQ=arr.slice();
   _saveAll();
-  document.getElementById('qakor').value = '';
-  document.getElementById('qaeng').value = '';
-  document.getElementById('qaauth').value = '';
-  curQIdx = QQ.length-1;
+  document.getElementById('qakor').value='';
+  document.getElementById('qaeng').value='';
+  document.getElementById('qaauth').value='';
+  curQIdx=QQ.length-1;
   displayQuote(curQIdx);
   renderQModal();
 }
