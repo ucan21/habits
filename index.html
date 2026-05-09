@@ -343,14 +343,14 @@ const QQ_LIFE=[
   {t:"나 자신이 나의 가장 좋은 친구가 되어야 한다.",e:"You yourself must be your own best friend.",a:"헨리"},
   {t:"자신의 인생을 타인의 시선으로부터 독립시키는 것, 그것이 진정한 자유다.",e:"Freeing your life from the gaze of others — that is true freedom.",a:"헨리"},
   {t:"당신이 저지를 수 있는 최악의 행동은 목표를 빗맞히는 게 아니라 목표를 쏘지 않는 것이다.",e:"The worst thing you can do is not to miss the target, but to never take the shot.",a:"헨리"},
-  {t:"그들은 때가 되기를 기다리지 않는다. 지금 바로 일어나서 행동한다.",e:"They don't wait for the right moment. They rise and act right now.",a:"헨리"},
+  {t:"그들은 때가 되기를 기다리지 않는다. 지금 바로 일어나서 행동한다.",e:"They don't wait for the right moment. They rise and act right now.",a:"헨리"}
+];
+const QQ_INVEST=[
   {t:"주식시장을 예측하려 하지 마라. 주식시장은 신도 예측할 수 없다.",e:"Do not try to predict the stock market. Even God cannot predict it.",a:"Benjamin Graham"},
   {t:"자신의 능력 범위 안에서만 투자하라. 범위의 크기는 중요하지 않다. 경계를 아는 것이 중요하다.",e:"Invest within your circle of competence. The size doesn't matter as much as knowing where the edge is.",a:"찰리 멍거"},
   {t:"복리는 세상에서 가장 위대한 수학적 발견이다. 이해하는 자만이 그것을 번다.",e:"Compound interest is the greatest mathematical discovery in the world. Only those who understand it earn from it.",a:"찰리 멍거"},
   {t:"그냥 계속 사라. 시장 타이밍을 맞히는 것보다 꾸준히 매수하는 것이 장기적으로 압도적으로 낫다.",e:"Just keep buying. Consistently investing beats timing the market in the long run by a wide margin.",a:"닉 마기울리"},
-  {t:"시장 고점에 투자하는 것을 두려워하지 마라. 역사적으로 고점 매수도 장기 보유 시 수익을 냈다.",e:"Don't fear investing at market highs. Historically, even peak buyers have profited through long-term holding.",a:"닉 마기울리"}
-];
-const QQ_INVEST=[
+  {t:"시장 고점에 투자하는 것을 두려워하지 마라. 역사적으로 고점 매수도 장기 보유 시 수익을 냈다.",e:"Don't fear investing at market highs. Historically, even peak buyers have profited through long-term holding.",a:"닉 마기울리"},
   {t:"당신이 할 거라고 말하는 일 말고, 지금 당신이 하는 일이 당신이다.",e:"You are not what you say you will do — you are what you do right now.",a:"융(Jung)"},
   {t:"운명은 의지를 가진 자는 앞에서 인도하고, 주저하는 자는 질질 끌고 간다.",e:"Fate leads the willing and drags the reluctant.",a:"세네카"},
   {t:"자신에게 명령하지 못하는 사람은 언제까지나 남에게 명령받는 종과 마찬가지다.",e:"He who cannot command himself will forever remain a servant to others.",a:"괴테"},
@@ -441,216 +441,249 @@ function showQuote(){
 }
 
 /* ════════════════════════════════
-   명언 탭 & 관리 시스템
+   명언 탭 & 관리 (완전판)
 ════════════════════════════════ */
 var QQ_TAB = 'life';
-var QCKEY = 'henry_quotes_v1';
+var QCKEY  = 'henry_quotes_v2';
+var LIFE_BASE   = 22;
+var INVEST_BASE = 17;
 
-/* 커스텀 저장/로드 */
+/* ── 저장/로드 ── */
 function loadCQ(){
   try{ var r=localStorage.getItem(QCKEY); if(r)return JSON.parse(r); }catch(x){}
-  return {life:[], invest:[]};
+  /* 구버전 변환 */
+  try{
+    var old=localStorage.getItem('henry_quotes_v1');
+    if(old){
+      var arr=JSON.parse(old);
+      if(Array.isArray(arr)){
+        var obj={life:[],invest:[]};
+        arr.forEach(function(q){ if(q._tab==='invest') obj.invest.push(q); else obj.life.push(q); });
+        return obj;
+      }
+    }
+  }catch(x){}
+  return {life:[],invest:[]};
 }
 function saveCQ(obj){
-  try{ localStorage.setItem(QCKEY, JSON.stringify(obj)); }catch(x){}
+  try{ localStorage.setItem(QCKEY,JSON.stringify(obj)); }catch(x){}
 }
 
-/* 커스텀 명언 로드 — 탭별 분류 */
+/* ── 커스텀 로드 ── */
 (function(){
-  var cq = loadCQ();
-  /* 구버전 배열 형식 호환 */
-  if(Array.isArray(cq)){
-    var arr=cq;
-    cq={life:[],invest:[]};
-    arr.forEach(function(q){ if(q._tab==='invest') cq.invest.push(q); else cq.life.push(q); });
-    saveCQ(cq);
-  }
+  var cq=loadCQ();
   (cq.life||[]).forEach(function(q){ QQ_LIFE.push(q); });
   (cq.invest||[]).forEach(function(q){ QQ_INVEST.push(q); });
 })();
 
-/* 탭 전환 */
+/* ── 탭 전환 ── */
 function switchQTab(tab){
-  QQ_TAB = tab;
-  var tL = document.getElementById('tab-life');
-  var tI = document.getElementById('tab-invest');
-  if(tab === 'life'){
+  QQ_TAB=tab;
+  var tL=document.getElementById('tab-life');
+  var tI=document.getElementById('tab-invest');
+  if(tab==='life'){
     QQ.length=0; QQ_LIFE.forEach(function(q){QQ.push(q);});
-    if(tL){ tL.style.background='rgba(255,255,255,.2)'; tL.style.color='#fff'; }
-    if(tI){ tI.style.background='rgba(255,255,255,.06)'; tI.style.color='rgba(255,255,255,.4)'; }
-  } else {
+    if(tL){tL.style.background='rgba(255,255,255,.2)';tL.style.color='#fff';}
+    if(tI){tI.style.background='rgba(255,255,255,.06)';tI.style.color='rgba(255,255,255,.4)';}
+  }else{
     QQ.length=0; QQ_INVEST.forEach(function(q){QQ.push(q);});
-    if(tI){ tI.style.background='rgba(255,192,32,.25)'; tI.style.color='#ffc020'; }
-    if(tL){ tL.style.background='rgba(255,255,255,.06)'; tL.style.color='rgba(255,255,255,.4)'; }
+    if(tI){tI.style.background='rgba(255,192,32,.25)';tI.style.color='#ffc020';}
+    if(tL){tL.style.background='rgba(255,255,255,.06)';tL.style.color='rgba(255,255,255,.4)';}
   }
   curQIdx=0;
-  try{ localStorage.setItem('henry_qtab', tab); }catch(x){}
+  try{localStorage.setItem('henry_qtab',tab);}catch(x){}
   displayQuote(0);
 }
-/* 마지막 탭 복원 */
 (function(){
-  try{ var t=localStorage.getItem('henry_qtab'); if(t==='invest') setTimeout(function(){switchQTab('invest');},120); }catch(x){}
+  try{var t=localStorage.getItem('henry_qtab');if(t==='invest')setTimeout(function(){switchQTab('invest');},120);}catch(x){}
 })();
 
-/* 롱프레스 삭제 */
+/* ── 롱프레스 삭제 ── */
 (function(){
-  var body = document.getElementById('quote-body');
-  if(!body) return;
-  var tm = null;
-  body.addEventListener('touchstart', function(){
-    tm = setTimeout(function(){
-      if(QQ.length===0) return;
-      var idx = curQIdx % QQ.length;
-      if(confirm('이 명언을 삭제할까요?')) delQuote(idx);
-    }, 700);
-  }, {passive:true});
-  body.addEventListener('touchmove', function(){ clearTimeout(tm); }, {passive:true});
-  body.addEventListener('touchend', function(){ clearTimeout(tm); }, {passive:true});
+  var body=document.getElementById('quote-body');
+  if(!body)return;
+  var tm=null;
+  body.addEventListener('touchstart',function(){tm=setTimeout(function(){if(QQ.length>0)openQuoteModal();},800);},{passive:true});
+  body.addEventListener('touchmove',function(){clearTimeout(tm);},{passive:true});
+  body.addEventListener('touchend',function(){clearTimeout(tm);},{passive:true});
 })();
 
 /* ── 모달 열기/닫기 ── */
 function openQuoteModal(){
-  var el = document.getElementById('quote-modal');
-  if(el) el.style.display = 'block';
+  var el=document.getElementById('quote-modal');
+  if(el)el.style.display='block';
   renderQModal();
 }
 function closeQuoteModal(){
-  var el = document.getElementById('quote-modal');
-  if(el) el.style.display = 'none';
+  var el=document.getElementById('quote-modal');
+  if(el)el.style.display='none';
 }
+
+/* ── 전체 저장 ── */
+function _saveAll(){
+  var cq={life:[],invest:[]};
+  /* 커스텀 부분만 저장 */
+  QQ_LIFE.slice(LIFE_BASE).forEach(function(q){cq.life.push(q);});
+  QQ_INVEST.slice(INVEST_BASE).forEach(function(q){cq.invest.push(q);});
+  /* 기본 명언이 수정된 경우 전체 저장 */
+  cq._life_all   = QQ_LIFE.map(function(q){return q;});
+  cq._invest_all = QQ_INVEST.map(function(q){return q;});
+  saveCQ(cq);
+}
+/* 저장된 전체 배열 복원 */
+(function(){
+  try{
+    var cq=loadCQ();
+    if(cq._life_all&&cq._life_all.length>0){
+      QQ_LIFE.length=0; cq._life_all.forEach(function(q){QQ_LIFE.push(q);});
+      LIFE_BASE=Math.min(LIFE_BASE,QQ_LIFE.length);
+    }
+    if(cq._invest_all&&cq._invest_all.length>0){
+      QQ_INVEST.length=0; cq._invest_all.forEach(function(q){QQ_INVEST.push(q);});
+      INVEST_BASE=Math.min(INVEST_BASE,QQ_INVEST.length);
+    }
+    /* QQ 동기화 */
+    QQ.length=0;
+    var src=QQ_TAB==='invest'?QQ_INVEST:QQ_LIFE;
+    src.forEach(function(q){QQ.push(q);});
+  }catch(x){}
+})();
 
 /* ── 모달 렌더링 ── */
 function renderQModal(){
-  /* 탭 이름 업데이트 */
-  var tabName = QQ_TAB==='life' ? '🌟 인생명언' : '📈 투자명언';
-  var tnEl = document.getElementById('modal-tab-name');
-  var ahEl = document.getElementById('add-tab-hint');
-  if(tnEl) tnEl.textContent = tabName;
-  if(ahEl) ahEl.textContent = tabName;
+  var tabName=QQ_TAB==='life'?'🌟 인생명언':'📈 투자명언';
+  var tnEl=document.getElementById('modal-tab-name');
+  var ahEl=document.getElementById('add-tab-hint');
+  if(tnEl)tnEl.textContent=tabName;
+  if(ahEl)ahEl.textContent=tabName;
+  var cnt=document.getElementById('qcnt');
+  if(cnt)cnt.textContent=QQ.length;
+  var list=document.getElementById('qlist');
+  if(!list)return;
+  list.innerHTML='';
 
-  var list = document.getElementById('qlist');
-  var cnt  = document.getElementById('qcnt');
-  if(cnt) cnt.textContent = QQ.length;
-  if(!list) return;
-  list.innerHTML = '';
+  QQ.forEach(function(q,i){
+    var card=document.createElement('div');
+    card.style.cssText='background:#1a1a26;border-radius:10px;padding:10px 12px;margin-bottom:8px;';
 
-  QQ.forEach(function(q, i){
-    var wrap = document.createElement('div');
-    wrap.style.cssText = 'background:#1a1a26;border-radius:10px;padding:10px 12px;margin-bottom:8px;';
-
-    /* 텍스트 표시 or 편집 입력창 */
-    var info = document.createElement('div');
-    info.style.flex = '1';
-    info.innerHTML =
-      '<div style="font-size:13px;color:#f0f0f8;line-height:1.5;margin-bottom:3px;">'+(i+1)+'. '+q.t+'</div>'+
+    /* 명언 내용 */
+    var info=document.createElement('div');
+    info.innerHTML='<div style="font-size:13px;color:#f0f0f8;line-height:1.5;margin-bottom:3px;">'+(i+1)+'. '+q.t+'</div>'+
       '<div style="font-size:11px;color:#ffd060;font-style:italic;margin-bottom:2px;">'+q.e+'</div>'+
       '<div style="font-size:11px;color:#606080;">— '+q.a+'</div>';
 
     /* 버튼 행 */
-    var btnRow = document.createElement('div');
-    btnRow.style.cssText = 'display:flex;gap:6px;margin-top:8px;';
+    var btnRow=document.createElement('div');
+    btnRow.style.cssText='display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;';
 
-    /* 수정 버튼 */
-    var editBtn = document.createElement('button');
-    editBtn.textContent = '✏️ 수정';
-    editBtn.style.cssText = 'flex:1;background:rgba(74,143,255,.15);border:1px solid rgba(74,143,255,.3);border-radius:7px;color:#4a8fff;font-size:12px;padding:6px 0;cursor:pointer;-webkit-appearance:none;';
-    editBtn.onclick = (function(idx){ return function(){ editQuote(idx); }; })(i);
+    /* ✏️ 수정 버튼 */
+    var eBtn=document.createElement('button');
+    eBtn.textContent='✏️ 수정';
+    eBtn.style.cssText='flex:1;background:rgba(74,143,255,.15);border:1px solid rgba(74,143,255,.3);border-radius:7px;color:#4a8fff;font-size:12px;padding:7px 4px;cursor:pointer;-webkit-appearance:none;min-width:60px;';
+    eBtn.onclick=(function(idx){return function(){editQ(idx);}})(i);
 
-    /* 삭제 버튼 */
-    var delBtn = document.createElement('button');
-    delBtn.textContent = '🗑️ 삭제';
-    delBtn.style.cssText = 'flex:1;background:rgba(255,80,96,.15);border:1px solid rgba(255,80,96,.3);border-radius:7px;color:#ff5060;font-size:12px;padding:6px 0;cursor:pointer;-webkit-appearance:none;';
-    delBtn.onclick = (function(idx){ return function(){ delQuote(idx); }; })(i);
+    /* 🗑️ 삭제 버튼 */
+    var dBtn=document.createElement('button');
+    dBtn.textContent='🗑️ 삭제';
+    dBtn.style.cssText='flex:1;background:rgba(255,80,96,.15);border:1px solid rgba(255,80,96,.3);border-radius:7px;color:#ff5060;font-size:12px;padding:7px 4px;cursor:pointer;-webkit-appearance:none;min-width:60px;';
+    dBtn.onclick=(function(idx){return function(){delQ(idx);}})(i);
 
-    btnRow.appendChild(editBtn);
-    btnRow.appendChild(delBtn);
-    wrap.appendChild(info);
-    wrap.appendChild(btnRow);
-    list.appendChild(wrap);
+    /* ↔️ 탭 이동 버튼 */
+    var mBtn=document.createElement('button');
+    var destTab=QQ_TAB==='life'?'투자':'인생';
+    mBtn.textContent='↔️ '+destTab+'으로';
+    mBtn.style.cssText='flex:2;background:rgba(40,196,144,.15);border:1px solid rgba(40,196,144,.3);border-radius:7px;color:#28c490;font-size:12px;padding:7px 4px;cursor:pointer;-webkit-appearance:none;min-width:80px;';
+    mBtn.onclick=(function(idx){return function(){moveQ(idx);}})(i);
+
+    btnRow.appendChild(eBtn);
+    btnRow.appendChild(dBtn);
+    btnRow.appendChild(mBtn);
+    card.appendChild(info);
+    card.appendChild(btnRow);
+    list.appendChild(card);
   });
 }
 
-/* ── 수정 ── */
-function editQuote(i){
-  var q = QQ[i];
-  if(!q) return;
-  var newT = prompt('한글 명언 수정:', q.t);
-  if(newT===null) return;
-  var newE = prompt('영어 번역 수정:', q.e);
-  if(newE===null) return;
-  var newA = prompt('출처 수정:', q.a);
-  if(newA===null) return;
-
-  QQ[i].t = newT.trim()||q.t;
-  QQ[i].e = newE.trim()||q.e;
-  QQ[i].a = newA.trim()||q.a;
-
-  /* 원본 배열에도 반영 */
-  if(QQ_TAB==='life'){
-    QQ_LIFE.length=0; QQ.forEach(function(x){QQ_LIFE.push(x);});
-  } else {
-    QQ_INVEST.length=0; QQ.forEach(function(x){QQ_INVEST.push(x);});
-  }
-  /* 커스텀 명언 저장 업데이트 */
-  _saveCustomFromArrays();
+/* ── ✏️ 수정 ── */
+function editQ(i){
+  var q=QQ[i]; if(!q)return;
+  var newT=prompt('한글 명언 수정 ('+(i+1)+'번):', q.t);
+  if(newT===null)return;
+  var newE=prompt('영어 번역 수정:', q.e);
+  if(newE===null)return;
+  var newA=prompt('출처 수정:', q.a);
+  if(newA===null)return;
+  QQ[i].t=newT.trim()||q.t;
+  QQ[i].e=newE.trim()||q.e;
+  QQ[i].a=newA.trim()||q.a;
+  /* 원본 배열 동기화 */
+  if(QQ_TAB==='life'){QQ_LIFE.length=0;QQ.forEach(function(x){QQ_LIFE.push(x);});}
+  else{QQ_INVEST.length=0;QQ.forEach(function(x){QQ_INVEST.push(x);});}
+  _saveAll();
   displayQuote(curQIdx);
+  renderQModal();
+  alert('✅ '+(i+1)+'번 명언이 수정됐습니다.');
+}
+
+/* ── 🗑️ 삭제 ── */
+function delQ(i){
+  var q=QQ[i]; if(!q)return;
+  var preview=q.t.length>25?q.t.slice(0,25)+'...':q.t;
+  if(!confirm((i+1)+'번 명언을 삭제할까요?\n"'+preview+'"'))return;
+  QQ.splice(i,1);
+  if(QQ_TAB==='life'){QQ_LIFE.length=0;QQ.forEach(function(x){QQ_LIFE.push(x);});}
+  else{QQ_INVEST.length=0;QQ.forEach(function(x){QQ_INVEST.push(x);});}
+  _saveAll();
+  if(curQIdx>=QQ.length)curQIdx=Math.max(0,QQ.length-1);
+  if(QQ.length>0)displayQuote(curQIdx);
   renderQModal();
 }
 
-/* ── 삭제 ── */
-function delQuote(i){
-  if(i<0||i>=QQ.length) return;
-  var msg = QQ[i].t.length>30 ? QQ[i].t.slice(0,30)+'...' : QQ[i].t;
-  if(!confirm('삭제할까요?\n"'+msg+'"')) return;
+/* ── ↔️ 탭 이동 ── */
+function moveQ(i){
+  var q=QQ[i]; if(!q)return;
+  var destName=QQ_TAB==='life'?'투자명언':'인생명언';
+  var preview=q.t.length>20?q.t.slice(0,20)+'...':q.t;
+  if(!confirm((i+1)+'번을 '+destName+' 탭으로 이동할까요?\n"'+preview+'"'))return;
+  /* 현재 탭에서 제거 */
   QQ.splice(i,1);
   if(QQ_TAB==='life'){
     QQ_LIFE.length=0; QQ.forEach(function(x){QQ_LIFE.push(x);});
-  } else {
+    QQ_INVEST.push(q);
+  }else{
     QQ_INVEST.length=0; QQ.forEach(function(x){QQ_INVEST.push(x);});
+    QQ_LIFE.push(q);
   }
-  _saveCustomFromArrays();
-  if(curQIdx>=QQ.length) curQIdx=Math.max(0,QQ.length-1);
-  if(QQ.length>0) displayQuote(curQIdx);
+  _saveAll();
+  if(curQIdx>=QQ.length)curQIdx=Math.max(0,QQ.length-1);
+  if(QQ.length>0)displayQuote(curQIdx);
   renderQModal();
+  alert('✅ '+destName+' 탭으로 이동됐습니다.');
 }
 
-/* 커스텀 명언만 추출해서 저장 */
-function _saveCustomFromArrays(){
-  /* 기본 명언 수 (수정 전 원본) */
-  var LIFE_BASE = 27;
-  var INVEST_BASE = 12;
-  var cq = {life:[], invest:[]};
-  QQ_LIFE.slice(LIFE_BASE).forEach(function(q){ cq.life.push(q); });
-  QQ_INVEST.slice(INVEST_BASE).forEach(function(q){ cq.invest.push(q); });
-  /* 수정된 기본 명언도 반영 (전체 저장) */
-  /* 실제로는 전체 배열을 저장해서 수정이 유지되도록 */
-  cq.life = QQ_LIFE.map(function(q){return q;});
-  cq.invest = QQ_INVEST.map(function(q){return q;});
-  saveCQ(cq);
-}
-
-/* ── 추가 ── */
+/* ── ➕ 추가 ── */
 async function addQuote(){
-  var t = (document.getElementById('qakor').value||'').trim();
-  var e = (document.getElementById('qaeng').value||'').trim();
-  var a = (document.getElementById('qaauth').value||'').trim();
-  if(!t){ alert('한글 명언을 입력하세요'); return; }
+  var t=(document.getElementById('qakor').value||'').trim();
+  var e=(document.getElementById('qaeng').value||'').trim();
+  var a=(document.getElementById('qaauth').value||'').trim();
+  if(!t){alert('한글 명언을 입력하세요');return;}
+  /* 영어 자동 번역 */
   if(!e){
     try{
-      var r = await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(t)+'&langpair=ko|en');
-      var data = await r.json();
-      e = (data.responseData&&data.responseData.translatedText||'').trim();
-    }catch(x){ e=''; }
+      var r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(t)+'&langpair=ko|en');
+      var data=await r.json();
+      e=(data.responseData&&data.responseData.translatedText||'').trim();
+    }catch(x){e='';}
   }
-  var q = {t:t, e:e||t, a:a||'—'};
+  var q={t:t,e:e||t,a:a||'—'};
   QQ.push(q);
-  if(QQ_TAB==='life') QQ_LIFE.push(q);
+  if(QQ_TAB==='life')QQ_LIFE.push(q);
   else QQ_INVEST.push(q);
-  _saveCustomFromArrays();
+  _saveAll();
   document.getElementById('qakor').value='';
   document.getElementById('qaeng').value='';
   document.getElementById('qaauth').value='';
-  curQIdx = QQ.length-1;
+  curQIdx=QQ.length-1;
   displayQuote(curQIdx);
   renderQModal();
 }
@@ -858,52 +891,37 @@ function deleteQuote(i){
 })();
 </script>
 
-<!-- 명언 관리 모달 -->
-<div id="quote-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;overflow-y:auto;-webkit-overflow-scrolling:touch;">
-  <div style="min-height:100%;padding:16px 14px;box-sizing:border-box;">
-    <div style="max-width:440px;margin:20px auto;background:#12121a;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#ffc020;">✦ 명언 관리</div>
-        <button onclick="closeQuoteModal()" style="-webkit-appearance:none;background:rgba(255,255,255,.12);border:none;color:#fff;width:34px;height:34px;border-radius:9px;font-size:20px;cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;">×</button>
+<!-- ══ 명언 관리 모달 ══ -->
+<div id="quote-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:500;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+  <div style="min-height:100%;padding:14px 12px;box-sizing:border-box;">
+    <div style="max-width:440px;margin:16px auto;background:#12121a;border:1.5px solid rgba(255,255,255,.12);border-radius:18px;padding:16px;">
+
+      <!-- 헤더 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-size:16px;font-weight:700;color:#ffc020;">✦ <span id="modal-tab-name">🌟 인생명언</span> 관리</div>
+        <button onclick="closeQuoteModal()" style="-webkit-appearance:none;background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:9px;font-size:22px;cursor:pointer;line-height:1;touch-action:manipulation;">×</button>
       </div>
+
       <!-- 추가 폼 -->
       <div style="background:#1a1a26;border-radius:12px;padding:13px;margin-bottom:14px;">
-        <div style="font-size:12px;font-weight:700;color:#ffc020;margin-bottom:10px;letter-spacing:.5px;">+ 새 명언 추가</div>
-        <textarea id="q-add-kor" rows="2" placeholder="한글 명언을 입력하세요..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#fff;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <textarea id="q-add-eng" rows="2" placeholder="한글 입력 후 자동 번역..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#ffd060;font-size:13px;font-family:'Georgia',serif;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <input id="q-add-auth" placeholder="출처 (예: 아리스토텔레스)" style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#b0b0c8;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px;display:block;font-family:'Noto Sans KR',sans-serif;">
-        <button onclick="addQuote()" style="-webkit-appearance:none;width:100%;background:#ffc020;border:none;color:#0a0a0f;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;touch-action:manipulation;display:block;">✦ 추가</button>
+        <div style="font-size:12px;font-weight:700;color:#ffc020;margin-bottom:10px;">+ <span id="add-tab-hint">🌟 인생명언</span>에 추가</div>
+        <textarea id="qakor" rows="2" placeholder="한글 명언 입력..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#fff;font-size:14px;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;font-family:inherit;"></textarea>
+        <textarea id="qaeng" rows="2" placeholder="영어 번역 (비우면 자동번역)..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#ffd060;font-size:13px;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;font-family:inherit;"></textarea>
+        <input id="qaauth" placeholder="출처 (예: 아리스토텔레스)" style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#b0b0c8;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px;display:block;font-family:inherit;">
+        <button onclick="addQuote()" style="-webkit-appearance:none;width:100%;background:#ffc020;border:none;color:#0a0a0f;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;display:block;font-family:inherit;touch-action:manipulation;">✦ 추가</button>
       </div>
-      <!-- 목록 -->
-      <div style="font-size:11px;color:#606080;letter-spacing:.5px;margin-bottom:10px;">전체 명언 (<span id="q-count">0</span>개)</div>
-      <div id="quote-list-modal"></div>
-    </div>
-  </div>
-</div>
 
-<!-- 토스트 -->
-<div class="toast" id="toast"></div>
-
-
-<div id="quote-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;overflow-y:auto;-webkit-overflow-scrolling:touch;">
-  <div style="min-height:100%;padding:16px 14px;box-sizing:border-box;">
-    <div style="max-width:440px;margin:20px auto;background:#12121a;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <div style="font-size:18px;font-weight:700;color:#ffc020;">✦ <span id="modal-tab-name">인생명언</span> 관리</div>
-        <button onclick="closeQuoteModal()" style="-webkit-appearance:none;background:rgba(255,255,255,.12);border:none;color:#fff;width:34px;height:34px;border-radius:9px;font-size:20px;cursor:pointer;line-height:1;">×</button>
+      <!-- 명언 목록 -->
+      <div style="font-size:11px;color:#606080;margin-bottom:10px;">
+        명언 목록 (<span id="qcnt">0</span>개) &nbsp;·&nbsp; <span style="color:#28c490;">↔️ 탭이동 가능</span>
       </div>
-      <div style="background:#1a1a26;border-radius:12px;padding:13px;margin-bottom:14px;">
-        <div style="font-size:12px;font-weight:700;color:#ffc020;margin-bottom:10px;">+ <span id="add-tab-hint">인생명언</span>에 추가</div>
-        <textarea id="qakor" rows="2" placeholder="한글 명언..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#fff;font-size:14px;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <textarea id="qaeng" rows="2" placeholder="English translation..." style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#ffd060;font-size:13px;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:7px;display:block;"></textarea>
-        <input id="qaauth" placeholder="출처" style="width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px 12px;color:#b0b0c8;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px;display:block;">
-        <button onclick="addQuote()" style="-webkit-appearance:none;width:100%;background:#ffc020;border:none;color:#0a0a0f;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;display:block;">✦ 추가</button>
-      </div>
-      <div style="font-size:11px;color:#606080;margin-bottom:10px;">명언 (<span id="qcnt">0</span>개)</div>
       <div id="qlist"></div>
+
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 </body>
 </html>
