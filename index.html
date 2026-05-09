@@ -444,17 +444,32 @@ function showQuote(){
    명언 탭 & 관리 v3
 ════════════════════════════════ */
 var QQ_TAB = 'life';
-var QCKEY  = 'henry_quotes_v3';
+var QCKEY  = 'henry_quotes_final';
 var LIFE_BASE   = 22;
 var INVEST_BASE = 17;
 
 /* ── 저장/로드 ── */
 function loadCQ(){
-  try{
-    var r = localStorage.getItem(QCKEY);
-    if(r) return JSON.parse(r);
-  }catch(x){}
-  return {life:[], invest:[]};
+  /* 최신→구버전 순으로 검색해서 데이터 마이그레이션 */
+  var keys=['henry_quotes_final','henry_quotes_v3','henry_quotes_v2','henry_quotes_v1'];
+  for(var k=0;k<keys.length;k++){
+    try{
+      var r=localStorage.getItem(keys[k]);
+      if(!r) continue;
+      var parsed=JSON.parse(r);
+      if(Array.isArray(parsed)){
+        /* 구버전 배열 → 객체 변환 */
+        var obj={life:[],invest:[]};
+        parsed.forEach(function(q){
+          if(q._tab==='invest') obj.invest.push(q);
+          else obj.life.push(q);
+        });
+        return obj;
+      }
+      if(parsed&&(parsed.life||parsed.invest)) return parsed;
+    }catch(x){}
+  }
+  return {life:[],invest:[]};
 }
 function saveCQ(obj){
   try{ localStorage.setItem(QCKEY, JSON.stringify(obj)); }catch(x){}
@@ -482,14 +497,17 @@ function saveCQ(obj){
   QQ_LIFE.forEach(function(q){ QQ.push(q); });
 })();
 
-/* ── 커스텀 명언만 저장 (기본 명언은 코드에 있음) ── */
+/* ── 전체 저장 + QQ 동기화 ── */
 function _saveAll(){
-  /* 전체 배열 저장 — 수정/삭제/추가 모두 반영 */
   var cq = {
-    life:   QQ_LIFE.map(function(q){return q;}),
-    invest: QQ_INVEST.map(function(q){return q;})
+    life:   QQ_LIFE.map(function(q){return {t:q.t,e:q.e,a:q.a};}),
+    invest: QQ_INVEST.map(function(q){return {t:q.t,e:q.e,a:q.a};})
   };
   saveCQ(cq);
+  /* QQ 즉시 동기화 */
+  QQ.length = 0;
+  var src = (QQ_TAB==='invest') ? QQ_INVEST : QQ_LIFE;
+  src.forEach(function(q){ QQ.push(q); });
 }
 
 /* ── 탭 전환 ── */
