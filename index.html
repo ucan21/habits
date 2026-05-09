@@ -460,19 +460,35 @@ function saveCQ(obj){
   try{ localStorage.setItem(QCKEY, JSON.stringify(obj)); }catch(x){}
 }
 
-/* ── 앱 시작 시 커스텀 명언 로드 ── */
+/* ── 앱 시작 시 명언 로드 ── */
 (function(){
   var cq = loadCQ();
-  /* 커스텀 명언만 기본 배열에 추가 (중복 방지) */
-  (cq.life||[]).forEach(function(q){ QQ_LIFE.push(q); });
-  (cq.invest||[]).forEach(function(q){ QQ_INVEST.push(q); });
+  /* 저장된 전체 배열이 있으면 코드 배열 대체 */
+  if(cq.life && cq.life.length > 0){
+    QQ_LIFE.length = 0;
+    cq.life.forEach(function(q){ QQ_LIFE.push(q); });
+  } else {
+    /* 첫 실행: 코드 배열 유지, 커스텀만 추가 */
+    (cq.life||[]).forEach(function(q){ QQ_LIFE.push(q); });
+  }
+  if(cq.invest && cq.invest.length > 0){
+    QQ_INVEST.length = 0;
+    cq.invest.forEach(function(q){ QQ_INVEST.push(q); });
+  } else {
+    (cq.invest||[]).forEach(function(q){ QQ_INVEST.push(q); });
+  }
+  /* QQ 초기화 */
+  QQ.length = 0;
+  QQ_LIFE.forEach(function(q){ QQ.push(q); });
 })();
 
 /* ── 커스텀 명언만 저장 (기본 명언은 코드에 있음) ── */
 function _saveAll(){
-  var cq = {life:[], invest:[]};
-  QQ_LIFE.slice(LIFE_BASE).forEach(function(q){ cq.life.push(q); });
-  QQ_INVEST.slice(INVEST_BASE).forEach(function(q){ cq.invest.push(q); });
+  /* 전체 배열 저장 — 수정/삭제/추가 모두 반영 */
+  var cq = {
+    life:   QQ_LIFE.map(function(q){return q;}),
+    invest: QQ_INVEST.map(function(q){return q;})
+  };
   saveCQ(cq);
 }
 
