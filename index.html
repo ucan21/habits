@@ -651,21 +651,36 @@ function saveQ(i){
   var newE = taEng ? taEng.value.trim() : '';
   var newA = inpAuth ? inpAuth.value.trim() : '';
   if(!newT){ alert('명언 내용을 입력하세요'); return; }
+
+  /* 데이터 업데이트 */
   QQ[i].t = newT;
   QQ[i].e = newE || newT;
   QQ[i].a = newA || '—';
+
+  /* 원본 배열 동기화 */
   if(QQ_TAB==='life'){QQ_LIFE.length=0; QQ.forEach(function(x){QQ_LIFE.push(x);});}
   else{QQ_INVEST.length=0; QQ.forEach(function(x){QQ_INVEST.push(x);});}
+
+  /* 저장 */
   _saveAll();
-  displayQuote(curQIdx);
+
+  /* 화면 즉시 반영 — 수정한 명언으로 이동 */
+  curQIdx = i;
+  var qt = document.getElementById('q-text');
+  var qe = document.getElementById('q-en');
+  var qa = document.getElementById('q-author');
+  if(qt) qt.textContent = newT;
+  if(qe) qe.textContent = newE || newT;
+  if(qa) qa.textContent = '— ' + (newA || '—');
+
   /* 저장 완료 표시 */
   var card = document.getElementById('qcard-'+i);
   if(card){
     var flash = document.createElement('div');
-    flash.textContent = '✅ 저장됨';
-    flash.style.cssText = 'text-align:center;color:#28c490;font-size:12px;font-weight:700;padding:4px;';
+    flash.textContent = '✅ 저장됨 — 화면에 반영됐습니다';
+    flash.style.cssText = 'text-align:center;color:#28c490;font-size:12px;font-weight:700;padding:6px;background:rgba(40,196,144,.1);border-radius:6px;margin-top:4px;';
     card.appendChild(flash);
-    setTimeout(function(){ if(flash.parentNode) flash.parentNode.removeChild(flash); }, 1500);
+    setTimeout(function(){ if(flash.parentNode) flash.parentNode.removeChild(flash); }, 2000);
   }
 }
 
