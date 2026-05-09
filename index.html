@@ -527,7 +527,7 @@ function closeQuoteModal(){
 /* ── 모달 렌더링 ── */
 function renderQModal(){
   var isLife = (QQ_TAB === 'life');
-  var tabName = isLife ? '🌟 인생명언' : '📈 투자명언';
+  var tabName  = isLife ? '🌟 인생명언' : '📈 투자명언';
   var destName = isLife ? '투자' : '인생';
 
   var tnEl = document.getElementById('modal-tab-name');
@@ -549,59 +549,108 @@ function renderQModal(){
 
   QQ.forEach(function(q, i){
     var card = document.createElement('div');
-    card.style.cssText = 'background:#222232;border-radius:10px;padding:11px 12px;margin-bottom:8px;';
+    card.style.cssText = 'background:#222232;border-radius:10px;padding:11px 12px;margin-bottom:10px;';
+    card.id = 'qcard-'+i;
 
-    var info = document.createElement('div');
-    info.style.marginBottom = '8px';
-    info.innerHTML =
-      '<div style="font-size:13px;color:#f0f0f8;line-height:1.55;margin-bottom:3px;"><b style="color:#ffc020;">'+(i+1)+'.</b> '+q.t+'</div>'+
-      '<div style="font-size:12px;color:#ffd060;font-style:italic;margin-bottom:2px;">'+q.e+'</div>'+
-      '<div style="font-size:11px;color:#606080;">— '+q.a+'</div>';
+    /* 번호 */
+    var numEl = document.createElement('div');
+    numEl.style.cssText = 'font-size:11px;color:#ffc020;font-weight:700;margin-bottom:6px;';
+    numEl.textContent = (i+1) + '번';
 
+    /* 한글 textarea */
+    var taKor = document.createElement('textarea');
+    taKor.value = q.t;
+    taKor.rows = 2;
+    taKor.style.cssText = 'width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;color:#f0f0f8;font-size:13px;outline:none;resize:none;box-sizing:border-box;margin-bottom:5px;display:block;font-family:inherit;line-height:1.55;';
+    taKor.id = 'qt-'+i;
+
+    /* 영어 textarea */
+    var taEng = document.createElement('textarea');
+    taEng.value = q.e;
+    taEng.rows = 2;
+    taEng.style.cssText = 'width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;color:#ffd060;font-size:12px;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:5px;display:block;font-family:inherit;line-height:1.55;';
+    taEng.id = 'qe-'+i;
+
+    /* 출처 input */
+    var inpAuth = document.createElement('input');
+    inpAuth.value = q.a;
+    inpAuth.placeholder = '출처';
+    inpAuth.style.cssText = 'width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:7px 10px;color:#b0b0c8;font-size:12px;outline:none;box-sizing:border-box;margin-bottom:8px;display:block;font-family:inherit;';
+    inpAuth.id = 'qa-'+i;
+
+    /* 자동 높이 */
+    [taKor, taEng].forEach(function(ta){
+      ta.addEventListener('input', function(){
+        this.style.height='0'; this.style.height=this.scrollHeight+'px';
+      });
+    });
+
+    /* 버튼 행: 💾저장 | ↔️이동 | 🗑️삭제 */
     var btnRow = document.createElement('div');
     btnRow.style.cssText = 'display:flex;gap:5px;';
 
-    var eBtn = document.createElement('button');
-    eBtn.innerHTML = '✏️ 수정';
-    eBtn.style.cssText = 'flex:1;background:rgba(74,143,255,.18);border:1px solid rgba(74,143,255,.35);border-radius:8px;color:#4a8fff;font-size:12px;padding:8px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;';
-    eBtn.onclick = (function(idx){return function(){editQ(idx);}})(i);
+    /* 💾 저장 */
+    var sBtn = document.createElement('button');
+    sBtn.innerHTML = '💾 저장';
+    sBtn.style.cssText = 'flex:2;background:rgba(40,196,144,.18);border:1px solid rgba(40,196,144,.35);border-radius:8px;color:#28c490;font-size:12px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;font-weight:700;';
+    sBtn.onclick = (function(idx){ return function(){ saveQ(idx); }; })(i);
 
-    var dBtn = document.createElement('button');
-    dBtn.innerHTML = '🗑️ 삭제';
-    dBtn.style.cssText = 'flex:1;background:rgba(255,80,96,.18);border:1px solid rgba(255,80,96,.35);border-radius:8px;color:#ff5060;font-size:12px;padding:8px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;';
-    dBtn.onclick = (function(idx){return function(){delQ(idx);}})(i);
-
+    /* ↔️ 탭 이동 */
     var mBtn = document.createElement('button');
-    mBtn.innerHTML = '↔️ ' + destName;
-    mBtn.style.cssText = 'flex:1;background:rgba(40,196,144,.18);border:1px solid rgba(40,196,144,.35);border-radius:8px;color:#28c490;font-size:12px;padding:8px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;';
-    mBtn.onclick = (function(idx){return function(){moveQ(idx);}})(i);
+    mBtn.innerHTML = '↔️ '+destName;
+    mBtn.style.cssText = 'flex:2;background:rgba(74,143,255,.18);border:1px solid rgba(74,143,255,.35);border-radius:8px;color:#4a8fff;font-size:12px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;';
+    mBtn.onclick = (function(idx){ return function(){ moveQ(idx); }; })(i);
 
-    btnRow.appendChild(eBtn);
-    btnRow.appendChild(dBtn);
+    /* 🗑️ 삭제 */
+    var dBtn = document.createElement('button');
+    dBtn.innerHTML = '🗑️';
+    dBtn.style.cssText = 'flex:1;background:rgba(255,80,96,.18);border:1px solid rgba(255,80,96,.35);border-radius:8px;color:#ff5060;font-size:14px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;';
+    dBtn.onclick = (function(idx){ return function(){ delQ(idx); }; })(i);
+
+    btnRow.appendChild(sBtn);
     btnRow.appendChild(mBtn);
-    card.appendChild(info);
+    btnRow.appendChild(dBtn);
+
+    card.appendChild(numEl);
+    card.appendChild(taKor);
+    card.appendChild(taEng);
+    card.appendChild(inpAuth);
     card.appendChild(btnRow);
     list.appendChild(card);
+
+    /* textarea 높이 초기 조절 */
+    setTimeout(function(){
+      [taKor,taEng].forEach(function(ta){ta.style.height='0';ta.style.height=ta.scrollHeight+'px';});
+    }, 0);
   });
 }
 
-/* ── ✏️ 수정 ── */
-function editQ(i){
-  var q = QQ[i]; if(!q) return;
-  var newT = prompt('한글 명언 수정 ('+(i+1)+'번):', q.t);
-  if(newT === null) return;
-  var newE = prompt('영어 번역 수정:', q.e);
-  if(newE === null) return;
-  var newA = prompt('출처 수정:', q.a);
-  if(newA === null) return;
-  QQ[i].t = newT.trim() || q.t;
-  QQ[i].e = newE.trim() || q.e;
-  QQ[i].a = newA.trim() || q.a;
+/* ── 💾 저장 (인라인 수정) ── */
+function saveQ(i){
+  var taKor  = document.getElementById('qt-'+i);
+  var taEng  = document.getElementById('qe-'+i);
+  var inpAuth= document.getElementById('qa-'+i);
+  if(!taKor) return;
+  var newT = taKor.value.trim();
+  var newE = taEng ? taEng.value.trim() : '';
+  var newA = inpAuth ? inpAuth.value.trim() : '';
+  if(!newT){ alert('명언 내용을 입력하세요'); return; }
+  QQ[i].t = newT;
+  QQ[i].e = newE || newT;
+  QQ[i].a = newA || '—';
   if(QQ_TAB==='life'){QQ_LIFE.length=0; QQ.forEach(function(x){QQ_LIFE.push(x);});}
   else{QQ_INVEST.length=0; QQ.forEach(function(x){QQ_INVEST.push(x);});}
   _saveAll();
   displayQuote(curQIdx);
-  renderQModal();
+  /* 저장 완료 표시 */
+  var card = document.getElementById('qcard-'+i);
+  if(card){
+    var flash = document.createElement('div');
+    flash.textContent = '✅ 저장됨';
+    flash.style.cssText = 'text-align:center;color:#28c490;font-size:12px;font-weight:700;padding:4px;';
+    card.appendChild(flash);
+    setTimeout(function(){ if(flash.parentNode) flash.parentNode.removeChild(flash); }, 1500);
+  }
 }
 
 /* ── 🗑️ 삭제 ── */
