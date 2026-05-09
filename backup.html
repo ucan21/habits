@@ -20,11 +20,11 @@ html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
 .shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
 .hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.back{background:var(--s2);border:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;text-decoration:none;flex-shrink:0;}
+.back{background:var(--s2);border:none;color:#fff;width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;flex-shrink:0;}
 .back:active{opacity:.7;}
 .hdr-c{flex:1;text-align:center;}
-.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--teal);line-height:1;}
-.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--teal);line-height:1;}
+.hdr-sub{font-size:8px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 .body{padding:14px 14px 100px;}
 .sec{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
@@ -102,7 +102,10 @@ if('serviceWorker' in navigator){
       <div class="hdr-title">💾 백업 & 복원</div>
       <div class="hdr-sub">데이터 안전 보관</div>
     </div>
-    <a href="index.html" style="background:var(--s2);border:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;">🏠</a>
+    <a href="index.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.12);border:none;color:#fff;width:54px;height:54px;border-radius:14px;text-decoration:none;flex-shrink:0;touch-action:manipulation;gap:2px;-webkit-tap-highlight-color:transparent;">
+        <span style="font-size:24px;line-height:1;">🏠</span>
+        <span style="font-size:9px;font-family:'Noto Sans KR',sans-serif;font-weight:700;opacity:.7;">홈</span>
+      </a>
   </div>
 
   <div class="scroll">
