@@ -20,13 +20,13 @@ html,body{height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;-webkit-font-smoothing:antialiased;}
 .shell{display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;height:100dvh;height:100vh;overflow:hidden;}
 .hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.back{background:var(--s2);border:none;color:#fff;width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;flex-shrink:0;}
+.back{background:var(--s2);border:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;text-decoration:none;flex-shrink:0;}
 .back:active{opacity:.7;}
 .hdr-c{flex:1;text-align:center;}
-.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--teal);line-height:1;}
-.hdr-sub{font-size:8px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--teal);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
-.body{padding:14px 14px 20px;}
+.body{padding:14px 14px 100px;}
 .sec{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .sec::after{content:'';flex:1;height:1px;background:var(--border);}
 
@@ -96,34 +96,137 @@ if('serviceWorker' in navigator){
 </head>
 <body>
 <div class="shell">
-  <!-- 상단 탭바 -->
-  <nav style="flex-shrink:0;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.15);display:flex;padding-top:calc(var(--safe-t)+6px);padding-bottom:6px;">
-    <button onclick="location.href='index.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">🏠</span>
-      홈
-    </button>
-    <button onclick="location.href='habits.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">✅</span>
-      습관
-    </button>
-    <button onclick="location.href='gratitude.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">🙏</span>
-      감사
-    </button>
-    <button onclick="location.href='brain.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">🧠</span>
-      Brain
-    </button>
-    <button onclick="location.href='gtask.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">☑️</span>
-      Tasks
-    </button>
-    <button onclick="location.href='backup.html'" style="flex:1;background:rgba(255,255,255,.15);border:none;border-bottom:2px solid #fff;color:#fff;padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">💾</span>
-      백업
-    </button>
-  </nav>
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c">
+      <div class="hdr-title">💾 백업 & 복원</div>
+      <div class="hdr-sub">데이터 안전 보관</div>
+    </div>
+    <a href="index.html" style="background:var(--s2);border:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;">🏠</a>
+  </div>
 
+  <div class="scroll">
+    <div class="body">
+
+      <!-- 마지막 백업 -->
+      <div class="last-backup" id="last-backup">
+        <span class="lb-icon">💾</span>
+        <div class="lb-info">
+          <div class="lb-title" id="lb-title">마지막 백업: 없음</div>
+          <div class="lb-time" id="lb-time">앱 수정 전 반드시 백업하세요!</div>
+        </div>
+      </div>
+
+      <!-- 데이터 현황 -->
+      <div class="sec">📊 현재 데이터</div>
+      <div class="data-card">
+        <div class="data-row"><span class="dr-key">✅ 습관 기록</span><span class="dr-val" id="d-habits">—</span></div>
+        <div class="data-row"><span class="dr-key">🙏 감사일기</span><span class="dr-val" id="d-grat">—</span></div>
+        <div class="data-row"><span class="dr-key">📷 사진</span><span class="dr-val" id="d-photos">—</span></div>
+        <div class="data-row"><span class="dr-key">🧠 Brain Dump</span><span class="dr-val" id="d-brain">—</span></div>
+        <div class="data-row"><span class="dr-key">💾 크기</span><span class="dr-val" id="d-size">—</span></div>
+      </div>
+
+      <!-- 백업 버튼 -->
+      <div class="sec">백업 (저장)</div>
+
+      <button class="big-btn btn-save" onclick="doSave()">
+        <span class="btn-icon">📤</span>
+        <div class="btn-body">
+          <div class="btn-title">JSON 파일로 저장</div>
+          <div class="btn-sub">핸드폰 파일함에 백업 파일 저장<br>앱 수정·삭제 전 반드시 실행!</div>
+        </div>
+      </button>
+
+      <!-- 저장 방법 안내 -->
+      <div class="guide-box green">
+        <div class="guide-title" style="color:var(--teal);">📱 저장 후 파일 확인 방법</div>
+        <div class="guide-step">
+          <div class="step-num">1</div>
+          <div class="step-txt">위 버튼 탭 → 파일 자동 다운로드</div>
+        </div>
+        <div class="guide-step">
+          <div class="step-num">2</div>
+          <div class="step-txt"><b>파일 앱</b> → <b>다운로드</b> 폴더에서<br><b>HenryDiary_날짜.json</b> 확인</div>
+        </div>
+        <div class="guide-step">
+          <div class="step-num">3</div>
+          <div class="step-txt">또는 <b>카카오톡 → 나에게 보내기</b>로<br>파일 전송하면 더 안전합니다</div>
+        </div>
+      </div>
+
+      <!-- 복원 버튼 -->
+      <div class="sec">복원 (불러오기)</div>
+
+      <!-- 복원 방법 안내 — 버튼 위에 크게 표시 -->
+      <div style="background:rgba(74,143,255,.1);border:2px solid rgba(74,143,255,.4);border-radius:14px;padding:16px;margin-bottom:12px;">
+        <div style="font-size:14px;font-weight:700;color:var(--blue);margin-bottom:12px;">📍 백업 파일 위치</div>
+        <div style="background:#0a0a0f;border-radius:10px;padding:12px;margin-bottom:10px;">
+          <div style="font-size:12px;color:var(--text3);margin-bottom:4px;">파일명</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;">HenryDiary_날짜_시간.json</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">예) HenryDiary_20260507_1816.json</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;background:#0a0a0f;border-radius:10px;padding:11px 12px;">
+            <span style="font-size:20px;">📱</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">파일 앱에 있는 경우</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px;">파일 앱 → <b style="color:#fff;">다운로드</b> 폴더</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#0a0a0f;border-radius:10px;padding:11px 12px;">
+            <span style="font-size:20px;">💬</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">카카오톡에 보낸 경우</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px;">카카오톡 → 나에게 보내기 → 파일 탭</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#0a0a0f;border-radius:10px;padding:11px 12px;">
+            <span style="font-size:20px;">📧</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">이메일로 보낸 경우</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px;">메일 앱 → 첨부파일 다운로드 후 선택</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="big-btn btn-load" onclick="document.getElementById('file-inp').click()">
+        <span class="btn-icon">📥</span>
+        <div class="btn-body">
+          <div class="btn-title">백업 파일 선택해서 복원</div>
+          <div class="btn-sub">위 위치에서 HenryDiary_*.json 파일 선택</div>
+        </div>
+      </button>
+      <input type="file" id="file-inp" accept=".json" onchange="doLoad(event)">
+
+      <!-- 중요 안내 -->
+      <div class="guide-box gold">
+        <div class="guide-title" style="color:var(--gold);">⚠️ 데이터 보호 필수 규칙</div>
+        <div class="guide-step">
+          <div class="step-num" style="background:var(--gold);">!</div>
+          <div class="step-txt"><b>앱 수정/삭제 전</b> 반드시 위 저장 버튼 탭</div>
+        </div>
+        <div class="guide-step">
+          <div class="step-num" style="background:var(--gold);">!</div>
+          <div class="step-txt">Safari <b>웹사이트 데이터 지우기</b> 절대 금지</div>
+        </div>
+        <div class="guide-step">
+          <div class="step-num" style="background:var(--gold);">!</div>
+          <div class="step-txt">매일 저녁 저장 습관 → 데이터 완벽 보호</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <nav class="bnav">
+    <button class="nb" onclick="location.href='index.html'"><span class="ni">🏠</span>홈</button>
+    <button class="nb" onclick="location.href='habits.html'"><span class="ni">✅</span>습관</button>
+    <button class="nb" onclick="location.href='gratitude.html'"><span class="ni">🙏</span>감사</button>
+    <button class="nb" onclick="location.href='brain.html'"><span class="ni">🧠</span>Brain</button>
+    <button class="nb on"><span class="ni">💾</span>백업</button>
+  </nav>
 </div>
 
 <!-- 성공 오버레이 -->

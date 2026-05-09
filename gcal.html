@@ -22,11 +22,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
 /* HEADER */
 .hdr{flex-shrink:0;padding:calc(var(--safe-t)+8px) 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.back{background:var(--s2);border:none;outline:none;color:#fff;width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;flex-shrink:0;-webkit-appearance:none;appearance:none;cursor:pointer;touch-action:manipulation;font-family:inherit;line-height:1;}
+.back{background:var(--s2);border:none;outline:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;text-decoration:none;flex-shrink:0;-webkit-appearance:none;appearance:none;cursor:pointer;touch-action:manipulation;font-family:inherit;line-height:1;}
 .back:active{transform:scale(.92);}
 .hdr-c{flex:1;text-align:center;}
-.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--blue);line-height:1;}
-.hdr-sub{font-size:8px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--blue);line-height:1;}
+.hdr-sub{font-size:9px;letter-spacing:2px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;margin-top:2px;}
 
 /* SCROLL */
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
@@ -111,35 +111,127 @@ if('serviceWorker' in navigator){
 </head>
 <body>
 <div class="shell">
-  <!-- 상단 탭바 -->
-  <nav style="flex-shrink:0;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.15);display:flex;padding-top:calc(var(--safe-t)+6px);padding-bottom:6px;">
-    <button onclick="location.href='index.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">🏠</span>
-      홈
-    </button>
-    <button onclick="location.href='habits.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">✅</span>
-      습관
-    </button>
-    <button onclick="location.href='gratitude.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">🙏</span>
-      감사
-    </button>
-    <button onclick="location.href='brain.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">🧠</span>
-      Brain
-    </button>
-    <button onclick="location.href='gtask.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">☑️</span>
-      Tasks
-    </button>
-    <button onclick="location.href='backup.html'" style="flex:1;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);padding:10px 2px 8px;cursor:pointer;font-size:10px;font-family:'Noto Sans KR',sans-serif;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;">
-      <span style="font-size:22px;line-height:1;">💾</span>
-      백업
-    </button>
-  </nav>
+  <div class="hdr">
+    <a class="back" href="index.html">←</a>
+    <div class="hdr-c">
+      <div class="hdr-title">📅 Google Calendar</div>
+      <div class="hdr-sub">Google 캘린더 바로가기</div>
+    </div>
+    <a href="index.html" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;">🏠</a>
+  </div>
+
+  <div class="scroll">
+    <div class="body">
+
+      <!-- 메인 열기 버튼 -->
+      <a class="main-btn" href="https://calendar.google.com" target="_blank">
+        <span class="main-btn-icon">📅</span>
+        <div class="main-btn-body">
+          <div class="main-btn-title">GOOGLE CALENDAR</div>
+          <div class="main-btn-sub">탭하면 Google 캘린더가 열립니다</div>
+        </div>
+        <span class="main-btn-arr">›</span>
+      </a>
+
+      <!-- 새 일정 추가 -->
+      <a class="add-event-btn" href="https://calendar.google.com/calendar/r/eventedit" target="_blank">
+        ➕ 새 일정 추가하기
+      </a>
+
+      <!-- 뷰 선택 -->
+      <div class="sec">보기 방식 선택</div>
+      <div class="view-grid">
+        <a class="view-btn" href="https://calendar.google.com/calendar/r/day" target="_blank">
+          <span class="view-btn-icon">📆</span>
+          <span class="view-btn-label">일간 보기</span>
+          <span class="view-btn-sub">오늘 하루</span>
+        </a>
+        <a class="view-btn" href="https://calendar.google.com/calendar/r/week" target="_blank">
+          <span class="view-btn-icon">🗓️</span>
+          <span class="view-btn-label">주간 보기</span>
+          <span class="view-btn-sub">이번 주</span>
+        </a>
+        <a class="view-btn" href="https://calendar.google.com/calendar/r/month" target="_blank">
+          <span class="view-btn-icon">📅</span>
+          <span class="view-btn-label">월간 보기</span>
+          <span class="view-btn-sub">이번 달</span>
+        </a>
+        <a class="view-btn" href="https://calendar.google.com/calendar/r/agenda" target="_blank">
+          <span class="view-btn-icon">📋</span>
+          <span class="view-btn-label">일정 목록</span>
+          <span class="view-btn-sub">전체 일정</span>
+        </a>
+      </div>
+
+      <!-- 오늘 정보 -->
+      <div class="today-card">
+        <div class="today-hdr">
+          <div>
+            <div class="today-title">📌 오늘</div>
+            <div class="today-date" id="today-str">—</div>
+          </div>
+          <a class="today-open" href="https://calendar.google.com/calendar/r/day" target="_blank">열기 →</a>
+        </div>
+        <div style="font-size:13px;color:var(--text3);line-height:1.6;">
+          Google 캘린더 앱을 설치하면<br>
+          홈 화면 위젯으로 오늘 일정을 바로 확인할 수 있습니다.
+        </div>
+      </div>
+
+      <!-- 앱 설치 안내 -->
+      <div class="sec">앱 설치</div>
+      <div class="view-grid">
+        <a class="view-btn" href="https://apps.apple.com/app/google-calendar-get-organized/id909319292" target="_blank">
+          <span class="view-btn-icon">🍎</span>
+          <span class="view-btn-label">App Store</span>
+          <span class="view-btn-sub">iPhone / iPad</span>
+        </a>
+        <a class="view-btn" href="https://play.google.com/store/apps/details?id=com.google.android.calendar" target="_blank">
+          <span class="view-btn-icon">🤖</span>
+          <span class="view-btn-label">Play Store</span>
+          <span class="view-btn-sub">Android</span>
+        </a>
+      </div>
+
+      <!-- 안내 -->
+      <div class="info-box">
+        <div class="info-title">ℹ️ iframe 미지원 안내</div>
+        <div class="info-row"><span class="sn">!</span>Google은 보안상 다른 앱 안에 캘린더를 직접 띄우는 것(iframe)을 차단합니다. 위 버튼을 탭하면 Safari 또는 Chrome에서 Google 캘린더가 열립니다.</div>
+      </div>
+
+      <div class="info-box" style="border-color:rgba(255,192,32,.2);background:rgba(255,192,32,.05);">
+        <div class="info-title" style="color:var(--gold);">💡 더 편하게 쓰는 방법</div>
+        <div class="info-row" style="color:var(--text2);"><span class="sn" style="background:var(--gold);color:#0a0a0f;">1</span>Google Calendar 앱 설치 후 iPhone 홈 화면에 위젯 추가</div>
+        <div class="info-row" style="color:var(--text2);"><span class="sn" style="background:var(--gold);color:#0a0a0f;">2</span>위젯에서 오늘 일정을 한눈에 확인 가능</div>
+        <div class="info-row" style="color:var(--text2);"><span class="sn" style="background:var(--gold);color:#0a0a0f;">3</span>Henry's Diary 앱과 나란히 배치하면 최적!</div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- BOTTOM NAV -->
+  <nav class="bnav">
+    <button class="nb" style="color:var(--blue);" onclick="window.location.href='index.html'">
+      <span class="ni">🏠</span>홈
+    </button>
+    <button class="nb" onclick="window.location.href='habits.html'">
+      <span class="ni">✅</span>습관
+    </button>
+    <button class="nb" onclick="window.location.href='gratitude.html'">
+      <span class="ni">🙏</span>감사
+    </button>
+    <button class="nb" onclick="window.location.href='brain.html'">
+      <span class="ni">🧠</span>Brain
+    </button>
+    <button class="nb" onclick="window.location.href='gtask.html'">
+      <span class="ni">☑️</span>Tasks
+    </button>
+    <button class="nb on" onclick="window.location.href='gcal.html'">
+      <span class="ni">📅</span>캘린더
+    </button>
+    <button class="nb" onclick="window.location.href=\'backup.html\'"><span class="ni">☁️</span>백업
+    </button>
+  </nav>
 </div>
 
 <script>
