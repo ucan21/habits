@@ -97,12 +97,12 @@ if('serviceWorker' in navigator){
 <body>
 <div class="shell">
   <div class="hdr">
-    <a class="back" href="index.html">←</a>
+    <div style="width:44px;"></div>
     <div class="hdr-c">
       <div class="hdr-title">💾 백업 & 복원</div>
       <div class="hdr-sub">데이터 안전 보관</div>
     </div>
-    <a href="index.html" style="background:var(--s2);border:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;">🏠</a>
+    <div style="width:44px;"></div>
   </div>
 
   <div class="scroll">
@@ -425,6 +425,25 @@ function doLoad(e){
 
 /* 초기화 */
 updateUI();
+</script>
+
+<script>
+/* 오른쪽 스와이프 → 홈 */
+(function(){
+  var sx=0,sy=0,st=0;
+  document.addEventListener('touchstart',function(e){
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-sx;
+    var dy=Math.abs(e.changedTouches[0].clientY-sy);
+    var dt=Date.now()-st;
+    if(dt<400&&dx>55&&dy<80){
+      window.location.href='/habits/index.html';
+    }
+    sx=0;
+  },{passive:true});
+})();
 </script>
 </body>
 </html>
