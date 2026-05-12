@@ -149,7 +149,7 @@ if('serviceWorker' in navigator){
       <div class="hdr-title">🙏 Today's Gratitude Journal</div>
       <div class="hdr-sub">오늘의 다섯 가지 감사</div>
     </div>
-    <div style="width:44px;"></div>
+    <a href="index.html" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;flex-shrink:0;touch-action:manipulation;">🏠</a>
   </div>
   <div class="scroll">
     <div class="body">
@@ -220,7 +220,7 @@ if('serviceWorker' in navigator){
     <button class="nb" onclick="window.location.href='gcal.html'">
       <span class="ni">📅</span>캘린더
     </button>
-    <button class="nb" onclick="window.location.href=\'backup.html\'"><span class="ni">☁️</span>백업
+    <button class="nb" onclick="location.href='backup.html'"><span class="ni">☁️</span>백업
     </button>
   </nav>
 </div>
@@ -259,62 +259,42 @@ const KEY='henry_v9';
 })();
 function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{habits:[],records:{},grat:{},tasks:[],todos:[],braindump:'',info:{}};}
 function sv(){
-  /* 사진은 IndexedDB에 따로 저장 — localStorage에서 제외 */
   try{
-    var saveD=JSON.parse(JSON.stringify(D));
-    if(saveD.grat){
-      Object.keys(saveD.grat).forEach(function(k){
-        if(k.endsWith('_photos')) delete saveD.grat[k];
+    /* 사진 데이터 제외하고 저장 (IndexedDB에 별도 저장) */
+    var d2=JSON.parse(JSON.stringify(D));
+    if(d2.grat){
+      Object.keys(d2.grat).forEach(function(k){
+        if(k.indexOf('_photos')>-1) delete d2.grat[k];
       });
     }
-    localStorage.setItem(KEY,JSON.stringify(saveD));
-  }catch(e){console.error('sv error:',e);}
-}
+    localStorage.setItem(KEY,JSON.stringify(d2));
+  }catch(e){}}
 let D=ld();
 
-/* ══ IndexedDB — 사진 저장소 ══ */
-var photoDB=null;
-(function initPhotoDB(){
-  var req=indexedDB.open('HenryPhotos',1);
-  req.onupgradeneeded=function(e){
-    e.target.result.createObjectStore('photos');
+/* ── IndexedDB 사진 저장소 ── */
+var _pDB=null;
+(function(){
+  var r=indexedDB.open('HenryPhotos',1);
+  r.onupgradeneeded=function(e){e.target.result.createObjectStore('p');};
+  r.onsuccess=function(e){
+    _pDB=e.target.result;
+    _loadPhotos(curD); /* 오늘 사진 로드 */
   };
-  req.onsuccess=function(e){
-    photoDB=e.target.result;
-    /* DB 열리면 오늘 날짜 사진 로드 */
-    loadPhotosFromDB(curD);
-  };
-  req.onerror=function(e){console.error('IndexedDB 오류:',e);};
 })();
-
-function savePhotosToDB(date,photos){
-  if(!photoDB)return;
-  var tx=photoDB.transaction('photos','readwrite');
-  tx.objectStore('photos').put(photos,'photos_'+date);
+function _savePhotos(date,arr){
+  if(!_pDB)return;
+  _pDB.transaction('p','readwrite').objectStore('p').put(arr||[],'d'+date);
 }
-
-function loadPhotosFromDB(date,cb){
-  if(!photoDB){if(cb)cb([]);return;}
-  var tx=photoDB.transaction('photos','readonly');
-  var req=tx.objectStore('photos').get('photos_'+date);
-  req.onsuccess=function(e){
-    var photos=e.target.result||[];
-    if(!D.grat) D.grat={};
-    D.grat[date+'_photos']=photos;
-    if(cb) cb(photos);
-    else renderPhotos();
+function _loadPhotos(date,cb){
+  if(!_pDB){if(cb)cb([]);return;}
+  var r=_pDB.transaction('p','readonly').objectStore('p').get('d'+date);
+  r.onsuccess=function(e){
+    var arr=e.target.result||[];
+    if(!D.grat)D.grat={};
+    D.grat[date+'_photos']=arr;
+    if(cb)cb(arr); else renderPhotos();
   };
-  req.onerror=function(){if(cb)cb([]);};
-}
-
-function deletePhotoFromDB(date,idx,cb){
-  if(!photoDB){if(cb)cb();return;}
-  loadPhotosFromDB(date,function(photos){
-    photos.splice(idx,1);
-    savePhotosToDB(date,photos);
-    D.grat[date+'_photos']=photos;
-    if(cb)cb(photos);
-  });
+  r.onerror=function(){if(cb)cb([]);};
 }
 function p2(n){return String(n).padStart(2,'0');}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -322,8 +302,8 @@ function todayStr(){const n=new Date();return n.getFullYear()+'-'+p2(n.getMonth(
 function addDays(s,n){const[y,m,d]=s.split('-').map(Number);const dt=new Date(y,m-1,d);dt.setDate(dt.getDate()+n);return dt.getFullYear()+'-'+p2(dt.getMonth()+1)+'-'+p2(dt.getDate());}
 function fmtDisp(s){const[y,m,d]=s.split('-').map(Number);const dt=new Date(y,m-1,d);const dw=['일','월','화','수','목','금','토'];return{str:y+'.'+p2(m)+'.'+p2(d),dow:dw[dt.getDay()]+'요일'};}
 let curD=todayStr();
-function chDate(d){const nxt=addDays(curD,d);if(nxt>addDays(todayStr(),1))return;curD=nxt;loadPhotosFromDB(curD);render();}
-function goToday(){curD=todayStr();loadPhotosFromDB(curD);render();}
+function chDate(d){const nxt=addDays(curD,d);if(nxt>addDays(todayStr(),1))return;curD=nxt;_loadPhotos(curD);render();}
+function goToday(){curD=todayStr();_loadPhotos(curD);render();}
 let toastT=null;
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1700);}
 
@@ -539,32 +519,25 @@ function takePhoto(){ document.getElementById('cam-inp').click(); }
 function pickPhoto(){ document.getElementById('gallery-inp').click(); }
 
 function onPhotoSelected(e){
-  const file=e.target.files[0]; if(!file)return;
-  if(!D.grat) D.grat={};
-  if(!D.grat[curD+'_photos']) D.grat[curD+'_photos']=[];
-  if(D.grat[curD+'_photos'].length>=10){toast('📷 최대 10장까지 가능합니다');return;}
-
-  toast('📷 사진 처리 중...');
-  const img=new Image();
-  const reader=new FileReader();
-  reader.onerror=()=>toast('❌ 파일을 읽을 수 없습니다');
-  reader.onload=ev=>{
-    img.onerror=()=>toast('❌ 이미지 열기 실패');
-    img.onload=()=>{
-      /* Canvas 압축 */
-      const canvas=document.createElement('canvas');
-      const MAX=800;
-      let w=img.width,h=img.height;
+  var file=e.target.files[0]; if(!file)return;
+  if(!D.grat)D.grat={};
+  if(!D.grat[curD+'_photos'])D.grat[curD+'_photos']=[];
+  if(D.grat[curD+'_photos'].length>=10){toast('📷 최대 10장');return;}
+  toast('📷 처리 중...');
+  var img=new Image();
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    img.onload=function(){
+      var canvas=document.createElement('canvas');
+      var MAX=800;
+      var w=img.width,h=img.height;
       if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}
       else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
       canvas.width=w;canvas.height=h;
       canvas.getContext('2d').drawImage(img,0,0,w,h);
-      const data=canvas.toDataURL('image/jpeg',0.75);
-
-      /* IndexedDB에 저장 — 용량 무제한 */
+      var data=canvas.toDataURL('image/jpeg',0.75);
       D.grat[curD+'_photos'].push(data);
-      savePhotosToDB(curD, D.grat[curD+'_photos']);
-      sv(); /* 텍스트 데이터만 localStorage에 저장 */
+      _savePhotos(curD,D.grat[curD+'_photos']);
       renderPhotos();
       toast('📷 사진 저장됨 ✅');
     };
@@ -608,9 +581,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeViewer();});
 
 function delPhoto(i){
   if(!confirm('이 사진을 삭제할까요?'))return;
-  D.grat[curD+'_photos'].splice(i,1);
-  savePhotosToDB(curD,D.grat[curD+'_photos']);
-  sv();renderPhotos();toast('🗑️ 삭제됨');
+  D.grat[curD+'_photos'].splice(i,1);_savePhotos(curD,D.grat[curD+'_photos']);renderPhotos();toast('🗑️ 삭제됨');
 }
 
 function saveGrat(){
@@ -639,7 +610,7 @@ render();
 
   /* 스와이프 힌트 */
   const hint=document.createElement('div');
-  hint.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.72);color:#fff;padding:11px 22px;border-radius:26px;font-family:\'Noto Sans KR\',sans-serif;font-size:14px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .18s;z-index:9999;white-space:nowrap;';
+  hint.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.72);color:#fff;padding:11px 22px;border-radius:26px;font-size:14px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .18s;z-index:9999;white-space:nowrap;';
   document.body.appendChild(hint);
   let ht;
   function showHint(msg){hint.textContent=msg;hint.style.opacity='1';clearTimeout(ht);ht=setTimeout(()=>hint.style.opacity='0',700);}
@@ -677,9 +648,9 @@ render();
       showHint(NAMES[ni]+' →');setTimeout(()=>go(-1),160);
     } else {
       /* 오른쪽 → 이전 */
-      /* 오른쪽 스와이프 → 항상 홈으로 */
-      showHint('🏠 홈으로');
-      setTimeout(()=>{window.location.href='/habits/index.html';},160);
+      const ni=curIdx-1;
+      if(ni<0){showHint('← 첫 페이지');return;}
+      showHint('← '+NAMES[ni]);setTimeout(()=>go(1),160);
     }
   },{passive:true});
 
