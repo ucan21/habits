@@ -202,21 +202,23 @@ if('serviceWorker' in navigator){
     <div class="content">
 
       <!-- 명언 -->
-      <!-- 명언 카드 -->
-      <div class="quote-card" style="position:relative;">
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
-          <button id="tab-life" onclick="switchQTab('life')" style="background:rgba(255,255,255,.18);border:none;border-radius:14px;color:#fff;font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">🌟 인생</button>
-          <button id="tab-invest" onclick="switchQTab('invest')" style="background:rgba(255,255,255,.06);border:none;border-radius:14px;color:rgba(255,255,255,.4);font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">📈 투자</button>
-          <span style="flex:1;"></span>
-          <button onclick="openQuoteModal()" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);border-radius:7px;color:#ffc020;font-size:11px;padding:3px 9px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">관리</button>
+      <!-- 나의 헌법 -->
+      <div class="quote-card" style="position:relative;cursor:default;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:#ffc020;margin-bottom:12px;text-align:center;">⚖️ 나의 헌법</div>
+        <div id="constitution-body" style="font-size:14px;color:#f0f0f8;line-height:1.9;word-break:keep-all;">
+          <div style="margin-bottom:8px;"><span style="color:#ffc020;font-weight:700;">제1조</span> <span style="color:#b0b0c8;font-size:11px;">(주권)</span> 나의 삶의 주권은 사회적 유용성이 아닌, 나의 내적 평온과 호기심에 있다.</div>
+          <div style="margin-bottom:8px;"><span style="color:#ffc020;font-weight:700;">제2조</span> <span style="color:#b0b0c8;font-size:11px;">(시선)</span> 새로운 곳을 찾아 헤매기보다, 익숙한 것을 새로운 눈으로 바라보는 '사유의 근력'을 기른다.</div>
+          <div style="margin-bottom:8px;"><span style="color:#ffc020;font-weight:700;">제3조</span> <span style="color:#b0b0c8;font-size:11px;">(속도)</span> 타인의 속도계에 나를 맞추지 않으며, 오직 나의 숨소리와 보폭이 허용하는 속도로 걷는다.</div>
+          <div style="margin-bottom:8px;"><span style="color:#ffc020;font-weight:700;">제4조</span> <span style="color:#b0b0c8;font-size:11px;">(고독)</span> 고독은 고립이 아니라 자아를 정화하는 성소이며, 나는 매일 최소 한 번 그 성소에 입성한다.</div>
+          <div style="margin-bottom:8px;"><span style="color:#ffc020;font-weight:700;">제5조</span> <span style="color:#b0b0c8;font-size:11px;">(언어)</span> 부정적인 관용구와 타인의 비난을 내 내면의 영토에 들여놓지 않는다.</div>
+          <div style="margin-bottom:8px;"><span style="color:#ffc020;font-weight:700;">제6조</span> <span style="color:#b0b0c8;font-size:11px;">(배움)</span> 결과물을 내기 위한 학습이 아닌, 앎 그 자체의 희열을 위한 공부를 멈추지 않는다.</div>
+          <div style="margin-bottom:8px;"><span style="color:#ffc020;font-weight:700;">제7조</span> <span style="color:#b0b0c8;font-size:11px;">(소유)</span> 나를 정의하던 물건과 직함을 비워내고, 비워진 공간을 '무목적적인 아름다움'으로 채운다.</div>
+          <div style="margin-bottom:8px;"><span style="color:#ffc020;font-weight:700;">제8조</span> <span style="color:#b0b0c8;font-size:11px;">(관계)</span> 의무감으로 맺어진 인연을 정리하고, 영혼의 온기를 나눌 수 있는 소수의 관계에 집중한다.</div>
+          <div style="margin-bottom:8px;"><span style="color:#ffc020;font-weight:700;">제9조</span> <span style="color:#b0b0c8;font-size:11px;">(실패)</span> 은퇴 이후의 삶에 '실패'란 없다. 오직 '경험'과 '발견'만이 존재할 뿐이다.</div>
+          <div><span style="color:#ffc020;font-weight:700;">제10조</span> <span style="color:#b0b0c8;font-size:11px;">(현존)</span> 어제에 대한 후회와 내일에 대한 불안을 거부하고, 지금 이 순간의 감각에 온전히 머무른다.</div>
         </div>
-        <div class="q-label" id="q-label" style="margin-bottom:3px;display:none;"></div>
-        <div id="quote-body" style="position:relative;">
-          <!-- 좌/우 탭 영역 -->
-          <div style="position:absolute;inset:0;display:flex;z-index:10;">
-            <div onclick="prevQuote()" style="flex:1;cursor:pointer;touch-action:manipulation;"></div>
-            <div onclick="nextQuote()" style="flex:1;cursor:pointer;touch-action:manipulation;"></div>
-          </div>
+      </div>
+      </div>
           <div class="q-text" id="q-text">—</div>
           <div class="q-en" id="q-en" style="color:#ffd060;font-size:13px;font-weight:500;font-style:italic;margin-top:4px;line-height:1.6;word-break:break-word;">—</div>
           <div class="q-author" id="q-author">—</div>
@@ -528,7 +530,6 @@ function delQuote(i){
   renderQModal();
 }
 
-showQuote();
 
 /* ── 명언 관리 ── */
 const Q_KEY='henry_quotes_v1';
