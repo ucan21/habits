@@ -581,24 +581,5 @@ function showSetupGuide(){
     </a>`;
 }
 </script>
-
-<script>
-/* 오른쪽 스와이프 → 홈 */
-(function(){
-  var sx=0,sy=0,st=0;
-  document.addEventListener('touchstart',function(e){
-    sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();
-  },{passive:true});
-  document.addEventListener('touchend',function(e){
-    var dx=e.changedTouches[0].clientX-sx;
-    var dy=Math.abs(e.changedTouches[0].clientY-sy);
-    var dt=Date.now()-st;
-    if(dt<400&&dx>55&&dy<80){
-      window.location.href='/habits/index.html';
-    }
-    sx=0;
-  },{passive:true});
-})();
-</script>
 </body>
 </html>

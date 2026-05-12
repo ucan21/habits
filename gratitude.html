@@ -220,7 +220,7 @@ if('serviceWorker' in navigator){
     <button class="nb" onclick="window.location.href='gcal.html'">
       <span class="ni">📅</span>캘린더
     </button>
-    <button class="nb" onclick="location.href='backup.html'"><span class="ni">☁️</span>백업
+    <button class="nb" onclick="window.location.href=\'backup.html\'"><span class="ni">☁️</span>백업
     </button>
   </nav>
 </div>
@@ -258,52 +258,16 @@ const KEY='henry_v9';
   }catch(e){}
 })();
 function ld(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{habits:[],records:{},grat:{},tasks:[],todos:[],braindump:'',info:{}};}
-function sv(){
-  try{
-    /* 사진 데이터 제외하고 저장 (IndexedDB에 별도 저장) */
-    var d2=JSON.parse(JSON.stringify(D));
-    if(d2.grat){
-      Object.keys(d2.grat).forEach(function(k){
-        if(k.indexOf('_photos')>-1) delete d2.grat[k];
-      });
-    }
-    localStorage.setItem(KEY,JSON.stringify(d2));
-  }catch(e){}}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
 let D=ld();
-
-/* ── IndexedDB 사진 저장소 ── */
-var _pDB=null;
-(function(){
-  var r=indexedDB.open('HenryPhotos',1);
-  r.onupgradeneeded=function(e){e.target.result.createObjectStore('p');};
-  r.onsuccess=function(e){
-    _pDB=e.target.result;
-    _loadPhotos(curD); /* 오늘 사진 로드 */
-  };
-})();
-function _savePhotos(date,arr){
-  if(!_pDB)return;
-  _pDB.transaction('p','readwrite').objectStore('p').put(arr||[],'d'+date);
-}
-function _loadPhotos(date,cb){
-  if(!_pDB){if(cb)cb([]);return;}
-  var r=_pDB.transaction('p','readonly').objectStore('p').get('d'+date);
-  r.onsuccess=function(e){
-    var arr=e.target.result||[];
-    if(!D.grat)D.grat={};
-    D.grat[date+'_photos']=arr;
-    if(cb)cb(arr); else renderPhotos();
-  };
-  r.onerror=function(){if(cb)cb([]);};
-}
 function p2(n){return String(n).padStart(2,'0');}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function todayStr(){const n=new Date();return n.getFullYear()+'-'+p2(n.getMonth()+1)+'-'+p2(n.getDate());}
 function addDays(s,n){const[y,m,d]=s.split('-').map(Number);const dt=new Date(y,m-1,d);dt.setDate(dt.getDate()+n);return dt.getFullYear()+'-'+p2(dt.getMonth()+1)+'-'+p2(dt.getDate());}
 function fmtDisp(s){const[y,m,d]=s.split('-').map(Number);const dt=new Date(y,m-1,d);const dw=['일','월','화','수','목','금','토'];return{str:y+'.'+p2(m)+'.'+p2(d),dow:dw[dt.getDay()]+'요일'};}
 let curD=todayStr();
-function chDate(d){const nxt=addDays(curD,d);if(nxt>addDays(todayStr(),1))return;curD=nxt;_loadPhotos(curD);render();}
-function goToday(){curD=todayStr();_loadPhotos(curD);render();}
+function chDate(d){const nxt=addDays(curD,d);if(nxt>addDays(todayStr(),1))return;curD=nxt;render();}
+function goToday(){curD=todayStr();render();}
 let toastT=null;
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1700);}
 
@@ -519,27 +483,39 @@ function takePhoto(){ document.getElementById('cam-inp').click(); }
 function pickPhoto(){ document.getElementById('gallery-inp').click(); }
 
 function onPhotoSelected(e){
-  var file=e.target.files[0]; if(!file)return;
-  if(!D.grat)D.grat={};
-  if(!D.grat[curD+'_photos'])D.grat[curD+'_photos']=[];
-  if(D.grat[curD+'_photos'].length>=10){toast('📷 최대 10장');return;}
-  toast('📷 처리 중...');
-  var img=new Image();
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    img.onload=function(){
-      var canvas=document.createElement('canvas');
-      var MAX=800;
-      var w=img.width,h=img.height;
-      if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}
-      else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
-      canvas.width=w;canvas.height=h;
-      canvas.getContext('2d').drawImage(img,0,0,w,h);
-      var data=canvas.toDataURL('image/jpeg',0.75);
-      D.grat[curD+'_photos'].push(data);
-      _savePhotos(curD,D.grat[curD+'_photos']);
-      renderPhotos();
-      toast('📷 사진 저장됨 ✅');
+  const file=e.target.files[0]; if(!file)return;
+  if(!D.grat) D.grat={};
+  if(!D.grat[curD+'_photos']) D.grat[curD+'_photos']=[];
+  if(D.grat[curD+'_photos'].length>=6){toast('📷 최대 6장까지 가능합니다');return;}
+
+  // Canvas로 이미지 압축 후 저장
+  const img=new Image();
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const MAX=800; // 최대 800px
+      let w=img.width, h=img.height;
+      if(w>h){ if(w>MAX){h=Math.round(h*MAX/w);w=MAX;} }
+      else { if(h>MAX){w=Math.round(w*MAX/h);h=MAX;} }
+      canvas.width=w; canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      // JPEG 품질 0.7로 압축
+      const compressed=canvas.toDataURL('image/jpeg',0.7);
+      D.grat[curD+'_photos'].push(compressed);
+      try{
+        sv();
+        renderPhotos();
+        toast('📷 사진 저장됨');
+      }catch(err){
+        // localStorage 용량 초과 시 품질 낮춰서 재시도
+        D.grat[curD+'_photos'].pop();
+        const smaller=canvas.toDataURL('image/jpeg',0.4);
+        D.grat[curD+'_photos'].push(smaller);
+        try{sv();renderPhotos();toast('📷 사진 저장됨 (압축)');}
+        catch(e2){D.grat[curD+'_photos'].pop();toast('❌ 저장 공간 부족 — 이전 사진을 삭제해주세요');}
+      }
     };
     img.src=ev.target.result;
   };
@@ -581,7 +557,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeViewer();});
 
 function delPhoto(i){
   if(!confirm('이 사진을 삭제할까요?'))return;
-  D.grat[curD+'_photos'].splice(i,1);_savePhotos(curD,D.grat[curD+'_photos']);renderPhotos();toast('🗑️ 삭제됨');
+  D.grat[curD+'_photos'].splice(i,1);sv();renderPhotos();toast('🗑️ 삭제됨');
 }
 
 function saveGrat(){
@@ -610,7 +586,7 @@ render();
 
   /* 스와이프 힌트 */
   const hint=document.createElement('div');
-  hint.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.72);color:#fff;padding:11px 22px;border-radius:26px;font-size:14px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .18s;z-index:9999;white-space:nowrap;';
+  hint.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.72);color:#fff;padding:11px 22px;border-radius:26px;font-family:\'Noto Sans KR\',sans-serif;font-size:14px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .18s;z-index:9999;white-space:nowrap;';
   document.body.appendChild(hint);
   let ht;
   function showHint(msg){hint.textContent=msg;hint.style.opacity='1';clearTimeout(ht);ht=setTimeout(()=>hint.style.opacity='0',700);}
@@ -665,5 +641,29 @@ render();
   }
 })();
 </script>
+
+<script>
+/* ── 자동 백업 ── */
+var _abTimer=null, _abLast='';
+function _autoBackup(){
+  try{
+    var data={ver:'henry-auto-v1',savedAt:new Date().toISOString(),savedAtKR:new Date().toLocaleString('ko-KR'),main:JSON.parse(localStorage.getItem('henry_v9')||'{}'),brain:JSON.parse(localStorage.getItem('henry_brain_v1')||'{}'),quotes:JSON.parse(localStorage.getItem('hq1')||'{}')};
+    var json=JSON.stringify(data,null,2);
+    if(json===_abLast)return;
+    _abLast=json;
+    var now=new Date(),pad=function(n){return String(n).padStart(2,'0');};
+    var fname='HenryDiary_'+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+'_'+pad(now.getHours())+pad(now.getMinutes())+'.json';
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+    a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
+    localStorage.setItem('henry_last_backup',Date.now().toString());
+    console.log('자동백업:',fname);
+  }catch(x){console.error('자동백업실패:',x);}
+}
+function _scheduleBackup(){clearTimeout(_abTimer);_abTimer=setTimeout(_autoBackup,30000);}
+var _ori=localStorage.setItem.bind(localStorage);
+localStorage.setItem=function(k,v){_ori(k,v);if(k==='henry_v9'||k==='henry_brain_v1'||k==='hq1')_scheduleBackup();};
+</script>
+
 </body>
 </html>
