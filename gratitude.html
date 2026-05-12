@@ -641,29 +641,5 @@ render();
   }
 })();
 </script>
-
-<script>
-/* ── 자동 백업 ── */
-var _abTimer=null, _abLast='';
-function _autoBackup(){
-  try{
-    var data={ver:'henry-auto-v1',savedAt:new Date().toISOString(),savedAtKR:new Date().toLocaleString('ko-KR'),main:JSON.parse(localStorage.getItem('henry_v9')||'{}'),brain:JSON.parse(localStorage.getItem('henry_brain_v1')||'{}'),quotes:JSON.parse(localStorage.getItem('hq1')||'{}')};
-    var json=JSON.stringify(data,null,2);
-    if(json===_abLast)return;
-    _abLast=json;
-    var now=new Date(),pad=function(n){return String(n).padStart(2,'0');};
-    var fname='HenryDiary_'+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+'_'+pad(now.getHours())+pad(now.getMinutes())+'.json';
-    var a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([json],{type:'application/json'}));
-    a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
-    localStorage.setItem('henry_last_backup',Date.now().toString());
-    console.log('자동백업:',fname);
-  }catch(x){console.error('자동백업실패:',x);}
-}
-function _scheduleBackup(){clearTimeout(_abTimer);_abTimer=setTimeout(_autoBackup,30000);}
-var _ori=localStorage.setItem.bind(localStorage);
-localStorage.setItem=function(k,v){_ori(k,v);if(k==='henry_v9'||k==='henry_brain_v1'||k==='hq1')_scheduleBackup();};
-</script>
-
 </body>
 </html>

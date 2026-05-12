@@ -12,8 +12,7 @@
 <meta name="theme-color" content="#0a0a0f">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-
-<meta name="app-version" content="20260512064018">
+<meta name="app-version" content="20260504113238">
 <title>Henry Diary</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -118,7 +117,7 @@ body{
 }
 .nav-btn:active{transform:scale(.97);}
 .nav-icon{font-size:28px;flex-shrink:0;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
-/* ni removed */
+.nb .ni{font-size:21px;transition:transform .18s;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
 .nav-body{flex:1;text-align:left;}
 .nav-title{
   font-family:'Bebas Neue',sans-serif;font-size:22px;
@@ -203,23 +202,21 @@ if('serviceWorker' in navigator){
     <div class="content">
 
       <!-- 명언 -->
-      <!-- 나의 헌법 -->
-      <div class="quote-card" style="position:relative;cursor:default;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;color:#ffc020;margin-bottom:14px;text-align:center;">⚖️ 나의 헌법</div>
-        <div style="font-size:14px;color:#f0f0f8;line-height:1.9;word-break:keep-all;">
-          <div style="margin-bottom:9px;"><span style="color:#ffc020;font-weight:700;">제1조</span> <span style="color:#888;font-size:11px;">(주권)</span> 나의 삶의 주권은 사회적 유용성이 아닌, 나의 내적 평온과 호기심에 있다.</div>
-          <div style="margin-bottom:9px;"><span style="color:#ffc020;font-weight:700;">제2조</span> <span style="color:#888;font-size:11px;">(시선)</span> 새로운 곳을 찾아 헤매기보다, 익숙한 것을 새로운 눈으로 바라보는 '사유의 근력'을 기른다.</div>
-          <div style="margin-bottom:9px;"><span style="color:#ffc020;font-weight:700;">제3조</span> <span style="color:#888;font-size:11px;">(속도)</span> 타인의 속도계에 나를 맞추지 않으며, 오직 나의 숨소리와 보폭이 허용하는 속도로 걷는다.</div>
-          <div style="margin-bottom:9px;"><span style="color:#ffc020;font-weight:700;">제4조</span> <span style="color:#888;font-size:11px;">(고독)</span> 고독은 고립이 아니라 자아를 정화하는 성소이며, 나는 매일 최소 한 번 그 성소에 입성한다.</div>
-          <div style="margin-bottom:9px;"><span style="color:#ffc020;font-weight:700;">제5조</span> <span style="color:#888;font-size:11px;">(언어)</span> 부정적인 관용구와 타인의 비난을 내 내면의 영토에 들여놓지 않는다.</div>
-          <div style="margin-bottom:9px;"><span style="color:#ffc020;font-weight:700;">제6조</span> <span style="color:#888;font-size:11px;">(배움)</span> 결과물을 내기 위한 학습이 아닌, 앎 그 자체의 희열을 위한 공부를 멈추지 않는다.</div>
-          <div style="margin-bottom:9px;"><span style="color:#ffc020;font-weight:700;">제7조</span> <span style="color:#888;font-size:11px;">(소유)</span> 나를 정의하던 물건과 직함을 비워내고, 비워진 공간을 '무목적적인 아름다움'으로 채운다.</div>
-          <div style="margin-bottom:9px;"><span style="color:#ffc020;font-weight:700;">제8조</span> <span style="color:#888;font-size:11px;">(관계)</span> 의무감으로 맺어진 인연을 정리하고, 영혼의 온기를 나눌 수 있는 소수의 관계에 집중한다.</div>
-          <div style="margin-bottom:9px;"><span style="color:#ffc020;font-weight:700;">제9조</span> <span style="color:#888;font-size:11px;">(실패)</span> 은퇴 이후의 삶에 '실패'란 없다. 오직 '경험'과 '발견'만이 존재할 뿐이다.</div>
-          <div><span style="color:#ffc020;font-weight:700;">제10조</span> <span style="color:#888;font-size:11px;">(현존)</span> 어제에 대한 후회와 내일에 대한 불안을 거부하고, 지금 이 순간의 감각에 온전히 머무른다.</div>
+      <!-- 명언 카드 -->
+      <div class="quote-card" style="position:relative;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+          <button id="tab-life" onclick="switchQTab('life')" style="background:rgba(255,255,255,.18);border:none;border-radius:14px;color:#fff;font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">🌟 인생</button>
+          <button id="tab-invest" onclick="switchQTab('invest')" style="background:rgba(255,255,255,.06);border:none;border-radius:14px;color:rgba(255,255,255,.4);font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">📈 투자</button>
+          <span style="flex:1;"></span>
+          <button onclick="openQuoteModal()" style="background:rgba(255,192,32,.15);border:1px solid rgba(255,192,32,.3);border-radius:7px;color:#ffc020;font-size:11px;padding:3px 9px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;">관리</button>
         </div>
-      </div>
-      </div>
+        <div class="q-label" id="q-label" style="margin-bottom:3px;display:none;"></div>
+        <div id="quote-body" style="position:relative;">
+          <!-- 좌/우 탭 영역 -->
+          <div style="position:absolute;inset:0;display:flex;z-index:10;">
+            <div onclick="prevQuote()" style="flex:1;cursor:pointer;touch-action:manipulation;"></div>
+            <div onclick="nextQuote()" style="flex:1;cursor:pointer;touch-action:manipulation;"></div>
+          </div>
           <div class="q-text" id="q-text">—</div>
           <div class="q-en" id="q-en" style="color:#ffd060;font-size:13px;font-weight:500;font-style:italic;margin-top:4px;line-height:1.6;word-break:break-word;">—</div>
           <div class="q-author" id="q-author">—</div>
@@ -328,7 +325,7 @@ const QQ_LIFE=[
   {t:"완벽하게 하는 것보다 지금 당장 하는 것이 낫다.",e:"Done is better than perfect.",a:"셰릴 샌드버그"},
   {t:"단순하게 살아라. 복잡한 것들이 스스로 풀릴 것이다.",e:"Simplify your life. The complex things will sort themselves out.",a:"스티브 잡스"},
   {t:"인생은 가까이서 보면 비극이지만, 멀리서 보면 희극이다.",e:"Life is a tragedy when seen in close-up, but a comedy in long-shot.",a:"찰리 채플린"},
-  
+  {t:"우리는 우리가 반복적으로 하는 것이다. 탁월함은 행동이 아니라 습관이다.",e:"We are what we repeatedly do. Excellence is not an act but a habit.",a:"아리스토텔레스"},
   {t:"남과 비교를 멈출 때 진정한 자신이 시작된다.",e:"Stop comparing yourself to others — that is where your real self begins.",a:"키르케고르"},
   {t:"배는 항구에 있을 때 가장 안전하다. 그러나 그것이 배의 목적은 아니다.",e:"A ship in harbor is safe, but that is not what ships are for.",a:"존 A. 세드"},
   {t:"넘어지는 것이 실패가 아니다. 넘어진 채로 있는 것이 실패다.",e:"Falling is not failure. Failure is staying where you fell.",a:"소크라테스"},
@@ -340,7 +337,7 @@ const QQ_LIFE=[
   {t:"변화는 처음엔 두렵고, 중간엔 혼란스럽고, 끝에는 아름답다.",e:"Change is hard at first, messy in the middle, and gorgeous at the end.",a:"로빈 샤르마"},
   {t:"원하는 것을 얻으려면 먼저 지금 가진 것에 감사해야 한다.",e:"Gratitude turns what we have into enough.",a:"멜로디 비티"},
   {t:"나는 내 운명의 주인이요, 내 영혼의 선장이다.",e:"I am the master of my fate, I am the captain of my soul.",a:"윌리엄 어니스트 헨리"},
-  
+  {t:"우리는 별의 먼지로 이루어져 있고, 우주는 우리를 통해 스스로를 이해하려 한다.",e:"We are a way for the universe to know itself.",a:"칼 세이건"},
   {t:"자아를 비우면 그 빈자리에 우주의 거대한 에너지가 채워진다.",e:"Empty yourself, and let the vast energy of the universe fill that space.",a:"선(禪) 지혜"},
   {t:"삶은 더 잘 사는 법을 배우는 것이 아니라 덜 흔들리는 기준을 세우는 일이다.",e:"Life is not about learning to live better, but about building a standard that keeps you steady.",a:"헨리"},
   {t:"나 자신이 나의 가장 좋은 친구가 되어야 한다.",e:"You yourself must be your own best friend.",a:"헨리"},
@@ -531,7 +528,7 @@ function delQuote(i){
   renderQModal();
 }
 
-try{showQuote();}catch(e){console.log("showQuote skipped");}
+showQuote();
 
 /* ── 명언 관리 ── */
 const Q_KEY='henry_quotes_v1';
@@ -783,240 +780,3 @@ function deleteQuote(i){
 
 </body>
 </html>
-<script>
-/* 명언 관리 - 확실한 저장/로드 */
-var QQ_TAB='life';
-var QKEY='hq1';
-
-function _sSave(){
-  try{
-    var data={L:[],I:[]};
-    for(var i=0;i<QQ_LIFE.length;i++) data.L.push({t:QQ_LIFE[i].t,e:QQ_LIFE[i].e,a:QQ_LIFE[i].a});
-    for(var i=0;i<QQ_INVEST.length;i++) data.I.push({t:QQ_INVEST[i].t,e:QQ_INVEST[i].e,a:QQ_INVEST[i].a});
-    localStorage.setItem(QKEY,JSON.stringify(data));
-  }catch(x){alert('저장 실패:'+x.message);}
-}
-
-(function loadSaved(){
-  try{
-    var raw=localStorage.getItem(QKEY);
-    if(!raw)return;
-    var s=JSON.parse(raw);
-    if(s&&s.L&&s.L.length>0){
-      QQ_LIFE.length=0;
-      for(var i=0;i<s.L.length;i++){if(s.L[i]&&s.L[i].t)QQ_LIFE.push(s.L[i]);}
-    }
-    if(s&&s.I&&s.I.length>0){
-      QQ_INVEST.length=0;
-      for(var i=0;i<s.I.length;i++){if(s.I[i]&&s.I[i].t)QQ_INVEST.push(s.I[i]);}
-    }
-    QQ.length=0;
-    for(var i=0;i<QQ_LIFE.length;i++) QQ.push(QQ_LIFE[i]);
-    showQuote();
-  }catch(x){console.error('로드오류:',x);}
-})();
-
-function switchQTab(tab){
-  QQ_TAB=tab;
-  var tL=document.getElementById('tab-life');
-  var tI=document.getElementById('tab-invest');
-  if(tab==='life'){
-    QQ.length=0;for(var i=0;i<QQ_LIFE.length;i++)QQ.push(QQ_LIFE[i]);
-    if(tL){tL.style.background='rgba(255,255,255,.2)';tL.style.color='#fff';}
-    if(tI){tI.style.background='rgba(255,255,255,.06)';tI.style.color='rgba(255,255,255,.4)';}
-  }else{
-    QQ.length=0;for(var i=0;i<QQ_INVEST.length;i++)QQ.push(QQ_INVEST[i]);
-    if(tI){tI.style.background='rgba(255,192,32,.25)';tI.style.color='#ffc020';}
-    if(tL){tL.style.background='rgba(255,255,255,.06)';tL.style.color='rgba(255,255,255,.4)';}
-  }
-  curQIdx=0;
-  try{localStorage.setItem('henry_qtab',tab);}catch(x){}
-  displayQuote(0);
-}
-(function(){try{var t=localStorage.getItem('henry_qtab');if(t==='invest')setTimeout(function(){switchQTab('invest');},150);}catch(x){}})();
-
-(function(){
-  var body=document.getElementById('quote-body');
-  if(!body)return;
-  var tm=null;
-  body.addEventListener('touchstart',function(){tm=setTimeout(openQModal,800);},{passive:true});
-  body.addEventListener('touchmove',function(){clearTimeout(tm);},{passive:true});
-  body.addEventListener('touchend',function(){clearTimeout(tm);},{passive:true});
-})();
-
-function openQModal(){var el=document.getElementById('quote-modal');if(el)el.style.display='block';renderQModal();}
-function closeQuoteModal(){var el=document.getElementById('quote-modal');if(el)el.style.display='none';}
-function openQuoteModal(){openQModal();}
-
-function renderQModal(){
-  var isL=(QQ_TAB==='life');
-  var arr=isL?QQ_LIFE:QQ_INVEST;
-  var dest=isL?'투자':'인생';
-  var tn=document.getElementById('modal-tab-name');
-  var ah=document.getElementById('add-tab-hint');
-  if(tn)tn.textContent=(isL?'🌟 인생명언':'📈 투자명언');
-  if(ah)ah.textContent=(isL?'🌟 인생명언':'📈 투자명언');
-  var cnt=document.getElementById('qcnt');if(cnt)cnt.textContent=arr.length;
-  var list=document.getElementById('qlist');if(!list)return;
-  list.innerHTML='';
-  if(arr.length===0){list.innerHTML='<div style="text-align:center;padding:16px;color:#606080;font-size:13px;">명언 없음</div>';return;}
-  for(var i=0;i<arr.length;i++){
-    (function(idx,q){
-      var card=document.createElement('div');
-      card.id='qcard-'+idx;
-      card.style.cssText='background:#222232;border-radius:10px;padding:11px 12px;margin-bottom:10px;';
-      var num=document.createElement('div');num.style.cssText='font-size:11px;color:#ffc020;font-weight:700;margin-bottom:5px;';num.textContent=(idx+1)+'번';
-      var tT=document.createElement('textarea');tT.id='qt-'+idx;tT.rows=2;tT.value=q.t;
-      tT.style.cssText='width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 10px;color:#f0f0f8;font-size:13px;outline:none;resize:none;box-sizing:border-box;margin-bottom:5px;display:block;font-family:inherit;';
-      var tE=document.createElement('textarea');tE.id='qe-'+idx;tE.rows=2;tE.value=q.e;
-      tE.style.cssText='width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 10px;color:#ffd060;font-size:12px;font-style:italic;outline:none;resize:none;box-sizing:border-box;margin-bottom:5px;display:block;font-family:inherit;';
-      var iA=document.createElement('input');iA.id='qa-'+idx;iA.value=q.a;iA.placeholder='출처';
-      iA.style.cssText='width:100%;background:#0a0a0f;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:7px 10px;color:#b0b0c8;font-size:12px;outline:none;box-sizing:border-box;margin-bottom:8px;display:block;font-family:inherit;';
-      var bR=document.createElement('div');bR.style.cssText='display:flex;gap:5px;';
-      var sB=document.createElement('button');sB.textContent='저장';
-      sB.style.cssText='flex:2;background:rgba(40,196,144,.2);border:1px solid rgba(40,196,144,.4);border-radius:8px;color:#28c490;font-size:13px;font-weight:700;padding:9px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;';
-      sB.onclick=function(){saveQ(idx);};
-      var mB=document.createElement('button');mB.textContent='↔ '+dest;
-      mB.style.cssText='flex:2;background:rgba(74,143,255,.2);border:1px solid rgba(74,143,255,.4);border-radius:8px;color:#4a8fff;font-size:12px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;font-family:inherit;touch-action:manipulation;';
-      mB.onclick=function(){moveQ(idx);};
-      var dB=document.createElement('button');dB.textContent='삭제';
-      dB.style.cssText='flex:1;background:rgba(255,80,96,.2);border:1px solid rgba(255,80,96,.4);border-radius:8px;color:#ff5060;font-size:12px;padding:9px 4px;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;';
-      dB.onclick=function(){delQ(idx);};
-      bR.appendChild(sB);bR.appendChild(mB);bR.appendChild(dB);
-      card.appendChild(num);card.appendChild(tT);card.appendChild(tE);card.appendChild(iA);card.appendChild(bR);
-      list.appendChild(card);
-    })(i,arr[i]);
-  }
-}
-
-function saveQ(i){
-  var arr=(QQ_TAB==='life')?QQ_LIFE:QQ_INVEST;
-  var tT=document.getElementById('qt-'+i);var tE=document.getElementById('qe-'+i);var iA=document.getElementById('qa-'+i);
-  if(!tT||!arr[i])return;
-  arr[i].t=tT.value.trim()||arr[i].t;
-  arr[i].e=(tE?tE.value.trim():'')||arr[i].t;
-  arr[i].a=(iA?iA.value.trim():'')||'—';
-  QQ.length=0;for(var j=0;j<arr.length;j++)QQ.push(arr[j]);
-  _sSave();
-  var qt=document.getElementById('q-text');var qe=document.getElementById('q-en');var qa=document.getElementById('q-author');
-  if(qt)qt.textContent=arr[i].t;if(qe)qe.textContent=arr[i].e;if(qa)qa.textContent='— '+arr[i].a;
-  curQIdx=i;
-  var card=document.getElementById('qcard-'+i);
-  if(card){var ok=document.createElement('div');ok.textContent='✅ 저장됨';ok.style.cssText='text-align:center;color:#28c490;font-size:13px;font-weight:700;padding:5px;';card.appendChild(ok);setTimeout(function(){if(ok.parentNode)ok.parentNode.removeChild(ok);},2000);}
-}
-
-function delQ(i){
-  var arr=(QQ_TAB==='life')?QQ_LIFE:QQ_INVEST;
-  if(!arr[i])return;
-  var p=arr[i].t.length>20?arr[i].t.slice(0,20)+'...':arr[i].t;
-  if(!confirm((i+1)+'번 삭제?\n"'+p+'"'))return;
-  arr.splice(i,1);
-  QQ.length=0;for(var j=0;j<arr.length;j++)QQ.push(arr[j]);
-  _sSave();
-  if(curQIdx>=QQ.length)curQIdx=Math.max(0,QQ.length-1);
-  if(QQ.length>0)displayQuote(curQIdx);
-  renderQModal();
-}
-
-function moveQ(i){
-  var sA=(QQ_TAB==='life')?QQ_LIFE:QQ_INVEST;
-  var dA=(QQ_TAB==='life')?QQ_INVEST:QQ_LIFE;
-  var dest=(QQ_TAB==='life')?'투자명언':'인생명언';
-  if(!sA[i])return;
-  var q=sA[i];
-  if(!confirm((i+1)+'번을 '+dest+'으로?'))return;
-  sA.splice(i,1);dA.push(q);
-  QQ.length=0;for(var j=0;j<sA.length;j++)QQ.push(sA[j]);
-  _sSave();
-  if(curQIdx>=QQ.length)curQIdx=Math.max(0,QQ.length-1);
-  if(QQ.length>0)displayQuote(curQIdx);
-  renderQModal();
-}
-
-async function addQuote(){
-  var isL=(QQ_TAB==='life');
-  var arr=isL?QQ_LIFE:QQ_INVEST;
-  var t=(document.getElementById('qakor').value||'').trim();
-  var e=(document.getElementById('qaeng').value||'').trim();
-  var a=(document.getElementById('qaauth').value||'').trim();
-  if(!t){alert('명언을 입력하세요');return;}
-  if(!e){try{var r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(t)+'&langpair=ko|en');var d=await r.json();e=(d.responseData&&d.responseData.translatedText||'').trim();}catch(x){e='';}}
-  arr.push({t:t,e:e||t,a:a||'—'});
-  QQ.length=0;for(var j=0;j<arr.length;j++)QQ.push(arr[j]);
-  _sSave();
-  document.getElementById('qakor').value='';document.getElementById('qaeng').value='';document.getElementById('qaauth').value='';
-  curQIdx=QQ.length-1;displayQuote(curQIdx);renderQModal();
-  alert('추가됨! 총 '+arr.length+'개');
-}
-</script>
-<script>
-/* ── 자동 백업 시스템 ── */
-var _autoBackupTimer = null;
-var _lastBackupData  = '';
-
-function _autoBackup(){
-  try{
-    var main  = JSON.parse(localStorage.getItem('henry_v9')||'{}');
-    var brain = JSON.parse(localStorage.getItem('henry_brain_v1')||'{}');
-    var quotes= JSON.parse(localStorage.getItem('hq1')||'{}');
-    var data  = {
-      ver:'henry-auto-v1',
-      savedAt: new Date().toISOString(),
-      savedAtKR: new Date().toLocaleString('ko-KR'),
-      main: main,
-      brain: brain,
-      quotes: quotes
-    };
-    var json = JSON.stringify(data, null, 2);
-
-    /* 이전 백업과 동일하면 건너뜀 */
-    if(json === _lastBackupData) return;
-    _lastBackupData = json;
-
-    /* 파일 다운로드 */
-    var now = new Date();
-    var pad = function(n){return String(n).padStart(2,'0');};
-    var fname = 'HenryDiary_'
-      + now.getFullYear()
-      + pad(now.getMonth()+1)
-      + pad(now.getDate())
-      + '_'
-      + pad(now.getHours())
-      + pad(now.getMinutes())
-      + '.json';
-
-    var blob = new Blob([json], {type:'application/json;charset=utf-8'});
-    var url  = URL.createObjectURL(blob);
-    var a    = document.createElement('a');
-    a.href     = url;
-    a.download = fname;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    /* localStorage에 마지막 백업 시각 기록 */
-    localStorage.setItem('henry_last_backup', Date.now().toString());
-
-    console.log('자동 백업 완료:', fname);
-  }catch(x){
-    console.error('자동 백업 실패:', x);
-  }
-}
-
-/* 데이터 변경 감지 → 30초 후 자동 백업 */
-function _scheduleBackup(){
-  clearTimeout(_autoBackupTimer);
-  _autoBackupTimer = setTimeout(_autoBackup, 30000); /* 30초 후 */
-}
-
-/* localStorage 변경 감지 */
-var _origSetItem = localStorage.setItem.bind(localStorage);
-localStorage.setItem = function(key, value){
-  _origSetItem(key, value);
-  /* 앱 데이터 키일 때만 백업 예약 */
-  if(key === 'henry_v9' || key === 'henry_brain_v1' || key === 'hq1'){
-    _scheduleBackup();
-  }
-};
-</script>
