@@ -12,7 +12,8 @@
 <meta name="theme-color" content="#0a0a0f">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<meta name="app-version" content="20260504113238">
+
+<meta name="app-version" content="20260512064018">
 <title>Henry Diary</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -530,7 +531,7 @@ function delQuote(i){
   renderQModal();
 }
 
-showQuote();
+try{showQuote();}catch(e){console.log("showQuote skipped");}
 
 /* ── 명언 관리 ── */
 const Q_KEY='henry_quotes_v1';
