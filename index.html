@@ -117,7 +117,7 @@ body{
 }
 .nav-btn:active{transform:scale(.97);}
 .nav-icon{font-size:28px;flex-shrink:0;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
-.nb .ni{font-size:21px;transition:transform .18s;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
+
 .nav-body{flex:1;text-align:left;}
 .nav-title{
   font-family:'Bebas Neue',sans-serif;font-size:22px;
@@ -211,9 +211,7 @@ if('serviceWorker' in navigator){
         </div>
         <span style="font-size:20px;color:#ffc020;">›</span>
       </button>
-          <div class="q-text" id="q-text">—</div>
-          <div class="q-en" id="q-en" style="color:#ffd060;font-size:13px;font-weight:500;font-style:italic;margin-top:4px;line-height:1.6;word-break:break-word;">—</div>
-          <div class="q-author" id="q-author">—</div>
+          <div id="q-text" style="display:none;"></div><div id="q-en" style="display:none;"></div><div id="q-author" style="display:none;"></div>
         </div>
       </div>
 
